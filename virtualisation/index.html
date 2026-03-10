@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtualisation | Gana Faye</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --virt-blue: #007bff; --dark-bg: #0f172a; --card-bg: #1e293b; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: #f8fafc; }
+        .hero-virt { padding: 60px 0; background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%); border-bottom: 2px solid var(--virt-blue); }
+        .tp-card { background: var(--card-bg); border: 1px solid #334155; transition: all 0.3s ease; height: 100%; border-radius: 12px; }
+        .tp-card:hover { transform: translateY(-5px); border-color: var(--virt-blue); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .icon-circle { width: 60px; height: 60px; background: rgba(0, 123, 255, 0.1); color: var(--virt-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; }
+        .btn-outline-virt { border: 1px solid var(--virt-blue); color: var(--virt-blue); }
+        .btn-outline-virt:hover { background: var(--virt-blue); color: white; }
+    </style>
+</head>
+<body>
+
+    <header class="hero-virt text-center">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a href="index.html" class="text-info text-decoration-none">Home Lab</a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Virtualisation</li>
+                </ol>
+            </nav>
+            <h1 class="display-5 fw-bold"><i class="bi bi-cpu-fill text-info"></i> Lab Virtualisation & Systèmes</h1>
+            <p class="lead text-secondary">Gestion des hyperviseurs, isolation des ressources et standards OCI.</p>
+        </div>
+    </header>
+
+    <main class="container py-5">
+        <div class="row g-4">
+            
+            <div class="col-md-4">
+                <div class="tp-card p-4 d-flex flex-column">
+                    <div class="icon-circle"><i class="bi bi-pc-display"></i></div>
+                    <h3>TP1 : Hyperviseurs</h3>
+                    <p class="text-secondary flex-grow-1">Comparaison entre Type 1 et Type 2, et gestion des problématiques de drivers sur matériel physique (ThinkPad T14s).</p>
+                    <a href="TP1_Virt/index.html" class="btn btn-outline-virt mt-3">Détails du TP1</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="tp-card p-4 d-flex flex-column">
+                    <div class="icon-circle"><i class="bi bi-diagram-3"></i></div>
+                    <h3>TP2 : Isolation OCI</h3>
+                    <p class="text-secondary flex-grow-1">Analyse approfondie de l'isolation système et inspection des manifestes JSON selon les standards OCI.</p>
+                    <a href="TP2_Virt/index.html" class="btn btn-outline-virt mt-3">Détails du TP2</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="tp-card p-4 d-flex flex-column">
+                    <div class="icon-circle"><i class="bi bi-app-indicator"></i></div>
+                    <h3>TP3 : App Virtualisation</h3>
+                    <p class="text-secondary flex-grow-1">Déploiement virtualisé de l'ERP <strong>Odoo</strong> pour la gestion d'entreprise en environnement isolé.</p>
+                    <a href="404.html" class="btn btn-outline-virt mt-3">En cours de Build</a>
+                </div>
+            </div>
+
+        </div>
+
+        
+
+        <section class="mt-5 p-4 rounded bg-dark border border-secondary">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h5 class="text-info"><i class="bi bi-shield-lock-fill"></i> Sécurité & Isolation</h5>
+                    <p class="small text-secondary mb-0">
+                        L'isolation a été validée via l'analyse des couches systèmes (Layers). 
+                        Les tests de performance comparent la latence entre une VM classique et un conteneur OCI léger.
+                    </p>
+                </div>
+                <div class="col-md-4 text-end text-secondary">
+                    <i class="bi bi-ubuntu fs-1 mx-2"></i>
+                    <i class="bi bi-terminal fs-1 mx-2"></i>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-4 text-secondary border-top border-secondary">
+        <p>Gana Faye - Master 1 SI - Lab 2026</p>
+    </footer>
+
+</body>
+</html>
