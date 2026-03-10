@@ -1,0 +1,7 @@
+# 1. Gestion de la page d'erreur personnalisée
+ErrorDocument 404 /404.html
+
+# 2. Redirection automatique vers HTTPS (Sécurité)
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
