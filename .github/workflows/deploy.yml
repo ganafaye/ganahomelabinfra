@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 🚚 Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Passage à la v4 pour être à jour
 
       - name: 🚀 FTP Deploy to ByetHost
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -19,8 +19,12 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: htdocs/
-          # Exclure les fichiers inutiles pour le serveur web
+          # Cette option supprime les fichiers du serveur qui ne sont pas dans ton Git
+          # (Idéal pour supprimer index2.html et les pubs ByetHost automatiquement)
+          dangerous-clean-slate: true 
+          # On exclut ce qui ne doit pas être visible sur le web
           exclude: |
             **/.git*
             **/.github*
             README.md
+            .gitignore
