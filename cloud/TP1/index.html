@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP1 : Instance EC2 & Ubuntu | Gana Faye</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --aws-orange: #ff9900; --dark-bg: #0f172a; --card-bg: #1e293b; --terminal-green: #00ff41; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: #f8fafc; line-height: 1.6; }
+        .mono { font-family: 'Fira Code', monospace; background: #000; padding: 2px 5px; border-radius: 4px; color: var(--terminal-green); }
+        .breadcrumb-item a { color: var(--aws-orange); text-decoration: none; }
+        .content-card { background: var(--card-bg); border: 1px solid #334155; border-radius: 12px; padding: 30px; margin-bottom: 30px; }
+        .step-number { background: var(--aws-orange); color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; }
+        pre { background: #000; padding: 15px; border-radius: 8px; border: 1px solid #334155; color: #f8fafc; overflow-x: auto; }
+        .cmd-label { color: #64748b; font-size: 0.8rem; margin-bottom: 5px; display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="container py-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Cloud Computing</a></li>
+                <li class="breadcrumb-item active text-white" aria-current="page">TP1 : Instance EC2</li>
+            </ol>
+        </nav>
+
+        <header class="mb-5">
+            <h1 class="display-5 fw-bold text-warning"><i class="bi bi-cpu"></i> TP1 : Mise en service d'une instance EC2</h1>
+            <p class="lead text-secondary">Déploiement et configuration d'un serveur Ubuntu 22.04 LTS sur AWS.</p>
+        </header>
+
+        <div class="row">
+            <div class="col-lg-8">
+                
+                <section class="content-card">
+                    <h3><i class="bi bi-info-circle"></i> 1. Comprendre Amazon EC2</h3>
+                    <p><strong>EC2 (Elastic Compute Cloud)</strong> est le service de calcul d'AWS. Il permet de louer des serveurs virtuels (instances) scalables.</p>
+                    <ul>
+                        <li><strong>Elastic :</strong> Capacité d'ajuster les ressources selon la charge.</li>
+                        <li><strong>Compute :</strong> Fournit la puissance de traitement nécessaire aux applications.</li>
+                    </ul>
+                </section>
+
+                <section class="content-card">
+                    <h3><i class="bi bi-gear"></i> 2. Déploiement de l'Infrastructure</h3>
+                    
+                    <div class="mb-4">
+                        <h5><span class="step-number">1</span> Création du compte Free Tier</h5>
+                        <p>Accès aux services gratuits (750h/mois d'instance <code class="mono">t2.micro</code>).</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5><span class="step-number">2</span> Lancement de l'instance</h5>
+                        <p>Sélection de l'AMI <strong>Ubuntu Server 22.04 LTS</strong> et création de la paire de clés (Key Pair).</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5><span class="step-number">3</span> Security Groups (Pare-feu)</h5>
+                        <p>Configuration des règles entrantes (Inbound Rules) :</p>
+                        <ul class="small">
+                            <li><span class="text-warning">SSH (22) :</span> Administration distante (limité à mon IP).</li>
+                            <li><span class="text-warning">HTTP (80) :</span> Accès public pour le serveur web.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="content-card">
+                    <h3><i class="bi bi-terminal"></i> 3. Connexion au serveur</h3>
+                    <p>Avant la connexion, il est impératif de restreindre les droits sur la clé privée :</p>
+                    <span class="cmd-label"># Sur la machine locale (ThinkPad T14s)</span>
+                    <pre><code class="mono">chmod 400 ma-cle-aws.pem
+ssh -i "ma-cle-aws.pem" ubuntu@votre-ip-publique-aws</code></pre>
+                </section>
+
+                <section class="content-card">
+                    <h3><i class="bi bi-command"></i> 4. Commandes de configuration (Bash)</h3>
+                    <p>Une fois connecté, voici les étapes réalisées pour préparer le serveur :</p>
+                    
+                    <span class="cmd-label"># Mise à jour du système</span>
+                    <pre><code class="mono">sudo apt update && sudo apt upgrade -y</code></pre>
+
+                    <span class="cmd-label"># Installation du serveur Web Apache</span>
+                    <pre><code class="mono">sudo apt install apache2 -y
+sudo systemctl enable apache2</code></pre>
+
+                    <span class="cmd-label"># Gestion des droits pour le dossier web</span>
+                    <pre><code class="mono">sudo chown -R ubuntu:ubuntu /var/www/html</code></pre>
+                </section>
+
+            </div>
+
+            <div class="col-lg-4">
+                <div class="content-card border-warning">
+                    <h5 class="text-warning fw-bold"><i class="bi bi-list-check"></i> Résumé Technique</h5>
+                    <hr class="border-secondary">
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><strong>Région :</strong> us-east-1</li>
+                        <li class="mb-2"><strong>Type :</strong> t2.micro (Free Tier)</li>
+                        <li class="mb-2"><strong>vCPU :</strong> 1</li>
+                        <li class="mb-2"><strong>RAM :</strong> 1 GiB</li>
+                        <li class="mb-2"><strong>OS :</strong> Ubuntu 22.04</li>
+                    </ul>
+                </div>
+
+                <div class="content-card text-center">
+                    <i class="bi bi-shield-check text-success mb-2" style="font-size: 3rem;"></i>
+                    <h5 class="text-white">Statut : Opérationnel</h5>
+                    <p class="small text-secondary">Instance déployée avec succès et accessible via HTTP.</p>
+                </div>
+
+                <div class="content-card text-center">
+                    <i class="bi bi-image text-secondary mb-2" style="font-size: 2rem;"></i>
+                    <p class="small text-secondary italic">Insérez ici la capture d'écran de la console AWS (Instance Running)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-4 opacity-50 border-top border-secondary mt-4">
+        <p>Gana Faye - Master 1 Système d'Information - Dakar 2026</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

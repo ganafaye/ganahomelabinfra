@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Lab | Gana Faye</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <style>
+        :root { --devops-gradient: linear-gradient(135deg, #0052cc 0%, #00b8d9 100%); --dark-bg: #0f172a; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: #f8fafc; }
+        .hero-devops { padding: 80px 0; background: var(--devops-gradient); clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
+        .tool-card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; transition: all 0.3s ease; height: 100%; }
+        .tool-card:hover { border-color: #00b8d9; transform: scale(1.02); }
+        .tool-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .docker-color { color: #2496ed; }
+        .jenkins-color { color: #d24939; }
+        .ansible-color { color: #ee0000; }
+        .k8s-color { color: #326ce5; }
+    </style>
+</head>
+<body>
+
+    <header class="hero-devops text-center mb-5">
+        <div class="container">
+            <h1 class="display-3 fw-bold">DevOps & Automation</h1>
+            <p class="lead">Culture de l'automatisation, de l'intégration et du déploiement continu.</p>
+        </div>
+    </header>
+
+    <main class="container py-4">
+        <div class="row g-4">
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="tool-card p-4">
+                    <div class="tool-icon docker-color"><i class="bi bi-box-seam"></i></div>
+                    <h4 class="fw-bold">Docker</h4>
+                    <p class="small text-secondary">Conteneurisation d'applications Python et isolation des environnements de micro-services.</p>
+                    <a href="docker/tp2.html" class="btn btn-sm btn-outline-info">Accéder aux TPs</a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="tool-card p-4">
+                    <div class="tool-icon jenkins-color"><i class="bi bi-gear-wide-connected"></i></div>
+                    <h4 class="fw-bold">Jenkins</h4>
+                    <p class="small text-secondary">Création de Pipelines CI/CD automatisés : du commit sur GitHub au déploiement Cloud.</p>
+                    <a href="jenkins/index.html" class="btn btn-sm btn-outline-danger">Accéder aux TPs</a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="tool-card p-4">
+                    <div class="tool-icon ansible-color"><i class="bi bi-terminal-fill"></i></div>
+                    <h4 class="fw-bold">Ansible</h4>
+                    <p class="small text-secondary">Configuration management et automatisation du provisionning des serveurs AWS.</p>
+                    <a href="ansible/index.html" class="btn btn-sm btn-outline-danger">Accéder aux TPs</a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="tool-card p-4">
+                    <div class="tool-icon k8s-color"><i class="bi bi-node-plus"></i></div>
+                    <h4 class="fw-bold">Kubernetes</h4>
+                    <p class="small text-secondary">Orchestration de clusters, auto-scaling et haute disponibilité des applications SI.</p>
+                    <a href="kubernetes/index.html" class="btn btn-sm btn-outline-primary">Accéder aux TPs</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-5 p-5 rounded-4 bg-gradient text-white border border-info" style="background: rgba(0, 184, 217, 0.05);">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h3><i class="bi bi-rocket-takeoff"></i> Projet Final : Auto-Deploy</h3>
+                    <p>Déploiement automatique du système de gestion de restaurant sur un cluster managé.</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-info px-4 py-2 fw-bold">En cours de build...</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-5 text-secondary">
+        <p>Gana Faye - Master 1 SI - Spécialisation DevOps</p>
+    </footer>
+
+</body>
+</html>

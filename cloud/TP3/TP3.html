@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP3 : Docker Compose | Gana Faye</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --compose-blue: #2496ed; --dark-bg: #0f172a; --card-bg: #1e293b; --yaml-key: #f97316; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: #f8fafc; line-height: 1.6; }
+        .mono { font-family: 'Fira Code', monospace; background: #000; padding: 2px 5px; border-radius: 4px; color: #00d4ff; }
+        .breadcrumb-item a { color: var(--compose-blue); text-decoration: none; }
+        .content-card { background: var(--card-bg); border: 1px solid #334155; border-radius: 12px; padding: 30px; margin-bottom: 30px; }
+        .step-number { background: var(--compose-blue); color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; }
+        pre { background: #000; padding: 15px; border-radius: 8px; border: 1px solid #334155; color: #f8fafc; overflow-x: auto; }
+        .yaml-comment { color: #64748b; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <div class="container py-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="index.html">DevOps</a></li>
+                <li class="breadcrumb-item active text-white" aria-current="page">TP3 : Docker Compose</li>
+            </ol>
+        </nav>
+
+        <header class="mb-5">
+            <h1 class="display-5 fw-bold text-info"><i class="bi bi-layers-half"></i> TP3 : Orchestration Multi-Services</h1>
+            <p class="lead text-secondary">Automatisation du déploiement d'une stack Web + Database avec Docker Compose.</p>
+        </header>
+
+        <div class="row">
+            <div class="col-lg-8">
+                
+                <section class="content-card">
+                    <h3><i class="bi bi-info-circle"></i> 1. Concept de l'Orchestration</h3>
+                    <p>Docker Compose permet de définir et de lancer des applications multi-conteneurs. Au lieu de gérer chaque conteneur manuellement sur l'instance <strong>EC2</strong>, on utilise un fichier déclaratif <code class="mono">docker-compose.yml</code>.</p>
+                    
+                </section>
+
+                <section class="content-card">
+                    <h3><i class="bi bi-file-earmark-code text-warning"></i> 2. Configuration YAML</h3>
+                    <p>Ce fichier définit deux services : une application Python (Flask) et une base de données PostgreSQL.</p>
+                    <pre><code class="mono">version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: gana
+      POSTGRES_PASSWORD: mdp_secure
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    ports:
+      - "80:5000"
+    depends_on:
+      - db <span class="yaml-comment"># L'app attend que la DB soit lancée</span>
+
+volumes:
+  postgres_data: <span class="yaml-comment"># Persistance des données</span></code></pre>
+                </section>
+
+                <section class="content-card border-start border-4 border-success">
+                    <h3><i class="bi bi-terminal"></i> 3. Mise en service sur AWS</h3>
+                    <p>Commandes exécutées sur le terminal de l'instance Ubuntu pour lancer la stack :</p>
+                    
+                    <span class="text-secondary small"># Lancement en mode détaché</span>
+                    <pre><code class="mono">sudo docker-compose up -d</code></pre>
+
+                    <span class="text-secondary small"># Vérification de l'état des services</span>
+                    <pre><code class="mono">sudo docker-compose ps</code></pre>
+                </section>
+
+            </div>
+
+            <div class="col-lg-4">
+                <div class="content-card border-info">
+                    <h5 class="text-info fw-bold"><i class="bi bi-shield-check"></i> Avantages clés</h5>
+                    <hr class="border-secondary">
+                    <ul class="list-unstyled small">
+                        <li class="mb-3"><strong>Isolation Réseau :</strong> Compose crée un réseau privé par défaut pour les services.</li>
+                        <li class="mb-3"><strong>Persistance :</strong> Les volumes assurent que les données de la DB ne sont pas perdues au redémarrage.</li>
+                        <li class="mb-3"><strong>Scalabilité :</strong> Possibilité de dupliquer les instances d'un service facilement.</li>
+                    </ul>
+                </div>
+
+                <div class="content-card text-center text-secondary">
+                    <i class="bi bi-window-sidebar fs-1 mb-2"></i>
+                    <p class="small">L'application est désormais accessible sur le port 80 de l'IP publique AWS.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-4 opacity-50 border-top border-secondary mt-4">
+        <p>Gana Faye - Master 1 SI - Lab DevOps 2026</p>
+    </footer>
+
+</body>
+</html>

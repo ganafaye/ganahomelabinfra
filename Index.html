@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gana Faye | Infrastructure & Systems Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --aws-orange: #ff9900;
+            --devops-blue: #0d6efd;
+            --repartis-green: #20c997;
+            --erp-purple: #875a7b;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: #f8fafc;
+            scroll-behavior: smooth;
+        }
+
+        .mono { font-family: 'Fira Code', monospace; }
+
+        /* Navbar */
+        .navbar {
+            background-color: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid #334155;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-link:hover { color: var(--aws-orange) !important; }
+
+        /* Section Headers */
+        .section-title {
+            border-left: 4px solid var(--aws-orange);
+            padding-left: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Cards Custom */
+        .card-custom {
+            background: var(--card-bg);
+            border: 1px solid #334155;
+            color: white;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-custom:hover {
+            border-color: var(--aws-orange);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .tech-badge {
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: #334155;
+            margin-right: 5px;
+            border: 1px solid #475569;
+        }
+
+        .icon-box {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .btn-tp {
+            margin-top: auto;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        footer { border-top: 1px solid #334155; margin-top: 80px; padding: 40px 0; color: #64748b; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand mono fw-bold" href="#">GANA.SYS_ADMIN</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#cloud">Cloud</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#devops">DevOps</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#repartis">Systèmes Répartis</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#erp">ERP</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="py-5 text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Home Lab Infrastructure & DevOps</h1>
+            <p class="text-secondary mono">Master 1 Système d’Information | Dakar, Sénégal</p>
+            <div class="mt-4 d-flex justify-content-center gap-2 flex-wrap">
+                <span class="badge bg-dark border border-secondary p-2"><i class="bi bi-ubuntu"></i> Ubuntu 24.04 LTS</span>
+                <span class="badge bg-dark border border-secondary p-2"><i class="bi bi-cloud"></i> AWS EC2 (t2.micro)</span>
+                <span class="badge bg-dark border border-secondary p-2"><i class="bi bi-database"></i> PostgreSQL</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <section id="cloud" class="py-5">
+            <h2 class="section-title">Cloud Computing</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card card-custom p-4">
+                        <i class="bi bi-cloud-arrow-up-fill icon-box text-warning"></i>
+                        <h4>Infrastructure AWS</h4>
+                        <p class="text-secondary">Déploiement et sécurisation de serveurs web sur le cloud Amazon Web Services.</p>
+                        <div class="mb-4">
+                            <span class="tech-badge">EC2</span> <span class="tech-badge">Apache2</span> <span class="tech-badge">VPC</span>
+                        </div>
+                        <a href="cloud/index.html" class="btn btn-outline-warning btn-tp">Voir les TPs Cloud</a>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center d-none d-md-flex align-items-center justify-content-center">
+                   <i class="bi bi-clouds" style="font-size: 8rem; color: #334155;"></i>
+                </div>
+            </div>
+        </section>
+
+        <section id="devops" class="py-5">
+            <h2 class="section-title" style="border-color: var(--devops-blue);">DevOps & Automation</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card card-custom p-4">
+                        <i class="bi bi-infinity icon-box text-primary"></i>
+                        <h4>CI/CD & Conteneurs</h4>
+                        <p class="text-secondary">Automatisation du cycle de vie des applications avec Docker et Jenkins.</p>
+                        <div class="mb-4">
+                            <span class="tech-badge">Docker</span> <span class="tech-badge">Ansible</span> <span class="tech-badge">Jenkins</span>
+                        </div>
+                        <a href="devops/index.html" class="btn btn-outline-primary btn-tp">Explorer le Lab DevOps</a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-custom p-4">
+                        <i class="bi bi-terminal icon-box text-info"></i>
+                        <h4>Scripting & Automation</h4>
+                        <p class="text-secondary">Scripts Bash et automatisation système pour une infrastructure auto-gérée.</p>
+                        <div class="mb-4">
+                            <span class="tech-badge">Bash</span> <span class="tech-badge">YAML</span> <span class="tech-badge">Cron</span>
+                        </div>
+                        <a href="devops/index.html" class="btn btn-outline-info btn-tp">Détails Techniques</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="repartis" class="py-5">
+            <h2 class="section-title" style="border-color: var(--repartis-green);">Systèmes Répartis</h2>
+            <div class="card card-custom p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4>Ingénierie de la Robustesse</h4>
+                        <p class="text-secondary">Assemblage des outils DevOps pour créer des systèmes distribués résilients et hautement disponibles.</p>
+                        <div class="mb-3">
+                            <span class="tech-badge">Isolation</span> <span class="tech-badge">Auto-healing</span> <span class="tech-badge">K8s</span>
+                        </div>
+                        <a href="systeme_repartis/index.html" class="btn btn-outline-success btn-tp w-auto px-4">Voir l'Architecture</a>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <i class="bi bi-diagram-3-fill" style="font-size: 5rem; color: var(--repartis-green);"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="erp" class="py-5">
+            <h2 class="section-title" style="border-color: var(--erp-purple);">ERP (Odoo)</h2>
+            <div class="row g-4">
+                <div class="col-md-12">
+                    <div class="card card-custom p-4 border-start border-4" style="border-left-color: var(--erp-purple) !important;">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap">
+                            <div>
+                                <h4>Déploiement Odoo sur Ubuntu</h4>
+                                <p class="text-secondary mt-3">Gestion complète de l'ERP Odoo : installation, configuration PostgreSQL et maintenance serveur.</p>
+                            </div>
+                            <i class="bi bi-building-gear text-purple fs-1" style="color: var(--erp-purple);"></i>
+                        </div>
+                        <div class="mt-2 mb-4">
+                            <span class="tech-badge" style="border-color: var(--erp-purple);">Odoo 16/17</span>
+                            <span class="tech-badge">PostgreSQL</span>
+                            <span class="tech-badge">Python</span>
+                        </div>
+                        <a href="erp/index.html" class="btn btn-tp text-white" style="background-color: var(--erp-purple);">Accéder aux TPs ERP</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-0">Gana Faye &copy; 2026 - Master 1 SI</p>
+            <p class="small opacity-50">Dakar, Sénégal | Infrastructures Résilientes sur AWS</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

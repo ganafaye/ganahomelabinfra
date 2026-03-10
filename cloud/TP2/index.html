@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP2 : Virtualisation avec Docker | Gana Faye</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --devops-blue: #0d6efd; --dark-bg: #0f172a; --card-bg: #1e293b; --docker-cyan: #2496ed; --python-yellow: #ffde57; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: #f8fafc; line-height: 1.6; }
+        .mono { font-family: 'Fira Code', monospace; background: #000; padding: 2px 5px; border-radius: 4px; color: #00d4ff; }
+        .breadcrumb-item a { color: var(--devops-blue); text-decoration: none; }
+        .content-card { background: var(--card-bg); border: 1px solid #334155; border-radius: 12px; padding: 30px; margin-bottom: 30px; }
+        .step-number { background: var(--docker-cyan); color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; }
+        pre { background: #000; padding: 15px; border-radius: 8px; border: 1px solid #334155; color: #f8fafc; overflow-x: auto; }
+        .docker-accent { color: var(--docker-cyan); }
+        .python-accent { color: var(--python-yellow); }
+    </style>
+</head>
+<body>
+
+    <div class="container py-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="index.html">DevOps</a></li>
+                <li class="breadcrumb-item active text-white" aria-current="page">TP2 : Docker & Python</li>
+            </ol>
+        </nav>
+
+        <header class="mb-5">
+            <h1 class="display-5 fw-bold docker-accent"><i class="bi bi-box-seam"></i> TP2 : Virtualisation & Déploiement Python</h1>
+            <p class="lead text-secondary">Conteneurisation d'une application de gestion des ressources sur Ubuntu EC2.</p>
+        </header>
+
+        <div class="row">
+            <div class="col-lg-8">
+                
+                <section class="content-card">
+                    <h3><i class="bi bi-shield-lock text-warning"></i> 0. Connexion au Serveur AWS</h3>
+                    <p>Accès sécurisé depuis mon ThinkPad T14s vers l'instance Ubuntu.</p>
+                    <pre><code class="mono">chmod 400 key-aws.pem
+ssh -i "key-aws.pem" ubuntu@votre-ip-aws</code></pre>
+                </section>
+
+                <section class="content-card">
+                    <h3><i class="bi bi-tools text-primary"></i> 1. Installation de Docker Engine</h3>
+                    <p>Mise en place de l'environnement de virtualisation léger.</p>
+                    <pre><code class="mono">sudo apt update && sudo apt install docker.io -y
+sudo systemctl start docker
+sudo systemctl enable docker</code></pre>
+                </section>
+
+                <section class="content-card">
+                    <h3><i class="bi bi-filetype-py python-accent"></i> 2. L'Application de Gestion des Ressources</h3>
+                    <p>Création d'une mini-app <code class="mono">app.py</code> avec Flask pour afficher les informations système.</p>
+                    <pre><code class="mono">from flask import Flask
+import os
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return f"<h1>Serveur de Gana Faye</h1><p>Statut : Conteneur Isolé</p>"
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000)</code></pre>
+                </section>
+
+                <section class="content-card">
+                    <h3><i class="bi bi-file-earmark-code docker-accent"></i> 3. Isolation & Dockerfile</h3>
+                    <p>Définition de l'image pour isoler l'environnement Python.</p>
+                    <pre><code class="mono">FROM python:3.9-slim
+WORKDIR /app
+COPY . /app
+RUN pip install flask
+EXPOSE 5000
+CMD ["python", "app.py"]</code></pre>
+                    <p class="mt-3"><strong>Construction et lancement :</strong></p>
+                    <pre><code class="mono">sudo docker build -t mon-app-python .
+sudo docker run -d -p 80:5000 --name gestion-ressources mon-app-python</code></pre>
+                </section>
+
+                <section class="content-card border-start border-4 border-info">
+                    <h3><i class="bi bi-cpu text-info"></i> 4. Gestion des ressources & Tests</h3>
+                    <p>Docker permet de limiter la consommation de l'instance EC2 par le conteneur pour éviter les saturations :</p>
+                    <pre><code class="mono"># Lancement avec limitation (512 Mo RAM, 0.5 CPU)
+sudo docker run -d --memory="512m" --cpus="0.5" -p 80:5000 mon-app-python</code></pre>
+                    <p><strong>Vérification de l'isolation :</strong> Accédez à l'IP publique de votre instance sur votre navigateur pour voir l'application en direct.</p>
+                </section>
+
+            </div>
+
+            <div class="col-lg-4">
+                <div class="content-card border-info">
+                    <h5 class="text-info fw-bold"><i class="bi bi-bar-chart"></i> Monitoring</h5>
+                    <hr class="border-secondary">
+                    <p class="small">Suivi des ressources en temps réel :</p>
+                    <code class="mono" style="font-size: 0.8rem;">sudo docker stats</code>
+                </div>
+
+                <div class="content-card bg-dark border-secondary">
+                    <h5 class="text-white small fw-bold">Réseau & Accès</h5>
+                    <ul class="list-unstyled small text-secondary">
+                        <li><i class="bi bi-check2"></i> Mapping Port 80 $\rightarrow$ 5000</li>
+                        <li><i class="bi bi-check2"></i> Accès via Navigateur</li>
+                        <li><i class="bi bi-check2"></i> Isolation Processus OK</li>
+                    </ul>
+                </div>
+
+                <div class="content-card text-center text-secondary">
+                    <i class="bi bi-image mb-2" style="font-size: 2rem;"></i>
+                    <p class="small italic">Ajoute ici le screenshot de ton navigateur affichant ton nom et le statut du conteneur.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-4 opacity-50 border-top border-secondary mt-4">
+        <p>Gana Faye - Master 1 SI - Projet DevOps 2026</p>
+    </footer>
+
+</body>
+</html>

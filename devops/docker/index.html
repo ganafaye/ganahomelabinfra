@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps - Docker Multi-Plateforme | Gana Faye</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <style>
+        :root { --docker-blue: #2496ed; --dark-bg: #0f172a; --card-bg: #1e293b; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: #f8fafc; }
+        .hero-docker { padding: 50px 0; background: linear-gradient(135deg, #2496ed 0%, #1d273b 100%); border-bottom: 3px solid #fff; }
+        .section-card { background: var(--card-bg); border: 1px solid #334155; border-radius: 12px; padding: 25px; margin-bottom: 25px; }
+        .mono { font-family: 'Fira Code', monospace; color: #7dd3fc; background: #000; padding: 2px 6px; border-radius: 4px; }
+        pre { background: #000; padding: 15px; border-radius: 8px; border: 1px solid #2496ed; color: #fff; overflow-x: auto; }
+        .os-badge { font-size: 0.85rem; padding: 5px 12px; border-radius: 20px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
+        .bg-ubuntu { background: #E95420; color: white; }
+        .bg-windows { background: #00a4ef; color: white; }
+        .bg-apple { background: #555555; color: white; }
+    </style>
+</head>
+<body>
+
+    <header class="hero-docker text-center mb-5">
+        <div class="container">
+            <h1 class="display-4 fw-bold"><i class="bi bi-box-seam"></i> Docker & Conteneurisation</h1>
+            <p class="lead">Standardisation des environnements de développement et de production.</p>
+        </div>
+    </header>
+
+    <main class="container py-4">
+        
+        <section class="section-card">
+            <h2><i class="bi bi-info-circle"></i> 1. Qu'est-ce que Docker ?</h2>
+            <p>Docker est une plateforme permettant de lancer des applications dans des environnements isolés appelés <strong>conteneurs</strong>. Contrairement aux machines virtuelles, les conteneurs partagent le noyau du système hôte, ce qui les rend extrêmement légers et rapides.</p>
+            
+        </section>
+
+        <section class="section-card">
+            <h2><i class="bi bi-download"></i> 2. Méthodes d'Installation</h2>
+
+            <div class="mb-5">
+                <span class="os-badge bg-ubuntu"><i class="bi bi-ubuntu"></i> Ubuntu (Docker Engine)</span>
+                <p class="small text-secondary">Idéal pour les serveurs et les instances AWS EC2.</p>
+                <pre><code># Mise à jour des dépôts
+sudo apt update
+sudo apt install ca-certificates curl gnupg -y
+
+# Ajout de la clé officielle Docker
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+# Installation du moteur
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin -y</code></pre>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="p-3 border border-secondary rounded">
+                        <span class="os-badge bg-windows"><i class="bi bi-microsoft"></i> Windows Desktop</span>
+                        <p class="small">Installation via l'exécutable **Docker Desktop**. Nécessite l'activation de **WSL 2** ou Hyper-V.</p>
+                        <a href="https://www.docker.com/products/docker-desktop/" target="_blank" class="btn btn-sm btn-outline-info">Télécharger l'installeur</a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 border border-secondary rounded">
+                        <span class="os-badge bg-apple"><i class="bi bi-apple"></i> macOS Desktop</span>
+                        <p class="small">Disponible pour puces Intel et **Apple Silicon (M1/M2/M3)** via Docker Desktop.</p>
+                        <pre><code># Installation via Homebrew
+brew install --cask docker</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card border-start border-4 border-info">
+            <h2><i class="bi bi-check2-all"></i> 3. Vérification de l'Installation</h2>
+            <p>Une fois installé, vérifiez que le daemon Docker répond correctement :</p>
+            <pre><code># Vérifier la version
+docker --version
+
+# Lancer le conteneur de test universel
+sudo docker run hello-world</code></pre>
+            <p class="small text-secondary mt-2">
+                <i class="bi bi-exclamation-triangle"></i> Sur Linux, n'oubliez pas d'ajouter votre utilisateur au groupe docker pour éviter d'utiliser <span class="mono">sudo</span> : <br>
+                <code class="mono">sudo usermod -aG docker $USER</code>
+            </p>
+        </section>
+        <div class="mb-5">
+    <span class="os-badge bg-primary text-white"><i class="bi bi-window"></i> Docker Desktop (Windows & Mac)</span>
+    <p class="mt-2">Docker Desktop est une application conviviale qui inclut <strong>Docker Engine</strong>, <strong>Docker CLI</strong>, <strong>Docker Compose</strong> et même un cluster <strong>Kubernetes</strong> local.</p>
+    
+    <div class="row g-3 mt-2">
+        <div class="col-md-6">
+            <div class="p-3 border border-info rounded bg-dark">
+                <h6><i class="bi bi-microsoft"></i> Pour Windows</h6>
+                <ul class="small">
+                    <li>Nécessite <strong>WSL 2</strong> (Windows Subsystem for Linux).</li>
+                    <li>Activer la virtualisation dans le BIOS.</li>
+                    <li>Permet d'utiliser Docker directement dans le terminal PowerShell ou CMD.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-3 border border-secondary rounded bg-dark">
+                <h6><i class="bi bi-apple"></i> Pour macOS</h6>
+                <ul class="small">
+                    <li>Compatible avec puces <strong>Intel</strong> et <strong>Apple Silicon (M1, M2, M3)</strong>.</li>
+                    <li>Utilise une machine virtuelle Linux légère et transparente.</li>
+                    <li>Installation simple via fichier <span class="mono">.dmg</span> ou Brew.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 p-3 bg-opacity-10 bg-info border border-info rounded">
+        <h6><i class="bi bi-gear-fill"></i> Pourquoi utiliser Docker Desktop ?</h6>
+        <div class="row text-center mt-3">
+            <div class="col-4">
+                <i class="bi bi-gui-index fs-3"></i>
+                <p class="small">Interface Graphique (Dashboard)</p>
+            </div>
+            <div class="col-4">
+                <i class="bi bi-shield-check fs-3"></i>
+                <p class="small">Scan de vulnérabilités</p>
+            </div>
+            <div class="col-4">
+                <i class="bi bi-infinity fs-3"></i>
+                <p class="small">Kubernetes en 1 clic</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-5">
+    <span class="os-badge bg-ubuntu"><i class="bi bi-ubuntu"></i> Docker Engine (Linux Natif)</span>
+    <p class="small text-secondary">Contrairement à Desktop, il s'exécute directement sur le noyau Linux sans couche de virtualisation supplémentaire.</p>
+    <pre><code class="mono"># Commande rapide pour Ubuntu
+curl -fsSL https://get.docker
+
+    </main>
+
+    <footer class="text-center py-4 opacity-50 border-top border-secondary">
+        <p>Gana Faye - Master 1 SI - Spécialisation DevOps 2026</p>
+    </footer>
+
+</body>
+</html>
