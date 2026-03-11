@@ -105,7 +105,7 @@
     </div>
 
     <div class="capture-placeholder">
-        <img src="img/tp1/capture_host_specs.png" alt="Capture Specs Hôte">
+        <img src="img/image.png" alt="Capture Specs Hôte">
         <div class="p-2 text-center bg-dark small text-secondary">Capture 1 : Spécifications CPU, RAM et flags de virtualisation</div>
     </div>
 
@@ -203,7 +203,7 @@
     </div>
 
     <div class="capture-placeholder">
-        <img src="img/tp1/capture_jvm.png" alt="Capture JVM">
+        <img src="img/image2.png" alt="Capture JVM">
         <div class="p-2 text-center bg-dark small text-secondary">Capture 2 : Exécution Java et inspection des Magic Bytes</div>
     </div>
 
@@ -244,7 +244,8 @@
     </div>
 
     <div class="capture-placeholder">
-        <img src="img/tp1/vbox_settings_summary.png" alt="Capture Configuration VM">
+        <img src="img/image3.png" alt="Capture Configuration VM">
+        <img src="img/image4.png" alt="Capture Configuration VM">
         <div class="p-2 text-center bg-dark small text-secondary">Capture 3 : Résumé des paramètres de la VM avant lancement</div>
     </div>
 </section>
@@ -264,12 +265,16 @@
     </div>
 
     <div class="capture-placeholder">
-        <img src="img/tp1/vm_resources_check.png" alt="Capture Ressources VM">
+        <img src="img/image5b.png" alt="Capture Ressources VM">
         <div class="p-2 text-center bg-dark small text-secondary">Capture 4 : Ressources vues depuis l'intérieur de la VM</div>
     </div>
 
     <div class="question-box">
         <strong>Question Q2.1 :</strong> Comparez la RAM (free -h) avec la RAM consommée sur l'hôte. Expliquez le « memory balloon driver ».
+    </div>
+    <div class="capture-placeholder">
+        <img src="img/image6.png" alt="Capture Ressources VM">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 5 : Comparaison des ressources Hote et VM</div>
     </div>
     <div class="response-area">
         <strong>Ma Réponse :</strong><br>
@@ -295,17 +300,33 @@
     </div>
 
     <p>Optimisation des performances et de l'interopérabilité hôte/invité.</p>
-
+    <p>Les Guest Additions sont l'équivalent des VMware Tools pour VirtualBox — elles améliorent l'intégration entre l'hôte et la VM.</p>    
+    <p>Dans VirtualBox, montez le CD des Guest Additions : <br>
+        Périphériques > Insérer l'image CD des Additions invité. <br>
+        Dans la VM Ubuntu, montez et installez les Guest Additions :</p>
+    
     <div class="command-box">
         sudo apt install -y build-essential dkms linux-headers-$(uname -r)<br>
-        sudo ./VBoxLinuxAdditions.run
+        sudo mkdir /mnt/cdrom<br>
+        sudo mount /dev/cdrom /mnt/cdrom<br>
+        cd /mnt/cdrom<br>
+        sudo ./VBoxLinuxAdditions.run<br>
+        sudo reboot
     </div>
 
     <div class="capture-placeholder">
-        <img src="img/tp1/guest_additions_success.png" alt="Capture Guest Additions">
+        <img src="img/image7.png" alt="Capture Guest Additions">
         <div class="p-2 text-center bg-dark small text-secondary">Capture 5 : Compilation et chargement des modules vboxguest</div>
     </div>
-
+    <p>Après le redémarrage, vérifiez l'installation :</p>
+    <div class="command-box">
+        lsmod | grep vboxguest| VBoxControl guestproperty enumerate | head -10 <br>
+        dmesg | grep -i "VirtualBox Guest Additions"
+    </div>
+    <div class="capture-placeholder">
+        <img src="img/image8.png" alt="Capture Guest Additions">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 5 : Vérification et chargement des modules vboxguest</div>
+    </div>
     <div class="question-box">
         <strong>Question Q2.3 :</strong> Listez 4 fonctionnalités apportées par ces outils et pourquoi installer <em>dkms</em> ?
     </div>
@@ -331,6 +352,10 @@
         ip addr show | grep 'inet '<br>
         ping -c 3 8.8.8.8
     </div>
+    <div class="capture-placeholder">
+        <img src="img/image9.png" alt="Capture Guest Additions">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 5 : Vérification de la connectivité réseau</div>
+    </div>
 
     <div class="question-box">
         <strong>Question Q2.4 :</strong> Architecture réseau et rôle du bridge.
@@ -345,8 +370,24 @@
                     [ Hôte Ubuntu ]      [ VM Ubuntu Server ]
                     (IP: 192.168.1.X)    (IP: 192.168.1.Y)
         </pre>
+    <div class="capture-placeholder">
+        <img src="img/image10.png" alt="Capture Guest Additions">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 5 : Architecture réseau et rôle du bridge.</div>
+    </div>
         Le <strong>Bridge</strong> agit comme un <strong>Switch physique</strong> virtuel : il intercepte les paquets sur la carte réseau physique et les redirige vers la VM en fonction de son adresse MAC virtuelle. Cela permet à la VM d'être un nœud complet du réseau.
     </div>
+    <p>Vérification de la connectivité ssh sur la machine Hote <strong>PC Physqique</strong>.</p>
+    <div class="command-box">
+        # Remplacez X.X.X.X par l'adresse IP de votre VM <br>
+        ping X.X.X.X <br>
+        ssh votre_user@X.X.X.X <br>
+        ssh user@192.168.1.Y <br>
+    </div>
+    <div class="capture-placeholder">
+        <img src="img/image12.png" alt="Capture Guest Additions">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 5 : Connexion SSH avec la pc physque.</div>
+    </div>
+
 </section>
 <section class="tp-step">
     <div class="step-header">
@@ -363,7 +404,7 @@
     </div>
 
     <div class="capture-placeholder">
-        <img src="img/tp1/capture_vbox_snapshot.png" alt="Capture Snapshot VirtualBox">
+        <img src="img/image13.png" alt="Capture Snapshot VirtualBox">
         <div class="p-2 text-center bg-dark small text-secondary">Capture 6 : Création du snapshot de référence dans VirtualBox</div>
     </div>
 
@@ -396,7 +437,7 @@
     </div>
 
     <div class="capture-placeholder">
-        <img src="img/tp1/capture_clone_size.png" alt="Capture Taille Clone">
+        <img src="img/image14.png" alt="Capture Taille Clone">
         <div class="p-2 text-center bg-dark small text-secondary">Capture 7 : Comparaison des tailles de stockage (Hôte vs Clone lié)</div>
     </div>
 
@@ -421,11 +462,13 @@
 
     <div class="command-box">
         head -20 VM-Ubuntu-Clone.ovf # Analyse du descripteur XML
+        NB: L'export OVF génère plusieurs fichiers : .ovf (XML), .vmdk (disque virtuel), .mf (manifest de hachage)
+        mais moi j'ai obtenue un fichier ova (archive unique) que j'ai extrait pour voir le .ovf
     </div>
 
     <div class="capture-placeholder">
-        <img src="img/tp1/capture_ovf_xml.png" alt="Capture OVF XML">
-        <div class="p-2 text-center bg-dark small text-secondary">Capture 8 : Inspection du descripteur XML de l'appliance OVF</div>
+        <img src="img/image16.png" alt="Capture OVF XML">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 8 : Creation et inspection du descripteur XML de l'appliance OVF</div>
     </div>
 
     <div class="question-box">
