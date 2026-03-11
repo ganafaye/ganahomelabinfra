@@ -98,6 +98,31 @@
         </div>
     </div>
 </header>
+ <div class="container mt-4 no-print">
+    <div class="tp-step" style="border: 1px solid var(--primary-blue); background: rgba(14, 165, 233, 0.05);">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h5 class="text-info mb-1">
+                    <i class="bi bi-file-earmark-pdf-fill me-2"></i> Document de Référence
+                </h5>
+                <p class="text-secondary small mb-md-0">
+                    Consultez l'énoncé original du TP fourni par le <strong>Dr. BABOU</strong> pour comprendre les objectifs et les contraintes techniques de cette étude.
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="btn-group">
+                    <a href="TP_Conteneurs_10_mars_2015.pdf" target="_blank" class="btn btn-outline-info btn-sm">
+                        <i class="bi bi-eye"></i> Voir
+                    </a>
+                    <a href="TP_Conteneurs_10_mars_2015.pdf" download="TP_Conteneurs_10_mars_2015.pdf" class="btn btn-info btn-sm">
+                        <i class="bi bi-download"></i> Télécharger le sujet
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
 
 <main class="container">
 
@@ -125,7 +150,7 @@ chmod 400 "votre-cle-aws.pem"</div>
 ssh -i "votre-cle-aws.pem" ubuntu@ec2-XX-XX-XX-XX.compute-1.amazonaws.com</div>
             
             <div class="img-placeholder">
-                <img src="capture_ssh_connexion.png" class="img-fluid rounded shadow" alt="Capture connexion SSH">
+                <img src="img/image1.png" class="img-fluid rounded shadow" alt="Capture connexion SSH">
                 <p class="text-muted small mt-2">[Capture : Connexion SSH réussie après sécurisation de la clé]</p>
             </div>
             
@@ -143,7 +168,7 @@ sudo usermod -aG docker $USER && newgrp docker
 docker info</div>
 
             <div class="img-placeholder">
-                <img src="capture_docker_info.png" class="img-fluid rounded shadow" alt="Capture docker info">
+                <img src="img/image2.png" class="img-fluid rounded shadow" alt="Capture docker info">
                 <p class="text-muted small mt-2">[Capture : Sortie de la commande docker info sur l'instance AWS]</p>
             </div>
 
@@ -157,70 +182,220 @@ docker info</div>
             <div class="code-block">docker run hello-world</div>
             
             <div class="img-placeholder">
-                <img src="capture_hello_world.png" class="img-fluid rounded shadow" alt="Capture hello-world">
+                <img src="img/image3.png" class="img-fluid rounded shadow" alt="Capture hello-world">
                 <p class="text-muted small mt-2">[Capture : Premier conteneur lancé avec succès]</p>
             </div>
-            
+            <section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">3.2</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">Premier conteneur et Cycle de Vie</h2>
+    </div>
+
+    <p>Exécution du conteneur de test <code>hello-world</code> et manipulation de son état (Arrêt, Redémarrage, Suppression).</p>
+    
+    <div class="command-box">
+        docker run hello-world<br>
+        docker ps -a<br>
+        docker start [ID_CONTENEUR]<br>
+        docker rm [ID_CONTENEUR]
+    </div>
+
+    <div class="img-placeholder">
+        <img src="img/image4.png" class="img-fluid rounded shadow" alt="Capture cycle de vie">
+        <p class="text-muted small mt-2">[Capture : Observation des états du conteneur via docker ps -a]</p>
+    </div>
+
+    <div class="question-box">
+        <strong>Analyse du cycle de vie :</strong>
+    </div>
+
+    <div class="response-area">
+        <ul>
+            <li><strong>docker ps -a :</strong> Permet de lister tous les conteneurs, y compris ceux qui sont arrêtés (statut <code>Exited</code>). Contrairement à <code>docker ps</code> seul, cette commande est indispensable pour retrouver un conteneur qui a fini sa tâche.</li>
+            <li><strong>docker start [id] :</strong> Relance un conteneur existant sans recréer une nouvelle instance à partir de l'image. Le processus principal est réexécuté.</li>
+            <li><strong>docker rm [id] :</strong> Supprime définitivement le conteneur et sa couche d'écriture (RW Layer). C'est une étape cruciale pour libérer les ressources sur le serveur AWS.</li>
+        </ul>
+    </div>
+</section>
         </div>
+        
     </section>
+
+    <div class="tp-card">
+    <h4><span class="badge-step">3.3</span>Exploration des images et couches OCI</h4>
+    <p>Analyse de la structure de l'image <code>ubuntu:22.04</code> et observation du système de couches (layers).</p>
+    
+    <div class="code-block">
+docker pull ubuntu:22.04
+docker images
+docker image history ubuntu:22.04
+docker inspect ubuntu:22.04</div>
+
+    <div class="img-placeholder">
+        <img src="img/image5.png" class="img-fluid rounded shadow" alt="Capture layers history">
+        <p class="text-muted small mt-2">[Capture : Analyse des couches et métadonnées sur AWS]</p>
+    </div>
+
+    
+
+    <div class="question-box">
+        <strong>Réponse Question 6 :</strong>
+        <br>
+        <strong>(a) Combien de couches possède l'image ubuntu:22.04 ?</strong><br>
+        D'après le <code>RootFS.Layers</code> de l'inspection JSON, l'image possède <strong>1 seule couche</strong> de données réelle (SHA256: 6b7908e4...). Les autres lignes vues dans l'historique sont des couches de métadonnées (instructions de configuration) de 0B.
+        <br><br>
+        <strong>(b) Quelle est sa taille totale ?</strong><br>
+        La taille réelle sur le disque (Content Size) est de <strong>31.5 Mo</strong>. On remarque que l'utilisation disque totale (Disk Usage) peut monter à 119 Mo selon le système de fichiers, mais le contenu effectif reste très léger par rapport à une VM.
+        <br><br>
+        <strong>(c) Pourquoi des couches immuables ?</strong><br>
+        Le stockage en couches immuables permet la <strong>mutualisation</strong>. 
+        <ul>
+            <li><strong>Stockage :</strong> Si je crée plusieurs conteneurs basés sur Ubuntu 22.04, la couche de base n'est stockée qu'une seule fois.</li>
+            <li><strong>Téléchargement :</strong> Lors d'une mise à jour, Docker ne télécharge que les couches modifiées, optimisant ainsi la bande passante sur le réseau AWS.</li>
+        </ul>
+    </div>
+</div>
 
     <section>
         <div class="tp-card">
-            <h4><span class="badge-step">3.4</span>Dockerfile et Images</h4>
-            <div class="code-block">
+            <h4><span class="badge-step"></span>Dockerfile et Images</h4>
+           <div class="tp-card">
+    <h4><span class="badge-step">3.4</span>Création d'un Dockerfile et construction d'image</h4>
+    <p>Mise en place d'une application <strong>Python</strong> conteneurisée sur le port 8080 en utilisant une image de base Ubuntu.</p>
+    
+    <div class="code-block">
 docker build -t mon-serveur:v1 .
-docker run -d -p 8080:8080 --name web-test mon-serveur:v1</div>
+docker run -d -p 8080:8080 --name web-test mon-serveur:v1
+curl http://localhost:8080</div>
 
+    <div class="img-placeholder">
+        <img src="img/image6.png" class="img-fluid rounded shadow" alt="Capture build process">
+        <p class="text-muted small mt-2">[Capture : Étapes du build et réponse du serveur Python]</p>
+    </div>
+    <div class="img-placeholder">
+        <img src="img/image7.png" class="img-fluid rounded shadow" alt="Capture build process">
+        <p class="text-muted small mt-2">[Capture : Étapes du build et réponse du serveur Python]</p>
+    </div>
+    <div class="img-placeholder">
+        <img src="img/image8.png" class="img-fluid rounded shadow" alt="Capture build process">
+        <p class="text-muted small mt-2">[Capture : Étapes du build et réponse du serveur Python]</p>
+    </div>
+    <div class="img-placeholder">
+        <img src="img/image9.png" class="img-fluid rounded shadow" alt="Capture build process">
+        <p class="text-muted small mt-2">[Capture : Étapes du build et réponse du serveur Python]</p>
+    </div>
+    <div class="alert alert-success mt-3">
+    <i class="bi bi-cloud-check"></i> 
+    <strong>Vérification Cloud :</strong> Le conteneur est accessible publiquement via l'IP de l'instance AWS sur le port 8080, après configuration du <em>Security Group</em> pour autoriser le trafic entrant (Ingress).
+</div>
+
+    
+
+    <div class="question-box">
+        <strong>Réponse Question 7 : Analyse du processus de build</strong>
+    </div>
+
+    <div class="response-area">
+        <strong>(a) Combien de couches ont été ajoutées à ubuntu:22.04 ?</strong><br>
+        Le build a ajouté <strong>5 couches</strong> supplémentaires au-dessus de l'image de base, correspondant aux instructions : <code>LABEL</code>, <code>RUN</code>, <code>WORKDIR</code>, <code>COPY</code> et <code>CMD</code>. Chaque instruction dans un Dockerfile crée une nouvelle couche d'image.
+        <br><br>
+        <strong>(b) Modification de app.py et nouveau build :</strong><br>
+        Si l'on modifie uniquement <code>app.py</code>, Docker utilise son mécanisme de <strong>cache</strong> pour les premières étapes. Les couches <code>FROM</code>, <code>LABEL</code>, <code>RUN</code> et <code>WORKDIR</code> ne sont pas recalculées. Seule la couche <code>COPY app.py .</code> et les suivantes sont reconstruites. Cela permet un gain de temps considérable lors du développement.
+        <br><br>
+        <strong>(c) Quelle directive définit la commande de démarrage ?</strong><br>
+        Il s'agit de la directive <strong><code>CMD</code></strong> (dans notre cas : <code>["python3", "app.py"]</code>). Contrairement à <code>RUN</code> qui s'exécute pendant la construction, <code>CMD</code> n'est exécutée qu'au lancement du conteneur.
+    </div>
+</div>
+<div class="tp-card">
+    <h4><span class="badge-step">3.5</span>Isolation des Namespaces</h4>
+    
+    <div class="row">
+        <div class="col-md-6">
             <div class="img-placeholder">
-                <img src="capture_docker_build.png" class="img-fluid rounded shadow" alt="Capture build image">
-                <p class="text-muted small mt-2">[Capture : Construction de l'image personnalisée Python]</p>
-            </div>
-
-            <div class="question-box">
-                <strong>Réponse Question 7 :</strong> La directive <code>CMD</code> définit l'instruction exécutée au démarrage. En cas de modification d'<code>app.py</code>, seules les couches à partir du <code>COPY</code> sont reconstruites.
+                <img src="img/image10.png" class="img-fluid rounded shadow" alt="Vue intérieure">
+                <p class="text-muted small mt-2">[Capture : Vue interne - PID 1 et IP 172.17.0.3]</p>
             </div>
         </div>
-
-        <div class="tp-card">
-            <h4><span class="badge-step">3.5</span>Isolation des Namespaces</h4>
-            <p>Vérification de l'étanchéité des processus entre l'hôte et le conteneur.</p>
-            <div class="code-block">docker top web-test</div>
-            
+        <div class="col-md-6">
             <div class="img-placeholder">
-                <img src="capture_docker_top.png" class="img-fluid rounded shadow" alt="Capture docker top">
-                <p class="text-muted small mt-2">[Capture : Isolation des PID via les Namespaces Linux]</p>
+                <img src="img/image11.png" class="img-fluid rounded shadow" alt="Vue hôte">
+                <p class="text-muted small mt-2">[Capture : Vue externe - PID 3747 identifié sur l'hôte]</p>
             </div>
-            
         </div>
+    </div>
+
+    <div class="question-box">
+        <strong>Réponse Question 8 :</strong>
+    </div>
+
+    <div class="response-area">
+        <strong>(a) Observation :</strong> Dans le conteneur, le processus <code>bash</code> se croit seul avec le <strong>PID 1</strong>. Cependant, sur l'hôte AWS, on voit qu'il s'agit du <strong>PID 3747</strong>. L'adresse IP interne (172.17.0.3) est également isolée de celle de l'instance (172.31.32.180).
+        <br><br>
+        <strong>(b) Mécanisme :</strong> Cette isolation est possible grâce aux <strong>Namespaces</strong> du noyau Linux qui segmentent les ressources système (PID, NET, UTS, MOUNT).
+        <br><br>
+        <strong>(c) Commande :</strong> La commande <code>ps aux | grep bash</code> exécutée sur l'hôte permet de lever le voile sur cette isolation.
+    </div>
+</div>
+<div class="tp-card">
+    <h4><span class="badge-step">3.7</span>Persistance des données avec les volumes</h4>
+    <p>Démonstration du cycle de vie indépendant des données grâce aux volumes Docker.</p>
+    
+    <div class="code-block">
+docker volume create mes-donnees
+docker run -d -v mes-donnees:/data --name vol-test ubuntu:22.04 bash -c 'echo "donnees persistees" > /data/test.txt && sleep 3600'
+docker rm -f vol-test
+docker run --rm -v mes-donnees:/data ubuntu:22.04 cat /data/test.txt</div>
+
+    <div class="img-placeholder">
+        <img src="img/image12.png" class="img-fluid rounded shadow" alt="Capture persistance">
+        <p class="text-muted small mt-2">[Capture : Lecture réussie du fichier depuis un second conteneur après suppression du premier]</p>
+    </div>
+
+    
+
+    <div class="question-box">
+        <strong>Réponse Question 10 :</strong>
+    </div>
+
+    <div class="response-area">
+        <strong>(a) Présence du fichier :</strong> Oui, le fichier <code>test.txt</code> est toujours présent. Bien que le conteneur initial ait été supprimé, les données sont stockées dans le volume <code>mes-donnees</code> sur l'hôte AWS. Le volume survit à la destruction du conteneur.
+        <br><br>
+        <strong>(b) Volume vs Bind Mount :</strong> 
+        <ul>
+            <li><strong>Volume :</strong> Géré par Docker dans son espace dédié (<code>/var/lib/docker/volumes/</code>). Plus performant et portable entre conteneurs.</li>
+            <li><strong>Bind Mount :</strong> Montage d'un dossier arbitraire de l'hôte (ex: <code>/home/ubuntu/tp</code>). Dépend de la structure de fichiers de la machine hôte.</li>
+        </ul>
+        <br>
+        <strong>(c) Cas d'usage :</strong> J'utiliserais un <strong>volume</strong> pour une base de données (PostgreSQL) car Docker gère les permissions et les sauvegardes. J'utiliserais un <strong>bind mount</strong> pour le développement (code Python/React) afin de voir mes modifications en temps réel sans reconstruire l'image.
+    </div>
+</div>
     </section>
 
     <section>
         <h2 class="text-warning mb-4">Partie 4 — Standards OCI</h2>
         
         <div class="tp-card">
-            <h4><span class="badge-step">4.1</span>L'initiative OCI</h4>
-            <p>Garantie de l'interopérabilité entre les différentes solutions de conteneurs.</p>
-            
-            <div class="question-box">
-                <strong>Réponse Question 11 :</strong> Les standards OCI permettent l'interopérabilité. Il est possible de créer un conteneur LXC à partir d'une image Docker en extrayant le <em>rootfs</em> et en générant un fichier <code>config.json</code> compatible.
-            </div>
-        </div>
+    <h4><span class="badge-step">4.1</span>Inspection d'une image OCI</h4>
+    <p>Extraction et analyse des métadonnées de l'image <code>alpine</code> au format OCI.</p>
 
-        <div class="tp-card">
-            <h4><span class="badge-step">4.2</span>Inspection de l'image Alpine</h4>
-            <div class="code-block">
-docker save alpine -o alpine.tar
-tar xf alpine.tar && cat manifest.json</div>
+    <div class="img-placeholder">
+        <img src="img/image13.png" class="img-fluid rounded shadow" alt="Capture manifest alpine">
+        <p class="text-muted small mt-2">[Capture : Structure interne de l'image Alpine et manifest.json]</p>
+    </div>
 
-            <div class="img-placeholder">
-                <img src="capture_manifest_json.png" class="img-fluid rounded shadow" alt="Capture manifest json">
-                <p class="text-muted small mt-2">[Capture : Analyse du fichier manifest.json OCI]</p>
-            </div>
+    
+    <div class="question-box">
+        <strong>Réponse Question 12 :</strong>
+    </div>
 
-            <div class="question-box">
-                <strong>Réponse Question 12 :</strong> Le <strong>sha256</strong> assure l'intégrité de la donnée par identification de contenu. Cela garantit qu'aucune altération n'a eu lieu pendant le transfert entre le registre et l'instance AWS.
-            </div>
-        </div>
+    <div class="response-area">
+        <strong>(a) Nombre de couches :</strong> En observant ta capture du <code>manifest.json</code>, on voit que le tableau <code>"Layers"</code> ne contient qu'<strong>une seule entrée</strong> (blobs/sha256/589002ba...). L'image Alpine ne possède donc qu'une seule couche.
+        <br><br>
+        <strong>(b) Rôle du champ sha256 :</strong> Le <code>sha256</code> (visible dans le champ <em>Config</em> et <em>Layers</em>) est l'identifiant unique du contenu. C'est un hash cryptographique qui représente l'état exact des fichiers à un instant T.
+        <br><br>
+        <strong>(c) Garantie technique :</strong> Ce système (Content Addressable Storage) garantit l'<strong>immuabilité</strong>. Lors du téléchargement, Docker vérifie que le hash des données reçues correspond exactement à celui annoncé dans le manifeste. Si un seul bit est corrompu ou modifié par un attaquant, le hash change et Docker rejette l'image.
+    </div>
+</div>
     </section>
 
     <div class="tp-card border-info text-center">
