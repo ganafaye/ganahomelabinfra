@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport TP1 Virtualisation | Gana Faye</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root { --primary-blue: #0ea5e9; --bg-dark: #0f172a; --card-bg: #1e293b; --accent-green: #10b981; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: #f8fafc; line-height: 1.6; }
+        .hero-section { padding: 50px 0; background: linear-gradient(135deg, #0c4a6e 0%, #0f172a 100%); border-bottom: 4px solid var(--primary-blue); }
+        .tp-step { background: var(--card-bg); border-radius: 12px; padding: 25px; margin-bottom: 35px; border: 1px solid #334155; }
+        .step-header { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        .step-number { background: var(--primary-blue); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; }
+        .question-box { background: rgba(14, 165, 233, 0.1); border-left: 4px solid var(--primary-blue); padding: 15px; margin: 15px 0; }
+        .command-box { background: #000; color: var(--accent-green); padding: 15px; border-radius: 6px; font-family: 'Fira Code', monospace; position: relative; margin-bottom: 15px; }
+        .command-box::after { content: "Terminal"; position: absolute; top: 5px; right: 10px; color: #475569; font-size: 0.7rem; }
+        .response-area { background: #0f172a; border: 1px dashed #475569; border-radius: 6px; padding: 15px; margin-top: 10px; color: #cbd5e1; }
+        .capture-placeholder { border: 2px solid #334155; border-radius: 8px; overflow: hidden; margin: 20px 0; background: #000; }
+        .capture-placeholder img { width: 100%; height: auto; transition: transform 0.3s; }
+        .capture-placeholder img:hover { transform: scale(1.02); }
+        .table-custom { color: #cbd5e1; border-color: #334155; }
+       /* STYLISATION SPÉCIFIQUE POUR LE PDF (IMPRESSION) */
+        @media print {
+            @page { size: A4; margin: 2cm; }
+            body { background-color: white !important; color: black !important; font-size: 11pt; }
+            .btn-download-container, .command-box::after { display: none !important; }
+            
+            .hero-section { 
+                background: none !important; 
+                color: black !important; 
+                border-bottom: 2px solid #0ea5e9 !important; 
+                padding: 20px 0 !important;
+            }
+            .text-info, .text-white, h1, h2, h3 { color: black !important; }
+            
+            .tp-step { 
+                background: white !important; 
+                border: 1px solid #dee2e6 !important; 
+                color: black !important;
+                page-break-inside: avoid; /* Évite de couper une étape sur deux pages */
+                margin-bottom: 20px !important;
+                padding: 15px !important;
+            }
+            
+            .command-box { 
+                background: #f8f9fa !important; 
+                color: #065f46 !important; 
+                border: 1px solid #ced4da !important;
+            }
+            
+            .question-box { 
+                background: #f0f9ff !important; 
+                border-left: 4px solid #0ea5e9 !important; 
+                color: #0c4a6e !important;
+            }
+            
+            .response-area { 
+                background: white !important; 
+                border: 1px solid #e2e8f0 !important; 
+                color: black !important;
+            }
+
+            .table-dark { background-color: white !important; color: black !important; }
+            .table-dark th { background-color: #f1f5f9 !important; color: black !important; border-bottom: 2px solid black !important; }
+            .table-dark td { border-color: #e2e8f0 !important; color: black !important; }
+            
+            footer { color: #64748b !important; border-top: 1px solid #e2e8f0 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-6 fw-bold text-white">TP1 : Principes de la Virtualisation</h1>
+            <p class="text-info">Types, Techniques et Avantages — Master 1 SI [cite: 1, 6]</p>
+        </div>
+    </header>
+    <div class="container mt-3">
+    <button onclick="downloadReport()" class="btn btn-outline-info btn-sm">
+        <i class="bi bi-download"></i> Télécharger le rapport (.html)
+    </button>
+    <button onclick="window.print()" class="btn btn-outline-light btn-sm ms-2">
+        <i class="bi bi-file-pdf"></i> Exporter en PDF
+    </button>
+</div>
+
+    <main class="container py-5">
+
+      <section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">1.1</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">Identification des technologies sur le poste</h2>
+    </div>
+
+    <p>Observation du système hôte (ThinkPad T14s sous Ubuntu) pour identifier les ressources physiques disponibles.</p>
+    
+    <div class="command-box">
+        lscpu | grep -E 'Model name|CPU\(s\)|Thread|Core'<br>
+        free -h<br>
+        grep -E 'vmx|svm' /proc/cpuinfo | head -1
+    </div>
+
+    <div class="capture-placeholder">
+        <img src="img/tp1/capture_host_specs.png" alt="Capture Specs Hôte">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 1 : Spécifications CPU, RAM et flags de virtualisation</div>
+    </div>
+
+    <div class="question-box">
+        <strong>Question Q1.1 :</strong> Votre processeur supporte-t-il Intel VT-x ou AMD-V ? Cette fonctionnalité est-elle activée ? Expliquez pourquoi elle est indispensable.
+    </div>
+
+    <div class="response-area">
+        <strong>Ma Réponse :</strong><br>
+        Mon processeur est un [À COMPLÉTER, ex: Intel Core i7-1165G7]. Le flag <strong>vmx</strong> est présent, confirmant le support d'Intel VT-x. <br><br>
+        Cette fonctionnalité est indispensable car elle permet à l'hyperviseur de déléguer l'exécution des instructions privilégiées directement au processeur sans interférence logicielle coûteuse. Elle apporte une isolation matérielle réelle et des performances quasi-natives par rapport aux hyperviseurs par émulation pure.
+    </div>
+</section>
+
+<section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">1.2</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">Tableau comparatif des techniques</h2>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-dark table-bordered table-custom">
+            <thead>
+                <tr class="text-info">
+                    <th>Technique</th>
+                    <th>Exemple</th>
+                    <th>Avantage Principal</th>
+                    <th>Limite Principale</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Applicative</strong></td>
+                    <td>JVM (Java)</td>
+                    <td>Portabilité totale (WORA)</td>
+                    <td>Surpoids de l'interprétation</td>
+                </tr>
+                <tr>
+                    <td><strong>Niveau Noyau</strong></td>
+                    <td>Docker / LXC</td>
+                    <td>Légèreté et rapidité</td>
+                    <td>Partage du noyau de l'hôte</td>
+                </tr>
+                <tr>
+                    <td><strong>Émulation complète</strong></td>
+                    <td>QEMU</td>
+                    <td>Simule n'importe quelle architecture</td>
+                    <td>Très lent (tout est logiciel)</td>
+                </tr>
+                <tr>
+                    <td><strong>Hyperviseur Type 2</strong></td>
+                    <td>VirtualBox</td>
+                    <td>Facilité d'usage sur OS hôte</td>
+                    <td>Overhead dû à l'OS hôte</td>
+                </tr>
+                <tr>
+                    <td><strong>Hyperviseur Type 1</strong></td>
+                    <td>ESXi / Proxmox</td>
+                    <td>Performances et stabilité max</td>
+                    <td>Nécessite matériel dédié</td>
+                </tr>
+                <tr>
+                    <td><strong>Paravirtualisation</strong></td>
+                    <td>Xen</td>
+                    <td>Communication optimisée invité/hôte</td>
+                    <td>Nécessite un noyau invité modifié</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="question-box">
+        <strong>Question Q1.2 :</strong> Expliquez le rôle du Domaine 0 (Dom0) par rapport aux Domaines n (DomU). Pourquoi le Dom0 est-il dit « privilégié » ?
+    </div>
+
+    <div class="response-area">
+        <strong>Ma Réponse :</strong><br>
+        Le <strong>Dom0</strong> est la seule machine virtuelle lancée au démarrage du système ayant un accès direct au matériel. Son rôle est de gérer les autres machines virtuelles (les <strong>DomU</strong>). Il est dit "privilégié" car il possède les pilotes de périphériques et gère l'allocation des ressources. <br><br>
+        <strong>Risque sécurité :</strong> Si le Dom0 est compromis, l'attaquant prend le contrôle total de l'hyperviseur et de toutes les machines virtuelles résidentes.
+    </div>
+</section>
+
+<section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">1.3</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">La JVM : Virtualisation applicative</h2>
+    </div>
+
+    <p>Expérimentation du principe "Write Once, Run Anywhere" via la compilation de bytecode.</p>
+
+    <div class="command-box">
+        java -version<br>
+        javac Hello.java && java Hello<br>
+        xxd Hello.class | head -3
+    </div>
+
+    <div class="capture-placeholder">
+        <img src="img/tp1/capture_jvm.png" alt="Capture JVM">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 2 : Exécution Java et inspection des Magic Bytes</div>
+    </div>
+
+    <div class="question-box">
+        <strong>Question Q1.3 :</strong> Que signifient les bytes 'CA FE BA BE' ? Pourquoi dit-on que la JVM implémente le principe WORA ?
+    </div>
+
+    <div class="response-area">
+        <strong>Ma Réponse :</strong><br>
+        Les bytes <code>CA FE BA BE</code> sont la signature magique identifiant un fichier comme étant du bytecode Java. <br><br>
+        Contrairement à un exécutable C (natif et lié à une architecture CPU spécifique), le bytecode Java est universel. La JVM (propre à chaque OS) se charge de traduire ce bytecode en instructions machine en temps réel. C'est ce qui permet le <strong>WORA</strong> : on écrit le code une fois, et il tourne sur n'importe quel système possédant une JVM.
+    </div>
+</section>
+<section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">2.1</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">Création de la VM Ubuntu Server</h2>
+    </div>
+
+    <p>Configuration de l'environnement virtuel avec les paramètres optimisés pour le Master 1 SI :</p>
+    
+    <div class="table-responsive mb-4">
+        <table class="table table-dark table-bordered table-custom small">
+            <thead>
+                <tr class="text-info">
+                    <th>Paramètre</th>
+                    <th>Valeur</th>
+                    <th>Justification Technique</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>RAM</td><td>1024 Mo</td><td>Équilibre performance/ressources hôte</td></tr>
+                <tr><td>CPU</td><td>2 vCPU</td><td>Fluidité des processus système</td></tr>
+                <tr><td>Disque</td><td>20 Go (Dynamique)</td><td>Thin provisioning (gain d'espace SSD)</td></tr>
+                <tr><td>Réseau</td><td>Bridged (Pont)</td><td>Visibilité IP directe sur le LAN</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="capture-placeholder">
+        <img src="img/tp1/vbox_settings_summary.png" alt="Capture Configuration VM">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 3 : Résumé des paramètres de la VM avant lancement</div>
+    </div>
+</section>
+
+<section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">2.2</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">Observation des ressources : Hôte vs VM</h2>
+    </div>
+
+    <p>Analyse de la consommation réelle après démarrage et exécution des commandes de diagnostic :</p>
+    
+    <div class="command-box">
+        free -h<br>
+        lscpu | grep -E 'Model|CPU\(s\)|Thread'<br>
+        systemd-detect-virt
+    </div>
+
+    <div class="capture-placeholder">
+        <img src="img/tp1/vm_resources_check.png" alt="Capture Ressources VM">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 4 : Ressources vues depuis l'intérieur de la VM</div>
+    </div>
+
+    <div class="question-box">
+        <strong>Question Q2.1 :</strong> Comparez la RAM (free -h) avec la RAM consommée sur l'hôte. Expliquez le « memory balloon driver ».
+    </div>
+    <div class="response-area">
+        <strong>Ma Réponse :</strong><br>
+        La RAM vue par la VM correspond à l'allocation fixe (1 Go), tandis que l'hôte ne consomme réellement que ce dont la VM a besoin à l'instant T. <br><br>
+        Le <strong>Memory Balloon Driver</strong> est un pilote qui permet à l'hyperviseur de "gonfler" un ballon invisible dans la RAM de l'invité pour récupérer les pages mémoire inutilisées et les restituer à l'OS hôte (ThinkPad), optimisant ainsi la mémoire physique globale.
+    </div>
+
+    <div class="question-box">
+        <strong>Question Q2.2 :</strong> Citez 2 mécanismes permettant à un OS invité de détecter qu'il est dans une VM.
+    </div>
+    <div class="response-area">
+        <strong>Ma Réponse :</strong><br>
+        1. <strong>L'instruction CPUID :</strong> L'OS interroge le processeur ; l'hyperviseur renvoie souvent une signature spécifique (ex: "Oracle" ou "KVMKVMKVM").<br>
+        2. <strong>Adresses MAC & Artefacts :</strong> La présence de périphériques virtuels spécifiques (ex: contrôleur graphique VBoxVGA) ou d'adresses MAC réservées aux constructeurs virtuels. <br><br>
+        <em>Note :</em> En cybersécurité (analyse de malwares), on utilise l'<strong>anti-VM</strong> pour cacher ces indices et tromper le logiciel malveillant.
+    </div>
+</section>
+
+<section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">2.3</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">Installation des VirtualBox Guest Additions</h2>
+    </div>
+
+    <p>Optimisation des performances et de l'interopérabilité hôte/invité.</p>
+
+    <div class="command-box">
+        sudo apt install -y build-essential dkms linux-headers-$(uname -r)<br>
+        sudo ./VBoxLinuxAdditions.run
+    </div>
+
+    <div class="capture-placeholder">
+        <img src="img/tp1/guest_additions_success.png" alt="Capture Guest Additions">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 5 : Compilation et chargement des modules vboxguest</div>
+    </div>
+
+    <div class="question-box">
+        <strong>Question Q2.3 :</strong> Listez 4 fonctionnalités apportées par ces outils et pourquoi installer <em>dkms</em> ?
+    </div>
+    <div class="response-area">
+        <strong>Ma Réponse :</strong><br>
+        1. Presse-papier partagé (Copy/Paste).<br>
+        2. Dossiers partagés entre l'hôte et la VM.<br>
+        3. Ajustement automatique de la résolution d'écran.<br>
+        4. Synchronisation de l'horloge système.<br><br>
+        <strong>DKMS (Dynamic Kernel Module Support) :</strong> est nécessaire car il permet de recompiler automatiquement les pilotes de VirtualBox chaque fois que le noyau Linux de la VM est mis à jour, évitant ainsi de casser les fonctionnalités.
+    </div>
+</section>
+
+<section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">2.4</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">Configuration du réseau virtuel</h2>
+    </div>
+
+    <p>Vérification de la connectivité en mode <strong>Pont (Bridged)</strong>.</p>
+    
+    <div class="command-box">
+        ip addr show | grep 'inet '<br>
+        ping -c 3 8.8.8.8
+    </div>
+
+    <div class="question-box">
+        <strong>Question Q2.4 :</strong> Architecture réseau et rôle du bridge.
+    </div>
+    <div class="response-area">
+        <strong>Ma Réponse :</strong><br>
+        <pre class="text-info bg-dark p-2 rounded">
+[ LAN (Box/Router) ] <---> [ Carte Physique (WiFi/Eth) ]
+                                   |
+                          [ vSwitch / Bridge VirtualBox ]
+                               /            \
+                    [ Hôte Ubuntu ]      [ VM Ubuntu Server ]
+                    (IP: 192.168.1.X)    (IP: 192.168.1.Y)
+        </pre>
+        Le <strong>Bridge</strong> agit comme un <strong>Switch physique</strong> virtuel : il intercepte les paquets sur la carte réseau physique et les redirige vers la VM en fonction de son adresse MAC virtuelle. Cela permet à la VM d'être un nœud complet du réseau.
+    </div>
+</section>
+<section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">3.1</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">Gestion des Snapshots (Instantanés)</h2>
+    </div>
+
+    <p>Mise en place d'un point de restauration "Safe" avant une modification critique du système.</p>
+    
+    <div class="command-box">
+        # Création de l'état initial<br>
+        echo 'Etat initial — avant snapshot' > ~/etat_initial.txt<br>
+        date >> ~/etat_initial.txt
+    </div>
+
+    <div class="capture-placeholder">
+        <img src="img/tp1/capture_vbox_snapshot.png" alt="Capture Snapshot VirtualBox">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 6 : Création du snapshot de référence dans VirtualBox</div>
+    </div>
+
+    <div class="question-box">
+        <strong>Question Q3.1 :</strong> Expliquez le mécanisme de snapshot (copy-on-write, fichiers .vdi delta). Quelle différence avec une sauvegarde complète ?
+    </div>
+
+    <div class="response-area">
+        <strong>Ma Réponse :</strong><br>
+        Le snapshot utilise le mécanisme <strong>Copy-on-Write (CoW)</strong> : le fichier disque original (.vdi) devient "lecture seule" et VirtualBox crée un nouveau fichier <strong>VDI Delta</strong>. Toutes les nouvelles écritures sont redirigées vers ce delta. <br><br>
+        <strong>Différence :</strong> Un snapshot est instantané et ne stocke que les modifications, alors qu'une sauvegarde complète duplique l'intégralité du disque (beaucoup plus long et lourd). <br>
+        <strong>Limites :</strong> Un snapshot ne protège pas contre la panne physique du disque dur (si le SSD du ThinkPad lâche, le snapshot est perdu) ou la corruption du fichier source.
+    </div>
+</section>
+
+
+
+<section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">3.2</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">Clonage d'une VM</h2>
+    </div>
+
+    <p>Création d'une VM identique (VM-Ubuntu-Clone) en mode <strong>Clonage Lié</strong> pour économiser de l'espace.</p>
+
+    <div class="command-box">
+        # Comparaison de la taille sur disque (Linux)<br>
+        du -sh ~/VirtualBox\ VMs/VM-Ubuntu-TP/<br>
+        du -sh ~/VirtualBox\ VMs/VM-Ubuntu-Clone/
+    </div>
+
+    <div class="capture-placeholder">
+        <img src="img/tp1/capture_clone_size.png" alt="Capture Taille Clone">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 7 : Comparaison des tailles de stockage (Hôte vs Clone lié)</div>
+    </div>
+
+    <div class="question-box">
+        <strong>Question Q3.2 :</strong> Différence entre clone lié et clone complet ? Lequel choisir pour 20 environnements de test ?
+    </div>
+
+    <div class="response-area">
+        <strong>Ma Réponse :</strong><br>
+        Un <strong>clone complet</strong> est une copie 100% indépendante. Un <strong>clone lié</strong> dépend de la VM source et ne stocke que les fichiers modifiés par rapport à celle-ci.<br><br>
+        Pour 20 environnements, je choisirais le <strong>clone lié</strong> car il permet d'économiser énormément d'espace disque (quelques Mo par clone au lieu de 20 Go par VM). Le risque principal est la dépendance : si la VM parente est supprimée, les 20 clones deviennent inutilisables.
+    </div>
+</section>
+
+<section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">3.3</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">Migration à froid (Standard OVF)</h2>
+    </div>
+
+    <p>Exportation de l'appliance virtuelle pour garantir l'interopérabilité entre hyperviseurs.</p>
+
+    <div class="command-box">
+        head -20 VM-Ubuntu-Clone.ovf # Analyse du descripteur XML
+    </div>
+
+    <div class="capture-placeholder">
+        <img src="img/tp1/capture_ovf_xml.png" alt="Capture OVF XML">
+        <div class="p-2 text-center bg-dark small text-secondary">Capture 8 : Inspection du descripteur XML de l'appliance OVF</div>
+    </div>
+
+    <div class="question-box">
+        <strong>Question Q3.3 :</strong> Que contient le fichier .ovf ? Pourquoi est-ce un standard important ? Situations utiles ?
+    </div>
+
+    <div class="response-area">
+        <strong>Ma Réponse :</strong><br>
+        Le fichier <strong>.ovf</strong> est un fichier XML contenant les métadonnées de la VM : configuration CPU, RAM, disques virtuels, et matériel requis. <br><br>
+        Ce standard est crucial pour éviter l'enfermement propriétaire (vendor lock-in). <br>
+        <strong>Situations utiles :</strong><br>
+        1. Migrer une VM de VirtualBox vers un serveur VMware ESXi en entreprise.<br>
+        2. Distribuer une application pré-installée (Appliance) à des clients.<br>
+        3. Archiver une VM dans un format lisible sur le long terme.
+    </div>
+</section>
+<section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">4.1</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">Exploration de Proxmox VE (Type 1)</h2>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-dark table-bordered table-custom small">
+            <thead>
+                <tr class="text-info">
+                    <th>Critère</th>
+                    <th>VirtualBox (Type 2)</th>
+                    <th>Proxmox VE (Type 1)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Interface</td><td>GUI Locale (Qt)</td><td>Interface Web (HTTPS) centralisée</td></tr>
+                <tr><td>Accès distant</td><td>RDP/VNC manuel</td><td>Console NoVNC native via navigateur</td></tr>
+                <tr><td>Multi-VMs</td><td>Liste simple</td><td>Arborescence Datacenter / Cluster</td></tr>
+                <tr><td>Stockage</td><td>Fichiers .vdi locaux</td><td>LVM, ZFS, CEPH, NFS/iSCSI partagé</td></tr>
+                <tr><td>Utilisateurs</td><td>Aucun (Session OS)</td><td>Gestion ACL, LDAP, Authentification 2FA</td></tr>
+                <tr><td>Haute Disponibilité</td><td>Non supporté</td><td>Clustering HA (Failover automatique)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="question-box">
+        <strong>Question Q4.1 :</strong> Pourquoi choisir Proxmox en production plutôt que VirtualBox ? (5 raisons)
+    </div>
+    <div class="response-area">
+        <strong>Ma Réponse :</strong><br>
+        1. <strong>Architecture Bare-Metal :</strong> Performances supérieures car pas d'OS hôte intermédiaire.<br>
+        2. <strong>Haute Disponibilité (HA) :</strong> Redémarrage automatique des VMs sur un autre nœud en cas de panne physique.<br>
+        3. <strong>Gestion Centralisée :</strong> Administration de centaines de serveurs via une seule interface web.<br>
+        4. <strong>Sauvegardes Natives :</strong> Planification de backups à chaud sans outils tiers.<br>
+        5. <strong>Multi-Tenancy :</strong> Gestion précise des droits pour différents administrateurs ou clients.
+    </div>
+</section>
+
+
+
+<section class="tp-step">
+    <div class="step-header">
+        <div class="step-number">4.2</div>
+        <h2 class="h5 mb-0 text-uppercase text-info">Étude de Cas : Calcul du TCO et ROI</h2>
+    </div>
+
+    <div class="bg-dark p-3 rounded border border-secondary mb-4">
+        <h6 class="text-info border-bottom pb-2">Q.TCO.1 : Coût OPEX Annuel Actuel (20 serveurs)</h6>
+        <ul class="small">
+            <li>Électricité : 20 × 600€ = 12 000€</li>
+            <li>Maintenance : 20 × 1 200€ = 24 000€</li>
+            <li>Licences Windows : 20 × 900€ = 18 000€</li>
+            <li>Personnel : 2 × 45 000€ = 90 000€</li>
+            <li>Datacenter : 20 × 150€ = 3 000€</li>
+            <li class="fw-bold text-warning">TOTAL OPEX : 147 000 € / an</li>
+        </ul>
+    </div>
+
+    <div class="bg-dark p-3 rounded border border-secondary mb-4">
+        <h6 class="text-info border-bottom pb-2">Q.TCO.2 : Nouvel OPEX après Virtualisation (Ratio 5:1)</h6>
+        <ul class="small">
+            <li>Électricité : 4 × 600€ = 2 400€</li>
+            <li>Maintenance : 4 × 1 200€ = 4 800€</li>
+            <li>Licences Windows : 18 000€ (inchangé)</li>
+            <li>Personnel : 1 × 45 000€ = 45 000€</li>
+            <li>Datacenter : 4 × 150€ = 600€</li>
+            <li class="fw-bold text-success">NOUVEL OPEX : 70 800 € / an</li>
+        </ul>
+        <p class="small text-info">Économie annuelle générée : 147 000 - 70 800 = <strong>76 200 €</strong></p>
+    </div>
+
+    <div class="question-box">
+        <strong>Question Q.TCO.4 & Q.TCO.5 :</strong> Rentabilité et Impact Écologique (Green IT).
+    </div>
+    <div class="response-area">
+        <strong>Analyse du ROI sur 3 ans :</strong><br>
+        CAPEX Initial : (4 x 15 000€) + 5 000€ (Formation) = 65 000 €.<br>
+        ROI = [(76 200 x 3) - 65 000] / 65 000 * 100 = <strong>251,7 %</strong>. <br>
+        L'investissement est amorti en moins de 11 mois.<br><br>
+        <strong>Impact Green IT :</strong><br>
+        Réduction de la consommation : (20 - 4) x (600€ / 0,15€) = 64 000 kWh économisés.<br>
+        CO2 évité : 64 000 x 0,060 kg = <strong>3,84 tonnes de CO2 / an</strong>.
+    </div>
+</section>
+
+<section class="tp-step border-primary">
+    <div class="step-header">
+        <div class="step-number"><i class="bi bi-check-lg"></i></div>
+        <h2 class="h5 mb-0 text-uppercase text-white">Synthèse Finale : Type 1 vs Type 2</h2>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-dark table-hover border-secondary">
+            <thead>
+                <tr>
+                    <th>Critère</th>
+                    <th>VirtualBox (Type 2)</th>
+                    <th>Proxmox / ESXi (Type 1)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Performances I/O</td><td>Latence due à l'OS hôte</td><td>Accès quasi-natif</td></tr>
+                <tr><td>Densité de VMs</td><td>Faible (limitation RAM hôte)</td><td>Élevée (optimisation kernel)</td></tr>
+                <tr><td>Sécurité</td><td>Surface d'attaque de l'hôte</td><td>Surface réduite (micro-kernel)</td></tr>
+                <tr><td>Cas d'usage</td><td>Développement, Test, TP</td><td>Production, Cloud, Datacenter</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+<section class="tp-step border-warning">
+    <div class="step-header">
+        <div class="step-number" style="background: #f59e0b;"><i class="bi bi-journal-bookmark-fill"></i></div>
+        <h2 class="h5 mb-0 text-uppercase text-warning">Résumé de cours : Ce qu'il faut retenir</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h6 class="text-info"><i class="bi bi-diagram-3"></i> Les 3 piliers de la Virtualisation</h6>
+            <ul class="small">
+                <li><strong>Isolation :</strong> Chaque VM est un "bac à sable". Une panne ou un virus dans une VM n'affecte pas l'hôte.</li>
+                <li><strong>Encapsulation :</strong> Une VM est un simple fichier (VDI, VMDK). On peut la copier, la déplacer ou la supprimer comme un document.</li>
+                <li><strong>Indépendance matérielle :</strong> Le matériel vu par l'OS invité est virtuel (générique), ce qui permet de migrer une VM entre deux serveurs physiques différents.</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h6 class="text-info"><i class="bi bi-lightning-charge"></i> Concepts Clés manipulés</h6>
+            <ul class="small">
+                <li><strong>Hyperviseur :</strong> Le logiciel "chef d'orchestre" qui distribue les ressources CPU/RAM.</li>
+                <li><strong>Snapshot :</strong> Sauvegarde de l'état des registres et du disque à un instant T (technique Copy-on-Write).</li>
+                <li><strong>Standard OVF :</strong> Le format XML universel pour éviter d'être bloqué chez un seul constructeur (Interopérabilité).</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+
+
+<section class="tp-step" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid #10b981;">
+    <div class="step-header border-success">
+        <div class="step-number" style="background: #10b981;"><i class="bi bi-trophy"></i></div>
+        <h2 class="h5 mb-0 text-uppercase text-success">Bilan des Compétences Acquises</h2>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-sm-6 col-md-4">
+            <div class="p-3 bg-dark rounded border border-secondary h-100">
+                <i class="bi bi-check2-circle text-success"></i>
+                <p class="small mb-0 mt-2"><strong>Architecture :</strong> Capacité à diagnostiquer le support matériel (VT-x/AMD-V) sur un hôte Linux.</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="p-3 bg-dark rounded border border-secondary h-100">
+                <i class="bi bi-check2-circle text-success"></i>
+                <p class="small mb-0 mt-2"><strong>Déploiement :</strong> Installation et optimisation d'un OS serveur en environnement virtualisé (Type 2).</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="p-3 bg-dark rounded border border-secondary h-100">
+                <i class="bi bi-check2-circle text-success"></i>
+                <p class="small mb-0 mt-2"><strong>Administration :</strong> Maîtrise du cycle de vie des VMs (Snapshots, Clones, Exports OVF).</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="p-3 bg-dark rounded border border-secondary h-100">
+                <i class="bi bi-check2-circle text-success"></i>
+                <p class="small mb-0 mt-2"><strong>Réseautique :</strong> Configuration et dépannage des interfaces Bridge et NAT.</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="p-3 bg-dark rounded border border-secondary h-100">
+                <i class="bi bi-check2-circle text-success"></i>
+                <p class="small mb-0 mt-2"><strong>Analyse Financière :</strong> Évaluation du TCO et calcul du ROI pour des projets de consolidation.</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="p-3 bg-dark rounded border border-secondary h-100">
+                <i class="bi bi-check2-circle text-success"></i>
+                <p class="small mb-0 mt-2"><strong>Green IT :</strong> Compréhension de l'impact écologique via la mutualisation des ressources.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+    </main>
+
+    <footer class="text-center py-4 text-secondary border-top border-secondary">
+        <p>Gana Faye - Master 1 SI - Lab 2026 - Dr. Babou [cite: 6, 17]</p>
+    </footer>
+    <script>
+        function downloadReport() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Rapport_TP1_Gana_Faye.html';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+    </script>
+
+</body>
+</html>

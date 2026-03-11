@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport Master 1 : Virtualisation & Cloud Computing - Gana FAYE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --aws-orange: #ff9900;
+            --tech-blue: #38bdf8;
+            --code-bg: #000000;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #232f3e 0%, #0f172a 100%);
+            padding: 60px 0;
+            border-bottom: 4px solid var(--aws-orange);
+            margin-bottom: 40px;
+        }
+
+        .tp-card {
+            background: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: #d1d5db;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            border-left: 4px solid var(--aws-orange);
+            margin: 15px 0;
+            white-space: pre-wrap;
+        }
+
+        .question-box {
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 4px solid var(--tech-blue);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .img-placeholder {
+            border: 2px dashed #475569;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .badge-step {
+            background: var(--aws-orange);
+            color: #000;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        @media print {
+            .no-print { display: none; }
+            body { background: white; color: black; }
+            .tp-card { border: 1px solid #ccc; break-inside: avoid; background: white; color: black; }
+            .code-block { border: 1px solid #000; color: #000; background: #f8f9fa; }
+            .question-box { border: 1px solid #38bdf8; color: black; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="hero text-center">
+    <div class="container">
+        <h1 class="display-5 fw-bold text-white">RAPPORT DE TRAVAUX PRATIQUES</h1>
+        <h3 class="text-info">Introduction aux Conteneurs & Plateformes Open Source</h3>
+        <p class="mt-3">Étudiant : <strong>Gana FAYE</strong> | Enseignant : <strong>Dr. BABOU</strong></p>
+        <div class="mt-4">
+            <span class="badge bg-dark border border-warning p-2"><i class="bi bi-cloud-fill me-2"></i>Infrastructure : AWS EC2</span>
+            <span class="badge bg-dark border border-info p-2 ms-2"><i class="bi bi-ubuntu me-2"></i>OS : Ubuntu 22.04 LTS</span>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+
+    <section>
+        <div class="tp-card border-warning">
+            <h5><i class="bi bi-info-circle-fill me-2 text-warning"></i>Note sur l'Environnement de Travail</h5>
+            <p>Ce TP a été réalisé sur une instance <strong>AWS EC2</strong>. Le passage au Cloud a été motivé par des limitations techniques sur l'hôte physique, garantissant ainsi un environnement de conteneurisation stable et performant.</p>
+        </div>
+
+        <div class="tp-card">
+            <h4><span class="badge-step">3.0</span>Préparation et Accès SSH</h4>
+            <p>Avant d'établir la connexion, il est impératif de sécuriser la clé privée (.pem) pour respecter les exigences du protocole SSH sous Linux.</p>
+            
+            <h6>3.0.1 Sécurisation de la clé privée</h6>
+            <div class="code-block"># Modification des permissions pour restreindre l'accès à l'utilisateur courant
+chmod 400 "votre-cle-aws.pem"</div>
+
+            <div class="img-placeholder">
+                <img src="capture_chmod_key.png" class="img-fluid rounded shadow" alt="Capture chmod 400">
+                <p class="text-muted small mt-2">[Capture : Application des permissions chmod 400 sur la clé AWS]</p>
+            </div>
+
+            <h6>3.0.2 Connexion à l'instance EC2</h6>
+            <div class="code-block"># Connexion SSH vers l'instance Ubuntu sur AWS
+ssh -i "votre-cle-aws.pem" ubuntu@ec2-XX-XX-XX-XX.compute-1.amazonaws.com</div>
+            
+            <div class="img-placeholder">
+                <img src="capture_ssh_connexion.png" class="img-fluid rounded shadow" alt="Capture connexion SSH">
+                <p class="text-muted small mt-2">[Capture : Connexion SSH réussie après sécurisation de la clé]</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <section>
+        <h2 class="text-warning mb-4">Partie 3 — Prise en main de Docker</h2>
+        
+        <div class="tp-card">
+            <h4><span class="badge-step">3.1</span>Installation du moteur Docker</h4>
+            <div class="code-block">
+sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+sudo usermod -aG docker $USER && newgrp docker
+docker info</div>
+
+            <div class="img-placeholder">
+                <img src="capture_docker_info.png" class="img-fluid rounded shadow" alt="Capture docker info">
+                <p class="text-muted small mt-2">[Capture : Sortie de la commande docker info sur l'instance AWS]</p>
+            </div>
+
+            <div class="question-box">
+                <strong>Réponse Question 5 :</strong> Le moteur Docker utilise le runtime <strong>runc</strong> et le pilote de stockage <strong>overlay2</strong>. Le répertoire racine est situé dans <code>/var/lib/docker</code>.
+            </div>
+        </div>
+
+        <div class="tp-card">
+            <h4><span class="badge-step">3.2</span>Cycle de vie : Hello World</h4>
+            <div class="code-block">docker run hello-world</div>
+            
+            <div class="img-placeholder">
+                <img src="capture_hello_world.png" class="img-fluid rounded shadow" alt="Capture hello-world">
+                <p class="text-muted small mt-2">[Capture : Premier conteneur lancé avec succès]</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <section>
+        <div class="tp-card">
+            <h4><span class="badge-step">3.4</span>Dockerfile et Images</h4>
+            <div class="code-block">
+docker build -t mon-serveur:v1 .
+docker run -d -p 8080:8080 --name web-test mon-serveur:v1</div>
+
+            <div class="img-placeholder">
+                <img src="capture_docker_build.png" class="img-fluid rounded shadow" alt="Capture build image">
+                <p class="text-muted small mt-2">[Capture : Construction de l'image personnalisée Python]</p>
+            </div>
+
+            <div class="question-box">
+                <strong>Réponse Question 7 :</strong> La directive <code>CMD</code> définit l'instruction exécutée au démarrage. En cas de modification d'<code>app.py</code>, seules les couches à partir du <code>COPY</code> sont reconstruites.
+            </div>
+        </div>
+
+        <div class="tp-card">
+            <h4><span class="badge-step">3.5</span>Isolation des Namespaces</h4>
+            <p>Vérification de l'étanchéité des processus entre l'hôte et le conteneur.</p>
+            <div class="code-block">docker top web-test</div>
+            
+            <div class="img-placeholder">
+                <img src="capture_docker_top.png" class="img-fluid rounded shadow" alt="Capture docker top">
+                <p class="text-muted small mt-2">[Capture : Isolation des PID via les Namespaces Linux]</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <section>
+        <h2 class="text-warning mb-4">Partie 4 — Standards OCI</h2>
+        
+        <div class="tp-card">
+            <h4><span class="badge-step">4.1</span>L'initiative OCI</h4>
+            <p>Garantie de l'interopérabilité entre les différentes solutions de conteneurs.</p>
+            
+            <div class="question-box">
+                <strong>Réponse Question 11 :</strong> Les standards OCI permettent l'interopérabilité. Il est possible de créer un conteneur LXC à partir d'une image Docker en extrayant le <em>rootfs</em> et en générant un fichier <code>config.json</code> compatible.
+            </div>
+        </div>
+
+        <div class="tp-card">
+            <h4><span class="badge-step">4.2</span>Inspection de l'image Alpine</h4>
+            <div class="code-block">
+docker save alpine -o alpine.tar
+tar xf alpine.tar && cat manifest.json</div>
+
+            <div class="img-placeholder">
+                <img src="capture_manifest_json.png" class="img-fluid rounded shadow" alt="Capture manifest json">
+                <p class="text-muted small mt-2">[Capture : Analyse du fichier manifest.json OCI]</p>
+            </div>
+
+            <div class="question-box">
+                <strong>Réponse Question 12 :</strong> Le <strong>sha256</strong> assure l'intégrité de la donnée par identification de contenu. Cela garantit qu'aucune altération n'a eu lieu pendant le transfert entre le registre et l'instance AWS.
+            </div>
+        </div>
+    </section>
+
+    <div class="tp-card border-info text-center">
+        <h4 class="text-info">Conclusion du TP</h4>
+        <p class="mb-0">La réalisation de ce TP sur AWS a permis de valider les compétences de déploiement et d'administration à distance via SSH, tout en approfondissant la maîtrise des mécanismes internes de Docker (Namespaces, Cgroups) et des standards OCI.</p>
+    </div>
+
+</main>
+
+<footer class="text-center py-5 no-print">
+    <button onclick="window.print()" class="btn btn-warning fw-bold">
+        <i class="bi bi-file-earmark-pdf-fill me-2"></i>Générer le Rapport PDF Final
+    </button>
+    <p class="mt-3 text-secondary small">© 2026 - Gana FAYE - Master Système d'Information</p>
+</footer>
+
+</body>
+</html>

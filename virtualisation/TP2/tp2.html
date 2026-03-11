@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport TP Conteneurs - Gana Faye</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root { 
+            --primary-blue: #0ea5e9; 
+            --bg-dark: #0f172a; 
+            --card-bg: #1e293b; 
+            --accent-green: #10b981; 
+            --accent-purple: #8b5cf6;
+        }
+        
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-dark) !important; 
+            color: #f8fafc !important; 
+            line-height: 1.6;
+        }
+
+        .hero-section { 
+            padding: 60px 0; 
+            background: linear-gradient(135deg, #0c4a6e 0%, #0f172a 100%) !important; 
+            border-bottom: 4px solid var(--primary-blue);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .part-header {
+            text-align: center;
+            margin: 50px 0 30px;
+            page-break-before: always;
+        }
+
+        .part-title {
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 800;
+            padding: 10px 25px;
+            border: 2px solid var(--primary-blue);
+            display: inline-block;
+            border-radius: 50px;
+            color: var(--primary-blue);
+        }
+
+        .tp-section { 
+            background: var(--card-bg) !important; 
+            border-radius: 12px; 
+            padding: 30px; 
+            margin-bottom: 30px; 
+            border: 1px solid #334155 !important;
+            page-break-inside: avoid;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 15px;
+        }
+
+        .section-number { 
+            background: var(--primary-blue) !important; 
+            color: white !important; 
+            width: 40px; height: 40px; 
+            border-radius: 8px; 
+            display: inline-flex; align-items: center; justify-content: center; 
+            font-weight: bold; margin-right: 15px;
+        }
+
+        .diagram-box {
+            background: rgba(0,0,0,0.2);
+            border: 2px dashed #475569;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            color: #94a3b8;
+        }
+
+        .question-box { 
+            background: rgba(14, 165, 233, 0.1) !important; 
+            border-left: 4px solid var(--primary-blue) !important; 
+            padding: 15px; margin: 20px 0;
+            color: #7dd3fc !important;
+            font-weight: 500;
+        }
+
+        .response-area { 
+            background: rgba(15, 23, 42, 0.4) !important; 
+            border: 1px solid #475569 !important; 
+            padding: 20px; border-radius: 8px;
+            color: #cbd5e1 !important;
+        }
+
+        .badge-tech {
+            background: #0ea5e922;
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .table-custom {
+            color: #f8fafc !important;
+            border-color: #334155 !important;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background-color: var(--bg-dark) !important; }
+            .tp-section { border: 1px solid #334155 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print text-center py-3 sticky-top bg-dark">
+        <button onclick="window.print()" class="btn btn-info fw-bold shadow">
+            <i class="bi bi-file-earmark-pdf-fill"></i> Exporter le Rapport Complet en PDF
+        </button>
+    </div>
+
+    <header class="hero-section">
+        <div class="container">
+            <h1 class="display-5 fw-bold text-white mb-2">TRAVAUX PRATIQUES</h1>
+            <p class="lead text-info">Introduction aux Conteneurs & Plateformes Open Source</p>
+            <div class="mt-4 p-3 d-inline-block border border-info rounded shadow-sm bg-dark">
+                <span class="d-block text-white"><strong>Étudiant :</strong> Gana FAYE</span>
+                <span class="d-block text-white"><strong>Filière :</strong> Master Systèmes d'Information</span>
+                <span class="d-block text-white"><strong>Enseignant :</strong> Dr. BABOU</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <div class="part-header">
+            <h2 class="part-title">Partie 1 — Concepts Fondamentaux</h2>
+        </div>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number">1.1</div>
+                <h2 class="h5 mb-0">Virtualisation traditionnelle vs Conteneurs</h2>
+            </div>
+            <p>Analyse des architectures : Hyperviseur Type 1, Type 2 et Conteneurs.</p>
+            
+            <div class="diagram-box">
+                <i class="bi bi-layers-half d-block mb-2" style="font-size: 2rem;"></i>
+                
+                <p class="small mt-2">Figure 1 : Comparaison structurelle des couches d'abstraction</p>
+            </div>
+
+            <div class="question-box">Question 1 : Analyse des différences structurelles et choix techniques.</div>
+            <div class="response-area">
+                <ul>
+                    <li class="mb-2"><strong>a) Hyperviseur Type 2 :</strong> Il possède une couche supplémentaire car il s'exécute sur un <strong>Host OS</strong>. Contrairement au Type 1 qui accède directement au hardware, le Type 2 dépend du noyau de l'hôte pour gérer les ressources.</li>
+                    <li class="mb-2"><strong>b) Absence de Guest OS :</strong> Les conteneurs partagent le noyau Linux de l'hôte. Ils isolent uniquement les processus et dépendances, ce qui supprime le besoin d'un OS complet par instance.</li>
+                    <li><strong>c) Usage Type 1 :</strong> Préféré pour une <strong>isolation matérielle totale</strong> ou pour faire tourner des <strong>OS hétérogènes</strong> (ex: Windows et Linux sur un même serveur physique).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number">1.2</div>
+                <h2 class="h5 mb-0">Anatomie d'une plateforme de conteneurs</h2>
+            </div>
+            <div class="diagram-box">
+                <i class="bi bi-diagram-3 d-block mb-2" style="font-size: 2rem;"></i>
+                
+                <p class="small mt-2">Figure 2 : Architecture générique et composants</p>
+            </div>
+            <div class="question-box">Question 2 : Rôle des composants et gestion des images.</div>
+            <div class="response-area">
+                <p><strong>a)</strong> Le <strong>Container Engine</strong> est responsable du téléchargement (pull) de l'image depuis le Registry.</p>
+                <p><strong>b)</strong> Le <strong>runtime haut niveau</strong> gère le cycle de vie (images, réseau), tandis que le <strong>bas niveau</strong> s'occupe de l'exécution via le noyau.</p>
+                <p><strong>c)</strong> Les images sont en <strong>couches (layers)</strong> pour permettre la réutilisation et l'optimisation : une couche commune à plusieurs images n'est stockée qu'une seule fois.</p>
+            </div>
+        </section>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number">1.3</div>
+                <h2 class="h5 mb-0">Mécanismes d'isolation du noyau Linux</h2>
+            </div>
+            <div class="diagram-box">
+                <i class="bi bi-shield-lock d-block mb-2" style="font-size: 2rem;"></i>
+                
+                <p class="small mt-2">Figure 3 : Architecture interne d'exécution et isolation</p>
+            </div>
+            <div class="question-box">Question 3 : Rôle de dockerd, containerd, runc et limites.</div>
+            <div class="response-area">
+                <p><strong>a)</strong> <span class="badge-tech">dockerd</span> (API), <span class="badge-tech">containerd</span> (Gestion) et <span class="badge-tech">runc</span> (Exécution directe).</p>
+                <p><strong>b)</strong> Les <strong>Regular Processes</strong> voient tout le système hôte ; les <strong>Containerized Processes</strong> sont isolés via les Namespaces.</p>
+                <p><strong>c)</strong> Les <strong>Cgroups</strong> limitent la consommation de RAM et CPU.</p>
+                <p><strong>d)</strong> L'isolation est moins forte car le <strong>noyau est partagé</strong> entre tous les conteneurs et l'hôte.</p>
+            </div>
+        </section>
+
+        <div class="part-header">
+            <h2 class="part-title" style="color: var(--accent-green); border-color: var(--accent-green);">Partie 2 — Plateformes Open Source</h2>
+        </div>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number" style="background: var(--accent-green) !important;">2.1</div>
+                <h2 class="h5 mb-0">LXC / LXD & Docker</h2>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="response-area h-100">
+                        <h6 class="text-info fw-bold"><i class="bi bi-terminal"></i> LXC / LXD (Système)</h6>
+                        <small>Cible : Conteneurs système (OS complet).</small>
+                        <div class="mt-2">
+                            <code class="badge-tech d-block mb-1">lxc launch ubuntu:22.04 node1</code>
+                            <code class="badge-tech d-block">lxc snapshot node1 snap1</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="response-area h-100">
+                        <h6 class="text-info fw-bold"><i class="bi bi-docker"></i> Docker (Applicatif)</h6>
+                        <small>Cible : Micro-services, CI/CD, Cloud.</small>
+                        <div class="mt-2">
+                            <code class="badge-tech d-block mb-1">docker run -d -p 80:80 nginx</code>
+                            <code class="badge-tech d-block">docker build -t app:v1 .</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number" style="background: var(--accent-green) !important;">2.2</div>
+                <h2 class="h5 mb-0">Podman & Balena</h2>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="response-area h-100">
+                        <h6 class="text-info fw-bold"><i class="bi bi-incognito"></i> Podman (Daemonless)</h6>
+                        <small>Cible : Sécurité, exécution Rootless native.</small>
+                        <code class="badge-tech d-block mt-2">podman pod create --name mypod</code>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="response-area h-100">
+                        <h6 class="text-info fw-bold"><i class="bi bi-cpu"></i> Balena (IoT / Edge)</h6>
+                        <small>Cible : Flottes d'appareils, mises à jour OTA.</small>
+                        <p class="small mt-2 mb-0">Optimisé pour RAM/Stockage réduit sur Raspberry Pi.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number" style="background: var(--accent-green) !important;">Q4</div>
+                <h2 class="h5 mb-0">Synthèse et Scénarios</h2>
+            </div>
+            <div class="table-responsive mb-4 shadow-sm">
+                <table class="table table-dark table-striped table-bordered border-secondary small m-0">
+                    <thead class="table-info text-dark fw-bold text-center">
+                        <tr>
+                            <th>Critère</th>
+                            <th>LXC / LXD</th>
+                            <th>Docker</th>
+                            <th>Podman</th>
+                            <th>Balena</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        <tr><td>Type</td><td>Système</td><td>Applicatif</td><td>Applicatif</td><td>Applicatif</td></tr>
+                        <tr><td>Démon</td><td>Oui</td><td>Oui</td><td>Non</td><td>Oui</td></tr>
+                        <tr><td>Rootless</td><td>Non</td><td>Partiel</td><td>Natif</td><td>Non</td></tr>
+                        <tr><td>Cible</td><td>Legacy OS</td><td>Cloud/Web</td><td>Sécurité</td><td>IoT/Edge</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="response-area">
+                <p><strong>a) Micro-services Web :</strong> <strong>Docker</strong> (Standard OCI, écosystème mature).</p>
+                <p><strong>b) 300 capteurs IoT :</strong> <strong>Balena</strong> (Mises à jour OTA atomiques, fiable à distance).</p>
+                <p><strong>c) Émulation PowerPC :</strong> <strong>LXC</strong> (Simule un OS complet sans surcharge de VM).</p>
+                <p><strong>d) CI/CD sans Root :</strong> <strong>Podman</strong> (Architecture Daemonless sécurisée).</p>
+            </div>
+        </section>
+        <div class="part-header">
+            <h2 class="part-title" style="color: var(--accent-purple); border-color: var(--accent-purple);">Partie 2.6 — Laboratoires de Pratique Gratuits</h2>
+        </div>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number" style="background: var(--accent-purple) !important;">
+                    <i class="bi bi-cloud-check"></i>
+                </div>
+                <h2 class="h5 mb-0">Environnements "Playground" Sans Installation</h2>
+            </div>
+            
+            <p>Pour pratiquer les commandes Linux et les moteurs de conteneurs présentés, voici les meilleures plateformes Cloud gratuites :</p>
+
+            <div class="row g-4 mt-2">
+                <div class="col-md-6">
+                    <div class="response-area h-100 border-primary">
+                        <h6 class="text-white fw-bold"><i class="bi bi-terminal-fill me-2 text-info"></i>Killercoda</h6>
+                        <p class="small text-secondary">Idéal pour <strong>Docker, Kubernetes</strong> et <strong>Linux</strong>.</p>
+                        <ul class="small mb-2">
+                            <li>Accès instantané à un terminal Ubuntu.</li>
+                            <li>Scénarios guidés pour apprendre l'isolation.</li>
+                        </ul>
+                        <a href="https://killercoda.com" target="_blank" class="btn btn-outline-info btn-sm">Accéder à Killercoda</a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="response-area h-100 border-primary">
+                        <h6 class="text-white fw-bold"><i class="bi bi-docker me-2 text-info"></i>Play with Docker (PWD)</h6>
+                        <p class="small text-secondary">Le laboratoire officiel de <strong>Docker</strong>.</p>
+                        <ul class="small mb-2">
+                            <li>Sessions gratuites de 4 heures.</li>
+                            <li>Permet de créer des clusters complets.</li>
+                        </ul>
+                        <a href="https://labs.play-with-docker.com/" target="_blank" class="btn btn-outline-info btn-sm">Accéder à PWD</a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="response-area h-100 border-primary">
+                        <h6 class="text-white fw-bold"><i class="bi bi-google me-2 text-info"></i>Google Cloud Shell</h6>
+                        <p class="small text-secondary">Un terminal persistant avec <strong>Docker</strong> pré-installé.</p>
+                        <ul class="small mb-2">
+                            <li>5 Go de stockage persistant inclus.</li>
+                            <li>Éditeur de code intégré (type VS Code).</li>
+                        </ul>
+                        <a href="https://shell.cloud.google.com" target="_blank" class="btn btn-outline-info btn-sm">Ouvrir le Cloud Shell</a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="response-area h-100 border-primary">
+                        <h6 class="text-white fw-bold"><i class="bi bi-shield-check me-2 text-info"></i>Instruqt / Red Hat Interactive</h6>
+                        <p class="small text-secondary">Excellent pour <strong>Podman</strong> et la sécurité.</p>
+                        <ul class="small mb-2">
+                            <li>Apprentissage interactif par modules.</li>
+                            <li>Focus sur les technologies Red Hat Enterprise Linux.</li>
+                        </ul>
+                        <a href="https://lab.redhat.com/" target="_blank" class="btn btn-outline-info btn-sm">Tester Podman</a>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <div class="question-box mt-4">
+                <i class="bi bi-info-circle-fill me-2"></i><strong>Conseil pratique :</strong> Pour vos tests sur <strong>Balena</strong>, il est recommandé d'utiliser <em>BalenaCloud</em> (gratuit jusqu'à 10 appareils) et d'émuler l'OS via une machine virtuelle si vous n'avez pas de Raspberry Pi physique.
+            </div>
+        </section>
+        <div class="part-header">
+            <h2 class="part-title" style="color: var(--accent-purple); border-color: var(--accent-purple);">Partie 3 — Prise en Main de Docker</h2>
+        </div>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number" style="background: var(--accent-purple) !important;">3.1</div>
+                <h2 class="h5 mb-0">Installation et Cycle de Vie</h2>
+            </div>
+            
+            <p>Installation du moteur Docker sur <strong>Ubuntu Server</strong> et exécution du premier conteneur de test.</p>
+
+            <div class="screenshot-zone">
+                <i class="bi bi-terminal" style="font-size: 3rem;"></i>
+                <div class="screenshot-label">Capture 4 : Sortie de 'docker version' et 'docker info'</div>
+            </div>
+
+            <div class="question-box">Question 5 : Analyse de 'docker info'</div>
+            <div class="response-area">
+                <p>Suite à l'exécution sur la VM, voici les métadonnées relevées :</p>
+                <ul class="mb-0">
+                    <li><strong>Version du moteur :</strong> [Ex: 24.0.7]</li>
+                    <li><strong>Runtime :</strong> <span class="badge-tech">runc</span> (bas niveau) / <span class="badge-tech">containerd</span> (haut niveau)</li>
+                    <li><strong>Storage Driver :</strong> <span class="badge-tech">overlay2</span></li>
+                    <li><strong>Docker Root Dir :</strong> <span class="badge-tech">/var/lib/docker</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number" style="background: var(--accent-purple) !important;">3.3</div>
+                <h2 class="h5 mb-0">Exploration des Images et Dockerfile</h2>
+            </div>
+
+            
+
+            <div class="screenshot-zone">
+                <i class="bi bi-terminal" style="font-size: 3rem;"></i>
+                <div class="screenshot-label">Capture 5 : Docker build de l'image 'mon-serveur:v1'</div>
+            </div>
+
+            <div class="question-box">Question 6 & 7 : Couches immuables et Build</div>
+            <div class="response-area">
+                <p><strong>6.c) Avantages des couches :</strong> Les images sont immuables. Si plusieurs images partagent la même base (ex: Ubuntu), la couche n'est téléchargée qu'une seule fois. Cela optimise drastiquement le stockage et la bande passante.</p>
+                <p><strong>7.b) Cache de Build :</strong> Si on modifie uniquement <span class="badge-tech">app.py</span>, Docker utilise le cache pour toutes les étapes précédentes (FROM, RUN apt-get). Seule la couche <span class="badge-tech">COPY</span> et les suivantes sont reconstruites, rendant le build quasi instantané.</p>
+            </div>
+        </section>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number" style="background: var(--accent-purple) !important;">3.5</div>
+                <h2 class="h5 mb-0">Isolation des Namespaces</h2>
+            </div>
+
+            
+
+            <div class="screenshot-zone">
+                <i class="bi bi-terminal" style="font-size: 3rem;"></i>
+                <div class="screenshot-label">Capture 6 : Comparaison 'ps aux' (Conteneur) vs 'docker top' (Hôte)</div>
+            </div>
+
+            <div class="question-box">Question 8 : "Voir à travers" l'isolation</div>
+            <div class="response-area">
+                <p><strong>a)</strong> Dans le conteneur, seul le processus <span class="badge-tech">bash</span> est visible (PID 1). Sur l'hôte, tous les processus système sont visibles.</p>
+                <p><strong>b)</strong> C'est le mécanisme des <strong>Namespaces PID</strong> qui segmente la visibilité des processus.</p>
+                <p><strong>c)</strong> La commande <span class="badge-tech">docker top</span> (ou un <span class="badge-tech">ps aux | grep bash</span> sur l'hôte) permet de voir le processus du conteneur car le noyau de l'hôte gère tous les processus, même isolés.</p>
+            </div>
+        </section>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number" style="background: var(--accent-purple) !important;">3.6</div>
+                <h2 class="h5 mb-0">Cgroups et Persistance des données</h2>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6 text-center">
+                    <div class="screenshot-zone" style="min-height: 150px;">
+                        <div class="screenshot-label">Capture 7 : Sortie de 'docker stats'</div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center">
+                    <div class="screenshot-zone" style="min-height: 150px;">
+                        <div class="screenshot-label">Capture 8 : Persistance après 'docker rm'</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-box">Question 9 & 10 : Ressources et Volumes</div>
+            <div class="response-area">
+                <p><strong>9.b) Protection :</strong> Les <strong>Cgroups</strong> agissent comme des gardes-fous. Si un conteneur dépasse sa limite de RAM, le noyau peut déclencher l'OOM Killer uniquement sur ce conteneur, protégeant ainsi la VM Ubuntu et les autres services.</p>
+                <p><strong>10.a) Persistance :</strong> Oui, le fichier est présent. Contrairement au système de fichiers du conteneur qui est éphémère, le <strong>Volume Docker</strong> est stocké sur l'hôte (<span class="badge-tech">/var/lib/docker/volumes/</span>) et survit à la suppression du conteneur.</p>
+                <p><strong>10.b/c) Volume vs Bind Mount :</strong> Un volume est géré par Docker (plus sûr, plus portable). Un bind mount lie un dossier précis de l'hôte (ex: <span class="badge-tech">/home/gana/code</span>), utile pour le développement en temps réel.</p>
+            </div>
+        </section>
+        <div class="part-header">
+            <h2 class="part-title" style="color: var(--primary-blue); border-color: var(--primary-blue);">Partie 4 — Standards OCI et Interopérabilité</h2>
+        </div>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number">4.1</div>
+                <h2 class="h5 mb-0">Les Spécifications OCI</h2>
+            </div>
+            
+            <p>Analyse des standards de l'Open Container Initiative pour la portabilité des images et des runtimes.</p>
+
+            <div class="table-responsive mb-4">
+                <table class="table table-dark table-striped table-bordered border-secondary small">
+                    <thead class="table-primary text-dark fw-bold">
+                        <tr>
+                            <th>Spécification OCI</th>
+                            <th>Objectif</th>
+                            <th>Format / Protocole</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Image Format Spec</td><td>Structure de l'image sur disque</td><td>Archive TAR + JSON</td></tr>
+                        <tr><td>Runtime Spec</td><td>Standard d'exécution</td><td>config.json + bundle rootfs</td></tr>
+                        <tr><td>Distribution Spec</td><td>API de transfert (Registry)</td><td>API REST (Push/Pull)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            
+
+            <div class="question-box">Question 11 : Interopérabilité LXC et Docker</div>
+            <div class="response-area">
+                <p><strong>a) Apport des standards :</strong> Avant l'OCI, les formats étaient propriétaires. Grâce à l'<strong>Image Spec</strong>, une image créée par Docker peut être comprise par n'importe quel moteur compatible (comme Podman ou LXD).</p>
+                <p><strong>b) LXC à partir de Docker :</strong> Oui, c'est possible. Le principe consiste à extraire le <strong>RootFS</strong> (le système de fichiers) de l'image Docker (via <code>docker export</code> ou des outils comme <code>lxc-docker</code>) pour l'utiliser comme base d'un conteneur système LXC. Cela permet de bénéficier de l'écosystème Docker Hub pour alimenter des conteneurs LXC.</p>
+            </div>
+        </section>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number">4.2</div>
+                <h2 class="h5 mb-0">Exercice — Inspection d'une image OCI</h2>
+            </div>
+
+            <p>Manipulation des archives d'images pour comprendre la structure interne (Manifest, Layers).</p>
+
+            <div class="screenshot-zone">
+                <i class="bi bi-terminal" style="font-size: 3rem;"></i>
+                <div class="screenshot-label">Capture 9 : Extraction de l'archive alpine.tar et contenu du manifest.json</div>
+            </div>
+
+            <div class="question-box">Question 12 : Analyse de l'image Alpine</div>
+            <div class="response-area">
+                <p><strong>a) Nombre de couches :</strong> L'image Alpine est extrêmement légère et ne contient généralement qu'<strong>une seule couche</strong> (layer) de base.</p>
+                <p><strong>b) Rôle du SHA256 :</strong> Le champ <strong>sha256</strong> sert d'identifiant unique et immuable pour chaque couche et pour la configuration globale. C'est le "Content Addressable Storage".</p>
+                <p><strong>c) Garantie technique :</strong> Cela garantit l'<strong>intégrité des données</strong>. Lors du téléchargement, Docker recalcule le hash. Si le hash calculé ne correspond pas au SHA256 du manifeste, le téléchargement est rejeté, protégeant ainsi contre les corruptions de fichiers ou les attaques de type "Man-in-the-middle".</p>
+            </div>
+        </section>
+
+        <section class="tp-section border-primary bg-primary bg-opacity-10">
+            <div class="text-center py-3">
+                <h4 class="text-info fw-bold"><i class="bi bi-check-all me-2"></i>Fin des Travaux Pratiques</h4>
+                <p class="mb-0">Ce rapport couvre l'intégralité des concepts de virtualisation légère, l'architecture Docker et les standards OCI étudiés sous la direction du <strong>Dr. Babou</strong>.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-5 text-secondary border-top border-dark">
+        <p class="mb-1">Université Bambey (UADB) — Master SI</p>
+        <small>© 2026 Gana Faye - Rapport de TP - Dr. Babou</small>
+    </footer>
+
+</body>
+</html>

@@ -8,119 +8,242 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --devops-blue: #0d6efd; --dark-bg: #0f172a; --card-bg: #1e293b; --docker-cyan: #2496ed; --python-yellow: #ffde57; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: #f8fafc; line-height: 1.6; }
-        .mono { font-family: 'Fira Code', monospace; background: #000; padding: 2px 5px; border-radius: 4px; color: #00d4ff; }
-        .breadcrumb-item a { color: var(--devops-blue); text-decoration: none; }
-        .content-card { background: var(--card-bg); border: 1px solid #334155; border-radius: 12px; padding: 30px; margin-bottom: 30px; }
-        .step-number { background: var(--docker-cyan); color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; }
-        pre { background: #000; padding: 15px; border-radius: 8px; border: 1px solid #334155; color: #f8fafc; overflow-x: auto; }
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --aws-orange: #ff9900;
+            --tech-blue: #38bdf8;
+            --docker-cyan: #2496ed;
+            --python-yellow: #ffde57;
+            --code-bg: #000000;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #232f3e 0%, #0f172a 100%);
+            padding: 60px 0;
+            border-bottom: 4px solid var(--aws-orange);
+            margin-bottom: 40px;
+        }
+
+        .content-card {
+            background: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: transform 0.2s;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: #d1d5db;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            border-left: 4px solid var(--aws-orange);
+            margin: 15px 0;
+            white-space: pre-wrap;
+        }
+
+        .question-box {
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 4px solid var(--tech-blue);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .img-placeholder {
+            border: 2px dashed #475569;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .badge-step {
+            background: var(--aws-orange);
+            color: #000;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
         .docker-accent { color: var(--docker-cyan); }
         .python-accent { color: var(--python-yellow); }
+
+        @media print {
+            .no-print { display: none; }
+            body { background: white; color: black; }
+            .content-card { border: 1px solid #ccc; break-inside: avoid; background: white; color: black; }
+            .code-block { border: 1px solid #000; color: #000; background: #f8f9fa; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container py-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../index.html">Accueil</a></li>
-                <li class="breadcrumb-item"><a href="index.html">DevOps</a></li>
-                <li class="breadcrumb-item active text-white" aria-current="page">TP2 : Docker & Python</li>
-            </ol>
-        </nav>
+<header class="hero text-center">
+    <div class="container">
+        <h1 class="display-5 fw-bold text-white"><i class="bi bi-box-seam me-2"></i> RAPPORT DE TRAVAUX PRATIQUES</h1>
+        <h3 class="text-info">Virtualisation & Déploiement d'Applications Conteneurisées</h3>
+        <p class="mt-3">Étudiant : <strong>Gana FAYE</strong> | Master 1 Système d'Information</p>
+        <div class="mt-4">
+            <span class="badge bg-dark border border-warning p-2"><i class="bi bi-cloud-fill me-2"></i>Infrastructure : AWS EC2</span>
+            <span class="badge bg-dark border border-info p-2 ms-2"><i class="bi bi-terminal me-2"></i>OS : Ubuntu 22.04 LTS</span>
+        </div>
+    </div>
+</header>
 
-        <header class="mb-5">
-            <h1 class="display-5 fw-bold docker-accent"><i class="bi bi-box-seam"></i> TP2 : Virtualisation & Déploiement Python</h1>
-            <p class="lead text-secondary">Conteneurisation d'une application de gestion des ressources sur Ubuntu EC2.</p>
-        </header>
+<main class="container">
 
-        <div class="row">
-            <div class="col-lg-8">
-                
-                <section class="content-card">
-                    <h3><i class="bi bi-shield-lock text-warning"></i> 0. Connexion au Serveur AWS</h3>
-                    <p>Accès sécurisé depuis mon ThinkPad T14s vers l'instance Ubuntu.</p>
-                    <pre><code class="mono">chmod 400 key-aws.pem
-ssh -i "key-aws.pem" ubuntu@votre-ip-aws</code></pre>
-                </section>
+    <section>
+        <div class="content-card border-warning">
+            <h5><i class="bi bi-info-circle-fill me-2 text-warning"></i>Note sur l'Environnement de Travail</h5>
+            <p class="mb-0">Ce TP a été porté sur une instance <strong>AWS EC2</strong>. Le passage au Cloud permet d'expérimenter Docker dans un environnement de production réel, palliant les limitations techniques rencontrées sur l'hôte physique local.</p>
+        </div>
 
-                <section class="content-card">
-                    <h3><i class="bi bi-tools text-primary"></i> 1. Installation de Docker Engine</h3>
-                    <p>Mise en place de l'environnement de virtualisation léger.</p>
-                    <pre><code class="mono">sudo apt update && sudo apt install docker.io -y
-sudo systemctl start docker
-sudo systemctl enable docker</code></pre>
-                </section>
+        <div class="content-card">
+            <h4><span class="badge-step">0</span>Préparation et Accès SSH</h4>
+            <p>Sécurisation de la clé privée <code class="mono">.pem</code> et établissement de la connexion cryptée.</p>
+            
+            <div class="code-block"># Sécurisation des permissions
+chmod 400 "gana-key.pem"
 
-                <section class="content-card">
-                    <h3><i class="bi bi-filetype-py python-accent"></i> 2. L'Application de Gestion des Ressources</h3>
-                    <p>Création d'une mini-app <code class="mono">app.py</code> avec Flask pour afficher les informations système.</p>
-                    <pre><code class="mono">from flask import Flask
+# Connexion à l'instance distante
+ssh -i "gana-key.pem" ubuntu@ec2-XX-XX-XX-XX.compute-1.amazonaws.com</div>
+            
+            <div class="img-placeholder">
+                <img src="capture_ssh_connexion.png" class="img-fluid rounded shadow" alt="Capture connexion SSH">
+                <p class="text-muted small mt-2 italic">[Capture : Connexion SSH réussie et accueil Ubuntu AWS]</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <section>
+        <div class="content-card">
+            <h4><span class="badge-step">1</span>Installation de Docker Engine</h4>
+            <p>Mise en place du moteur de conteneurisation et vérification du runtime.</p>
+            <div class="code-block">
+sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+sudo usermod -aG docker $USER && newgrp docker
+docker info</div>
+
+            <div class="img-placeholder">
+                <img src="capture_docker_info.png" class="img-fluid rounded shadow" alt="Capture docker info">
+                <p class="text-muted small mt-2">[Capture : État du moteur Docker et drivers de stockage]</p>
+            </div>
+
+            <div class="question-box">
+                <strong>Réponse Question 5 :</strong> Le moteur utilise le runtime <strong>runc</strong> (conforme OCI) et le pilote <strong>overlay2</strong> pour la gestion efficace des couches d'images.
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="content-card">
+            <h4><span class="badge-step">2</span>Développement de l'Application <span class="python-accent">Python/Flask</span></h4>
+            <p>Création d'un micro-service pour simuler une application de gestion de ressources.</p>
+            <div class="code-block">from flask import Flask
 import os
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return f"<h1>Serveur de Gana Faye</h1><p>Statut : Conteneur Isolé</p>"
+    return f"&lt;h1&gt;Serveur de Gana Faye&lt;/h1&gt;&lt;p&gt;Statut : Conteneur Isolé sur AWS&lt;/p&gt;"
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)</code></pre>
-                </section>
+    app.run(host='0.0.0.0', port=5000)</div>
+        </div>
+    </section>
 
-                <section class="content-card">
-                    <h3><i class="bi bi-file-earmark-code docker-accent"></i> 3. Isolation & Dockerfile</h3>
-                    <p>Définition de l'image pour isoler l'environnement Python.</p>
-                    <pre><code class="mono">FROM python:3.9-slim
+    <section>
+        <div class="content-card">
+            <h4><span class="badge-step">3</span>Isolation par Dockerfile</h4>
+            <p>Définition de l'environnement immuable pour l'application.</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="code-block">FROM python:3.9-slim
 WORKDIR /app
 COPY . /app
 RUN pip install flask
 EXPOSE 5000
-CMD ["python", "app.py"]</code></pre>
-                    <p class="mt-3"><strong>Construction et lancement :</strong></p>
-                    <pre><code class="mono">sudo docker build -t mon-app-python .
-sudo docker run -d -p 80:5000 --name gestion-ressources mon-app-python</code></pre>
-                </section>
-
-                <section class="content-card border-start border-4 border-info">
-                    <h3><i class="bi bi-cpu text-info"></i> 4. Gestion des ressources & Tests</h3>
-                    <p>Docker permet de limiter la consommation de l'instance EC2 par le conteneur pour éviter les saturations :</p>
-                    <pre><code class="mono"># Lancement avec limitation (512 Mo RAM, 0.5 CPU)
-sudo docker run -d --memory="512m" --cpus="0.5" -p 80:5000 mon-app-python</code></pre>
-                    <p><strong>Vérification de l'isolation :</strong> Accédez à l'IP publique de votre instance sur votre navigateur pour voir l'application en direct.</p>
-                </section>
-
+CMD ["python", "app.py"]</div>
+                </div>
+                <div class="col-md-6">
+                    <div class="code-block"># Build & Lancement
+docker build -t app-gana:v1 .
+docker run -d -p 80:5000 --name web-app app-gana:v1</div>
+                </div>
             </div>
 
-            <div class="col-lg-4">
-                <div class="content-card border-info">
-                    <h5 class="text-info fw-bold"><i class="bi bi-bar-chart"></i> Monitoring</h5>
-                    <hr class="border-secondary">
-                    <p class="small">Suivi des ressources en temps réel :</p>
-                    <code class="mono" style="font-size: 0.8rem;">sudo docker stats</code>
-                </div>
+            <div class="img-placeholder">
+                <img src="capture_browser_ok.png" class="img-fluid rounded shadow" alt="Capture navigateur">
+                <p class="text-muted small mt-2">[Capture : Application accessible via l'IP publique AWS]</p>
+            </div>
+            
 
-                <div class="content-card bg-dark border-secondary">
-                    <h5 class="text-white small fw-bold">Réseau & Accès</h5>
-                    <ul class="list-unstyled small text-secondary">
-                        <li><i class="bi bi-check2"></i> Mapping Port 80 $\rightarrow$ 5000</li>
-                        <li><i class="bi bi-check2"></i> Accès via Navigateur</li>
-                        <li><i class="bi bi-check2"></i> Isolation Processus OK</li>
-                    </ul>
-                </div>
-
-                <div class="content-card text-center text-secondary">
-                    <i class="bi bi-image mb-2" style="font-size: 2rem;"></i>
-                    <p class="small italic">Ajoute ici le screenshot de ton navigateur affichant ton nom et le statut du conteneur.</p>
-                </div>
+            <div class="question-box">
+                <strong>Question 8 (Isolation) :</strong> En exécutant <code class="mono">docker top</code>, on observe que le processus Python possède un PID différent sur l'hôte et dans le conteneur, prouvant l'isolation par les <strong>Namespaces Linux</strong>.
             </div>
         </div>
+    </section>
+
+    <section>
+        <h2 class="text-warning mb-4">Partie 4 — Standards OCI & Interopérabilité</h2>
+        
+        <div class="content-card">
+            <h4><span class="badge-step">4.1</span>L'initiative OCI</h4>
+            <p>Analyse de la structure standardisée des images pour garantir la portabilité entre registres et runtimes.</p>
+            
+            
+
+            <div class="question-box">
+                <strong>Réponse Question 11 :</strong> Les standards OCI (Open Container Initiative) permettent de découpler le format de l'image de l'outil d'exécution. Il est donc techniquement possible de convertir une image Docker en <em>rootfs</em> pour l'exécuter avec LXC.
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h4><span class="badge-step">4.2</span>Inspection de l'image Alpine</h4>
+            <div class="code-block">
+docker save alpine -o alpine.tar
+tar xf alpine.tar && cat manifest.json</div>
+
+            <div class="img-placeholder">
+                <img src="capture_manifest_json.png" class="img-fluid rounded shadow" alt="Capture manifest json">
+                <p class="text-muted small mt-2">[Capture : Décomposition du manifest OCI de l'image Alpine]</p>
+            </div>
+
+            <div class="question-box">
+                <strong>Réponse Question 12 :</strong> L'utilisation du hash <strong>sha256</strong> dans le manifest garantit l'intégrité technique. Lors du téléchargement, Docker compare le hash calculé au hash annoncé : s'ils diffèrent, l'image est rejetée pour prévenir toute corruption ou attaque.
+            </div>
+        </div>
+    </section>
+
+    <div class="content-card border-info text-center">
+        <h4 class="text-info">Conclusion du TP</h4>
+        <p class="mb-0">Ce TP a permis de valider le cycle complet de conteneurisation : de l'accès sécurisé à l'infrastructure Cloud jusqu'à l'analyse des standards de bas niveau OCI. La maîtrise de ces outils est indispensable pour le déploiement de modèles de <strong>Data Science</strong> de manière reproductible et scalable.</p>
     </div>
 
-    <footer class="text-center py-4 opacity-50 border-top border-secondary mt-4">
-        <p>Gana Faye - Master 1 SI - Projet DevOps 2026</p>
-    </footer>
+</main>
+
+<footer class="text-center py-5 no-print">
+    <button onclick="window.print()" class="btn btn-warning fw-bold">
+        <i class="bi bi-file-earmark-pdf-fill me-2"></i>Générer le Rapport Final PDF
+    </button>
+    <p class="mt-3 text-secondary small">© 2026 - Gana Faye - Master 1 SI -  2026</p>
+</footer>
 
 </body>
 </html>
