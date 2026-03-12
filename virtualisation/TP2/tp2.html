@@ -7,7 +7,7 @@
     <title>Rapport TP Conteneurs - Gana Faye</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
+     <style>
         :root { 
             --primary-blue: #0ea5e9; 
             --bg-dark: #0f172a; 
@@ -39,7 +39,6 @@
         .part-header {
             text-align: center;
             margin: 50px 0 30px;
-            page-break-before: always;
         }
 
         .part-title {
@@ -79,14 +78,30 @@
             font-weight: bold; margin-right: 15px;
         }
 
-        .diagram-box {
-            background: rgba(0,0,0,0.2);
-            border: 2px dashed #475569;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
+        .screenshot-placeholder {
+            background: #000000;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             margin: 20px 0;
-            color: #94a3b8;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screenshot-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary-blue);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
         }
 
         .question-box { 
@@ -114,15 +129,13 @@
             font-family: 'Fira Code', monospace;
         }
 
-        .table-custom {
-            color: #f8fafc !important;
-            border-color: #334155 !important;
-        }
-
         @media print {
             .no-print { display: none !important; }
-            body { background-color: var(--bg-dark) !important; }
-            .tp-section { border: 1px solid #334155 !important; }
+            body { background-color: #ffffff !important; color: #000000 !important; }
+            .hero-section { background: #f0f4f8 !important; color: #000 !important; }
+            .tp-section { background: #fff !important; border: 1px solid #ccc !important; color: #000 !important; }
+            .response-area { background: #f9f9f9 !important; color: #000 !important; }
+            .screenshot-placeholder { background: #eee !important; border: 1px solid #999 !important; }
         }
     </style>
 </head>
@@ -369,30 +382,46 @@
                 <i class="bi bi-info-circle-fill me-2"></i><strong>Conseil pratique :</strong> Pour vos tests sur <strong>Balena</strong>, il est recommandé d'utiliser <em>BalenaCloud</em> (gratuit jusqu'à 10 appareils) et d'émuler l'OS via une machine virtuelle si vous n'avez pas de Raspberry Pi physique.
             </div>
         </section>
+        <!-- PARTIE 3 -->
         <div class="part-header">
-            <h2 class="part-title" style="color: var(--accent-purple); border-color: var(--accent-purple);">Partie 3 — Prise en Main de Docker</h2>
+            <h2 class="part-title" style="color: var(--accent-purple); border-color: var(--accent-purple);">Partie 3 — Mise en Œuvre Pratique</h2>
         </div>
 
         <section class="tp-section">
             <div class="section-header">
                 <div class="section-number" style="background: var(--accent-purple) !important;">3.1</div>
-                <h2 class="h5 mb-0">Installation et Cycle de Vie</h2>
+                <h2 class="h5 mb-0">Configuration Réseau et Accès SSH</h2>
+            </div>
+            <p>Avant l'installation, l'interface réseau a été configurée en mode "Accès par pont" (Bridged) pour permettre une connexion SSH depuis l'hôte ThinkPad.</p>
+            
+            <div class="screenshot-placeholder">
+                <span class="screenshot-label">CAPTURE 1</span>
+                <i class="bi bi-camera text-secondary mb-2" style="font-size: 2rem;"></i>
+                <img src="img/image.png" class="img-fluid rounded shadow" alt="Capture IP de la VM et SSH connect">
+                <span class="text-secondary small">[Insérer capture IP de la VM et SSH connect]</span>
+                <!-- Ici tu pourras mettre ton image d'IP 192.168.1.14 -->
+            </div>
+        </section>
+
+        <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number" style="background: var(--accent-purple) !important;">3.1</div>
+                <h2 class="h5 mb-0">Installation de Docker Engine</h2>
             </div>
             
-            <p>Installation du moteur Docker sur <strong>Ubuntu Server</strong> et exécution du premier conteneur de test.</p>
-
-            <div class="screenshot-zone">
-                <i class="bi bi-terminal" style="font-size: 3rem;"></i>
-                <div class="screenshot-label">Capture 4 : Sortie de 'docker version' et 'docker info'</div>
+            <div class="screenshot-placeholder">
+                <span class="screenshot-label">CAPTURE 2</span>
+                <i class="bi bi-terminal-fill text-info mb-2" style="font-size: 2rem;"></i>
+                <img src="img/image14.png" class="img-fluid rounded shadow" alt="Capture docker info">
+                <span class="text-secondary small">[Insérer capture de la commande docker info]</span>
             </div>
 
-            <div class="question-box">Question 5 : Analyse de 'docker info'</div>
+            <div class="question-box">Question 5 : Analyse des métadonnées (docker info)</div>
             <div class="response-area">
-                <p>Suite à l'exécution sur la VM, voici les métadonnées relevées :</p>
                 <ul class="mb-0">
-                    <li><strong>Version du moteur :</strong> [Ex: 24.0.7]</li>
-                    <li><strong>Runtime :</strong> <span class="badge-tech">runc</span> (bas niveau) / <span class="badge-tech">containerd</span> (haut niveau)</li>
-                    <li><strong>Storage Driver :</strong> <span class="badge-tech">overlay2</span></li>
+                    <li><strong>Version du moteur :</strong> <span class="badge-tech">29.3.0</span></li>
+                    <li><strong>Runtime :</strong> <span class="badge-tech">runc</span> (Default) / <span class="badge-tech">containerd</span></li>
+                    <li><strong>Storage Driver :</strong> <span class="badge-tech">overlayfs</span></li>
                     <li><strong>Docker Root Dir :</strong> <span class="badge-tech">/var/lib/docker</span></li>
                 </ul>
             </div>
@@ -401,20 +430,56 @@
         <section class="tp-section">
             <div class="section-header">
                 <div class="section-number" style="background: var(--accent-purple) !important;">3.3</div>
-                <h2 class="h5 mb-0">Exploration des Images et Dockerfile</h2>
+                <h2 class="h5 mb-0">Exploration des Images (Ubuntu)</h2>
             </div>
-
+            <p>Analyse des couches (layers) de l'image Ubuntu 22.04.</p>
             
-
-            <div class="screenshot-zone">
-                <i class="bi bi-terminal" style="font-size: 3rem;"></i>
-                <div class="screenshot-label">Capture 5 : Docker build de l'image 'mon-serveur:v1'</div>
+            <div class="screenshot-placeholder">
+                <span class="screenshot-label">CAPTURE 3</span>
+                <i class="bi bi-layers text-secondary mb-2" style="font-size: 2rem;"></i>
+                <img src="img/image15.png" class="img-fluid rounded shadow" alt="Capture docker image history ubuntu">
+                <span class="text-secondary small">[Insérer capture docker image history ubuntu:22.04]</span>
             </div>
 
-            <div class="question-box">Question 6 & 7 : Couches immuables et Build</div>
-            <div class="response-area">
-                <p><strong>6.c) Avantages des couches :</strong> Les images sont immuables. Si plusieurs images partagent la même base (ex: Ubuntu), la couche n'est téléchargée qu'une seule fois. Cela optimise drastiquement le stockage et la bande passante.</p>
-                <p><strong>7.b) Cache de Build :</strong> Si on modifie uniquement <span class="badge-tech">app.py</span>, Docker utilise le cache pour toutes les étapes précédentes (FROM, RUN apt-get). Seule la couche <span class="badge-tech">COPY</span> et les suivantes sont reconstruites, rendant le build quasi instantané.</p>
+             <div class="response-area mt-3">
+                <h6 class="text-info fw-bold">Question 6 : Analyse de l'image Ubuntu</h6>
+                <p class="small">
+                    <strong>(a) Nombre de couches :</strong> D'après l'historique, l'image possède <strong>1 couche de données</strong> de 87.5MB (la racine du système). Les autres lignes sont des instructions de configuration de 0B.
+                </p>
+                <p class="small">
+                    <strong>(b) Taille totale :</strong> La taille déclarée sur disque est de <strong>119 MB</strong>.
+                </p>
+                <p class="small">
+                    <strong>(c) Avantage des couches immuables :</strong> 
+                    Cette architecture favorise la <strong>réutilisation</strong>. Si plusieurs conteneurs partagent une même couche de base, celle-ci n'est stockée qu'une fois. Lors du téléchargement, seules les couches manquantes sont récupérées, optimisant ainsi la bande passante.
+                </p>
+            </div>
+        </section>
+         <section class="tp-section">
+            <div class="section-header">
+                <div class="section-number" style="background: var(--accent-purple) !important;">3.4</div>
+                <h2 class="h5 mb-0">Exploration des Images (Ubuntu)</h2>
+            </div>
+            <p>Analyse des couches (layers) de l'image Ubuntu 22.04.</p>
+            
+            <div class="screenshot-placeholder">
+                <span class="screenshot-label">CAPTURE 3</span>
+                <i class="bi bi-layers text-secondary mb-2" style="font-size: 2rem;"></i>
+                <img src="img/image16.png" class="img-fluid rounded shadow" alt="Capture docker image history ubuntu">
+                <span class="text-secondary small">[Insérer capture deploiement app]</span>
+            </div>
+
+            <div class="response-area mt-3">
+                <span class="question-title">Question 7 : Analyse du Build</span>
+                <p class="small">
+                    <strong>(a) Nombre de couches ajoutées :</strong> Le Dockerfile ajoute <strong>4 couches</strong> effectives au-dessus de l'image de base (une par instruction RUN, WORKDIR, COPY et CMD).
+                </p>
+                <p class="small">
+                    <strong>(b) Modification de app.py :</strong> Si seul le fichier <code>app.py</code> est modifié, Docker utilise le cache pour les premières étapes. Seule la couche <code>COPY app.py .</code> et les suivantes (CMD) sont reconstruites. C'est le mécanisme de <strong>Build Cache</strong> qui accélère le développement.
+                </p>
+                <p class="small">
+                    <strong>(c) Directive de démarrage :</strong> La directive <span class="badge-tech">CMD</span> définit la commande par défaut à exécuter lors de l'instanciation du conteneur.
+                </p>
             </div>
         </section>
 
@@ -423,114 +488,158 @@
                 <div class="section-number" style="background: var(--accent-purple) !important;">3.5</div>
                 <h2 class="h5 mb-0">Isolation des Namespaces</h2>
             </div>
+            <div class="screenshot-placeholder">
+                <span class="screenshot-label">CAPTURE 3</span>
+                <i class="bi bi-layers text-secondary mb-2" style="font-size: 2rem;"></i>
+                <img src="img/image18.png" class="img-fluid rounded shadow" alt="Capture docker image history ubuntu">
+                <span class="text-secondary small">[Insérer capture deploiement app]</span>
+            </div>
+             <div class="response-area mt-3">
+                <span class="question-title">Question 8 : Analyse de l'isolation PID</span>
+                <p class="small">
+                    <strong>(a) Processus visibles :</strong> Dans le conteneur, seuls les processus internes (PID 1 pour bash) sont visibles. Depuis l'hôte via <code>docker top</code>, on voit les mêmes processus mais avec leurs vrais PID système.
+                </p>
+                <p class="small">
+                    <strong>(b) Mécanisme noyau :</strong> C'est le <strong>PID Namespace</strong>. Il permet à un processus d'avoir un PID (ex: 1) à l'intérieur d'un espace isolé tout en ayant un PID différent (ex: 4502) sur le système global.
+                </p>
+                <p class="small">
+                    <strong>(c) Commande de vision globale :</strong> La commande <code>docker top</code> ou un simple <code>ps aux | grep bash</code> sur l'hôte permet de voir à travers l'isolation car l'hôte gère tous les namespaces.
+                </p>
+            </div>
+        </section>
+        <!-- 3.6 GESTION DES RESSOURCES AVEC CGROUPS -->
+        <section class="tp-section">
+            <div class="d-flex align-items-center mb-3">
+                <div class="section-number">3.6</div>
+                <h2 class="h5 mb-0">Gestion des ressources avec Cgroups</h2>
+            </div>
+            <p>Les <strong>Control Groups (cgroups)</strong> permettent de limiter et monitorer l'utilisation des ressources matérielles (CPU, RAM).</p>
 
-            
-
-            <div class="screenshot-zone">
-                <i class="bi bi-terminal" style="font-size: 3rem;"></i>
-                <div class="screenshot-label">Capture 6 : Comparaison 'ps aux' (Conteneur) vs 'docker top' (Hôte)</div>
+            <div class="screenshot-area">
+                <p class="small text-info text-start mb-2"><i class="bi bi-terminal"></i> Commandes d'application et vérification</p>
+                <div class="bg-dark text-info p-3 text-start font-monospace small border border-secondary rounded">
+                    # Création avec limites<br>
+                    docker run -d --memory="256m" --cpus="0.5" --name cgroup-test ubuntu:22.04 sleep 3600<br><br>
+                    # Surveillance en temps réel<br>
+                    docker stats cgroup-test
+                </div>
+                 <div class="screenshot-placeholder">
+                <span class="screenshot-label">CAPTURE 3</span>
+                <i class="bi bi-layers text-secondary mb-2" style="font-size: 2rem;"></i>
+                <img src="img/image19.png" class="img-fluid rounded shadow" alt="Capture docker image history ubuntu">
+                <span class="text-secondary small">[Insérer capture deploiement app]</span>
+            </div>
             </div>
 
-            <div class="question-box">Question 8 : "Voir à travers" l'isolation</div>
             <div class="response-area">
-                <p><strong>a)</strong> Dans le conteneur, seul le processus <span class="badge-tech">bash</span> est visible (PID 1). Sur l'hôte, tous les processus système sont visibles.</p>
-                <p><strong>b)</strong> C'est le mécanisme des <strong>Namespaces PID</strong> qui segmente la visibilité des processus.</p>
-                <p><strong>c)</strong> La commande <span class="badge-tech">docker top</span> (ou un <span class="badge-tech">ps aux | grep bash</span> sur l'hôte) permet de voir le processus du conteneur car le noyau de l'hôte gère tous les processus, même isolés.</p>
+                <span class="question-title">Question 9 : Analyse des quotas</span>
+                <p class="small">
+                    <strong>(a) Valeur memory.limit_in_bytes :</strong> Oui, la valeur affichée dans le système de fichiers cgroup correspond à 256 Mo exprimés en octets (256 * 1024 * 1024 = 268 435 456 octets).
+                </p>
+                <p class="small">
+                    <strong>(b) Protection des autres conteneurs :</strong> Si un conteneur tente de dépasser sa limite de RAM allouée, le mécanisme <strong>OOM Killer</strong> (Out Of Memory) du noyau peut intervenir pour arrêter le conteneur fautif, garantissant ainsi que les autres conteneurs et l'hôte ne tombent pas en panne par manque de mémoire.
+                </p>
+                <p class="small">
+                    <strong>(c) Commande de modification :</strong> Pour modifier les limites d'un conteneur sans l'arrêter, on utilise la commande <span class="badge-tech">docker update</span> (ex: <code>docker update --memory "512m" cgroup-test</code>).
+                </p>
+            </div>
+        </section>
+        <!-- 3.7 PERSISTANCE DES DONNÉES -->
+        <section class="tp-section">
+            <div class="d-flex align-items-center mb-3">
+                <div class="section-number">3.7</div>
+                <h2 class="h5 mb-0">Persistance des données avec les volumes</h2>
+            </div>
+            <p>Les volumes Docker permettent de décorréler le cycle de vie des données de celui du conteneur.</p>
+
+            <div class="screenshot-area">
+                <p class="small text-info text-start mb-2"><i class="bi bi-terminal"></i> Test de persistance post-suppression</p>
+                <div class="bg-dark text-success p-3 text-start font-monospace small border border-secondary rounded">
+                    # Après suppression du premier conteneur :<br>
+                    gana@localhost:~$ docker run --rm -v mes-donnees:/data ubuntu:22.04 cat /data/test.txt<br>
+                    données persistées
+                </div>
+                <div class="screenshot-placeholder">
+                <span class="screenshot-label">CAPTURE 3</span>
+                <i class="bi bi-layers text-secondary mb-2" style="font-size: 2rem;"></i>
+                <img src="img/image20.png" class="img-fluid rounded shadow" alt="Capture docker image history ubuntu">
+                <span class="text-secondary small">[Insérer capture deploiement app]</span>
+            </div>
+            </div>
+
+            <div class="response-area mt-3">
+                <span class="question-title">Question 10 : Analyse du stockage</span>
+                <p class="small">
+                    <strong>(a) Présence du fichier :</strong> Oui, le fichier est toujours présent. Un volume Docker est stocké sur l'hôte en dehors de l'Union File System du conteneur. Sa suppression doit être explicite via <code>docker volume rm</code>.
+                </p>
+                <p class="small">
+                    <strong>(b) Volume vs Bind Mount :</strong> 
+                    Un <strong>volume</strong> est géré par Docker (stocké dans <code>/var/lib/docker/volumes/</code>), tandis qu'un <strong>bind mount</strong> lie un dossier spécifique du système hôte (ex: <code>/home/user/app</code>) au conteneur.
+                </p>
+                <p class="small">
+                    <strong>(c) Cas d'usage :</strong> 
+                    On choisit un <strong>volume</strong> pour la persistance de bases de données (performances, gestion Docker). On choisit un <strong>bind mount</strong> pour le développement (partage de code source entre l'hôte et le conteneur en temps réel).
+                </p>
             </div>
         </section>
 
+        <!-- PARTIE 4 : STANDARDS OCI -->
         <section class="tp-section">
-            <div class="section-header">
-                <div class="section-number" style="background: var(--accent-purple) !important;">3.6</div>
-                <h2 class="h5 mb-0">Cgroups et Persistance des données</h2>
-            </div>
-
-            <div class="row g-3">
-                <div class="col-md-6 text-center">
-                    <div class="screenshot-zone" style="min-height: 150px;">
-                        <div class="screenshot-label">Capture 7 : Sortie de 'docker stats'</div>
-                    </div>
-                </div>
-                <div class="col-md-6 text-center">
-                    <div class="screenshot-zone" style="min-height: 150px;">
-                        <div class="screenshot-label">Capture 8 : Persistance après 'docker rm'</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="question-box">Question 9 & 10 : Ressources et Volumes</div>
-            <div class="response-area">
-                <p><strong>9.b) Protection :</strong> Les <strong>Cgroups</strong> agissent comme des gardes-fous. Si un conteneur dépasse sa limite de RAM, le noyau peut déclencher l'OOM Killer uniquement sur ce conteneur, protégeant ainsi la VM Ubuntu et les autres services.</p>
-                <p><strong>10.a) Persistance :</strong> Oui, le fichier est présent. Contrairement au système de fichiers du conteneur qui est éphémère, le <strong>Volume Docker</strong> est stocké sur l'hôte (<span class="badge-tech">/var/lib/docker/volumes/</span>) et survit à la suppression du conteneur.</p>
-                <p><strong>10.b/c) Volume vs Bind Mount :</strong> Un volume est géré par Docker (plus sûr, plus portable). Un bind mount lie un dossier précis de l'hôte (ex: <span class="badge-tech">/home/gana/code</span>), utile pour le développement en temps réel.</p>
-            </div>
-        </section>
-        <div class="part-header">
-            <h2 class="part-title" style="color: var(--primary-blue); border-color: var(--primary-blue);">Partie 4 — Standards OCI et Interopérabilité</h2>
-        </div>
-
-        <section class="tp-section">
-            <div class="section-header">
+            <div class="d-flex align-items-center mb-3">
                 <div class="section-number">4.1</div>
-                <h2 class="h5 mb-0">Les Spécifications OCI</h2>
+                <h2 class="h5 mb-0">Standards OCI et Interopérabilité</h2>
             </div>
             
-            <p>Analyse des standards de l'Open Container Initiative pour la portabilité des images et des runtimes.</p>
-
-            <div class="table-responsive mb-4">
-                <table class="table table-dark table-striped table-bordered border-secondary small">
-                    <thead class="table-primary text-dark fw-bold">
-                        <tr>
-                            <th>Spécification OCI</th>
-                            <th>Objectif</th>
-                            <th>Format / Protocole</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Image Format Spec</td><td>Structure de l'image sur disque</td><td>Archive TAR + JSON</td></tr>
-                        <tr><td>Runtime Spec</td><td>Standard d'exécution</td><td>config.json + bundle rootfs</td></tr>
-                        <tr><td>Distribution Spec</td><td>API de transfert (Registry)</td><td>API REST (Push/Pull)</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            
-
-            <div class="question-box">Question 11 : Interopérabilité LXC et Docker</div>
-            <div class="response-area">
-                <p><strong>a) Apport des standards :</strong> Avant l'OCI, les formats étaient propriétaires. Grâce à l'<strong>Image Spec</strong>, une image créée par Docker peut être comprise par n'importe quel moteur compatible (comme Podman ou LXD).</p>
-                <p><strong>b) LXC à partir de Docker :</strong> Oui, c'est possible. Le principe consiste à extraire le <strong>RootFS</strong> (le système de fichiers) de l'image Docker (via <code>docker export</code> ou des outils comme <code>lxc-docker</code>) pour l'utiliser comme base d'un conteneur système LXC. Cela permet de bénéficier de l'écosystème Docker Hub pour alimenter des conteneurs LXC.</p>
+            <div class="response-area mt-3">
+                <span class="question-title">Question 11 : OCI et Interopérabilité</span>
+                <p class="small">
+                    <strong>Impact sur LXC et Docker :</strong> Avant l'OCI, Docker et LXC utilisaient des formats propriétaires. Les standards OCI (Image Spec et Runtime Spec) ont permis de séparer le format de l'image de l'outil d'exécution. Cela garantit qu'une image créée avec Docker peut être exécutée par n'importe quel runtime compatible OCI (comme <code>runc</code> ou <code>CRI-O</code>).
+                </p>
+                <p class="small">
+                    <strong>Conteneur LXC à partir de Docker :</strong> Oui, c'est possible. Le principe consiste à extraire le <strong>rootfs</strong> (le système de fichiers) de l'image Docker (via <code>docker export</code> ou en décompressant les couches d'une image OCI) et à utiliser les outils LXC pour démarrer un conteneur en pointant sur ce répertoire racine, en utilisant une configuration compatible.
+                </p>
             </div>
         </section>
 
         <section class="tp-section">
-            <div class="section-header">
+            <div class="d-flex align-items-center mb-3">
                 <div class="section-number">4.2</div>
-                <h2 class="h5 mb-0">Exercice — Inspection d'une image OCI</h2>
+                <h2 class="h5 mb-0">Inspection d'une image OCI (Alpine)</h2>
+            </div>
+            <p>Analyse de la structure interne d'une image exportée au format archive.</p>
+
+            <div class="screenshot-area">
+                <p class="small text-info text-start mb-2"><i class="bi bi-terminal"></i> Sortie du manifest.json</p>
+                <div class="bg-dark text-warning p-3 text-start font-monospace small border border-secondary rounded">
+                    [<br>
+                    &nbsp;&nbsp;{<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"Config": "...",<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"Layers": [".../layer.tar"],<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"RepoTags": ["alpine:latest"]<br>
+                    &nbsp;&nbsp;}<br>
+                    ]
+                </div>
+                <div class="screenshot-placeholder">
+                <span class="screenshot-label">CAPTURE 3</span>
+                <i class="bi bi-layers text-secondary mb-2" style="font-size: 2rem;"></i>
+                <img src="img/image21.png" class="img-fluid rounded shadow" alt="Capture docker image history ubuntu">
+                <span class="text-secondary small">[Insérer capture deploiement app]</span>
+            </div>
             </div>
 
-            <p>Manipulation des archives d'images pour comprendre la structure interne (Manifest, Layers).</p>
-
-            <div class="screenshot-zone">
-                <i class="bi bi-terminal" style="font-size: 3rem;"></i>
-                <div class="screenshot-label">Capture 9 : Extraction de l'archive alpine.tar et contenu du manifest.json</div>
-            </div>
-
-            <div class="question-box">Question 12 : Analyse de l'image Alpine</div>
-            <div class="response-area">
-                <p><strong>a) Nombre de couches :</strong> L'image Alpine est extrêmement légère et ne contient généralement qu'<strong>une seule couche</strong> (layer) de base.</p>
-                <p><strong>b) Rôle du SHA256 :</strong> Le champ <strong>sha256</strong> sert d'identifiant unique et immuable pour chaque couche et pour la configuration globale. C'est le "Content Addressable Storage".</p>
-                <p><strong>c) Garantie technique :</strong> Cela garantit l'<strong>intégrité des données</strong>. Lors du téléchargement, Docker recalcule le hash. Si le hash calculé ne correspond pas au SHA256 du manifeste, le téléchargement est rejeté, protégeant ainsi contre les corruptions de fichiers ou les attaques de type "Man-in-the-middle".</p>
+            <div class="response-area mt-3">
+                <span class="question-title">Question 12 : Analyse technique</span>
+                <p class="small">
+                    <strong>(a) Nombre de couches :</strong> L'image Alpine est extrêmement légère et ne contient généralement qu'<strong>une seule couche</strong> principale (le rootfs minimal).
+                </p>
+                <p class="small">
+                    <strong>(b) Rôle du champ sha256 :</strong> Le champ <code>sha256</code> sert d'identifiant unique et immuable pour chaque couche et pour la configuration. C'est le <strong>Content Addressable Storage</strong>.
+                </p>
+                <p class="small">
+                    <strong>(c) Garantie technique :</strong> Cela garantit l'<strong>intégrité</strong> des données. Si un seul bit est modifié durant le transfert depuis un registre distant, le hash SHA256 ne correspondra plus, et Docker rejettera l'image, empêchant ainsi la corruption de données ou l'injection de code malveillant.
+                </p>
             </div>
         </section>
-
-        <section class="tp-section border-primary bg-primary bg-opacity-10">
-            <div class="text-center py-3">
-                <h4 class="text-info fw-bold"><i class="bi bi-check-all me-2"></i>Fin des Travaux Pratiques</h4>
-                <p class="mb-0">Ce rapport couvre l'intégralité des concepts de virtualisation légère, l'architecture Docker et les standards OCI étudiés sous la direction du <strong>Dr. Babou</strong>.</p>
-            </div>
-        </section>
-
     </main>
 
     <footer class="text-center py-5 text-secondary border-top border-dark">
