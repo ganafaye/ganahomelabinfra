@@ -3,22 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevOps - Jenkins Multi-Plateforme | Gana Faye</title>
+    <title>DevOps - Jenkins CI/CD | Gana Faye</title>
+    
+    <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Fira+Code&display=swap" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --jenkins-red: #d24939; --dark-bg: #0f172a; --card-bg: #1e293b; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: #f8fafc; }
-        .hero-jenkins { padding: 50px 0; background: linear-gradient(135deg, #d24939 0%, #1e293b 100%); border-bottom: 3px solid #fff; }
-        .section-card { background: var(--card-bg); border: 1px solid #334155; border-radius: 12px; padding: 25px; margin-bottom: 25px; }
-        .mono { font-family: 'Fira Code', monospace; color: #fca5a5; background: #000; padding: 2px 6px; border-radius: 4px; }
-        pre { background: #000; padding: 15px; border-radius: 8px; border: 1px solid #451a1a; color: #fff; overflow-x: auto; }
-        .os-badge { font-size: 0.85rem; padding: 5px 12px; border-radius: 20px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
-        .bg-ubuntu { background: #E95420; color: white; }
-        .bg-windows { background: #00a4ef; color: white; }
-        .bg-apple { background: #555555; color: white; }
-        .bg-docker { background: #2496ed; color: white; }
+        :root { 
+            --jenkins-red: #d24939; 
+            --jenkins-dark: #451a1a;
+            --dark-bg: #0f172a; 
+            --card-bg: #1e293b; 
+            --border: #334155;
+            --text-muted: #94a3b8;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--dark-bg); 
+            color: #f8fafc; 
+            line-height: 1.7;
+        }
+        
+        .hero-jenkins { 
+            padding: 60px 0; 
+            background: linear-gradient(135deg, #d24939 0%, #1e293b 100%); 
+            border-bottom: 4px solid #fff; 
+            margin-bottom: 40px;
+        }
+        
+        .section-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border); 
+            border-radius: 15px; 
+            padding: 30px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .mono { 
+            font-family: 'Fira Code', monospace; 
+            color: #fca5a5; 
+            background: #000; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+        }
+        
+        pre { 
+            background: #000; 
+            padding: 20px; 
+            border-radius: 10px; 
+            border: 1px solid var(--jenkins-red); 
+            color: #fff; 
+            overflow-x: auto; 
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin: 20px 0;
+        }
+        
+        .os-badge { 
+            font-size: 0.9rem; 
+            padding: 8px 15px; 
+            border-radius: 30px; 
+            font-weight: 600; 
+            margin-bottom: 15px; 
+            display: inline-block; 
+        }
+        
+        .bg-ubuntu { 
+            background: #E95420; 
+            color: white; 
+        }
+        
+        .bg-windows { 
+            background: #00a4ef; 
+            color: white; 
+        }
+        
+        .bg-apple { 
+            background: #555555; 
+            color: white; 
+        }
+        
+        .bg-docker {
+            background: #2496ed;
+            color: white;
+        }
+        
+        .bg-jenkins {
+            background: var(--jenkins-red);
+            color: white;
+        }
+        
+        .step-box {
+            background: rgba(0,0,0,0.2);
+            border-left: 4px solid var(--jenkins-red);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .step-title {
+            color: var(--jenkins-red);
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #fbbf24;
+        }
+        
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #6ee7b7;
+        }
+        
+        .info-box {
+            background: rgba(210, 73, 57, 0.1);
+            border: 1px solid var(--jenkins-red);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .badge-tp {
+            background: var(--jenkins-red);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        .tp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .tp-card {
+            background: #0b1a2a;
+            border: 1px solid var(--jenkins-red);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+        
+        .tp-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(210, 73, 57, 0.3);
+        }
+        
+        .tp-icon {
+            font-size: 3rem;
+            color: var(--jenkins-red);
+            margin-bottom: 15px;
+        }
+        
+        .tp-card h3 {
+            color: var(--jenkins-red);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .tp-card p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        
+        .tp-link {
+            display: inline-block;
+            background: var(--jenkins-red);
+            color: white;
+            text-decoration: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .tp-link:hover {
+            background: #b33e2f;
+            color: white;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding: 30px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+        }
     </style>
 </head>
 <body>
@@ -26,77 +218,521 @@
     <header class="hero-jenkins text-center mb-5">
         <div class="container">
             <h1 class="display-4 fw-bold"><i class="bi bi-gear-wide-connected"></i> Jenkins CI/CD</h1>
-            <p class="lead">Guide complet d'installation et de configuration multi-OS.</p>
+            <p class="lead">Automatisation, intégration continue et déploiement continu.</p>
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <span class="badge bg-ubuntu">Ubuntu</span>
+                <span class="badge bg-windows">Windows</span>
+                <span class="badge bg-apple">macOS</span>
+                <span class="badge bg-docker">Docker</span>
+            </div>
         </div>
     </header>
 
     <main class="container py-4">
         
+        <!-- SECTION 1 : QU'EST-CE QUE JENKINS -->
         <section class="section-card">
             <h2><i class="bi bi-info-circle"></i> 1. Qu'est-ce que Jenkins ?</h2>
-            <p>Jenkins est un serveur d'automatisation qui permet aux développeurs de construire, tester et déployer leur code de manière continue. C'est le cœur de la culture DevOps, permettant de transformer un commit GitHub en une application prête pour la production.</p>
+            <p>Jenkins est un serveur d'automatisation open-source qui permet aux développeurs de construire, tester et déployer leur code de manière continue. C'est le cœur de la culture DevOps, permettant de transformer un commit GitHub en une application prête pour la production en quelques minutes.</p>
+            
+            <div class="row mt-4">
+                <div class="col-md-4 text-center">
+                    <i class="bi bi-arrow-repeat fs-1 text-danger"></i>
+                    <h5>Intégration Continue</h5>
+                    <p class="small text-secondary">Build et test automatiques à chaque commit</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="bi bi-rocket-takeoff fs-1 text-danger"></i>
+                    <h5>Déploiement Continu</h5>
+                    <p class="small text-secondary">Déploiement automatique en production</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="bi bi-puzzle fs-1 text-danger"></i>
+                    <h5>Extensible</h5>
+                    <p class="small text-secondary">+ de 1800 plugins disponibles</p>
+                </div>
+            </div>
+            
+            <div class="info-box mt-4">
+                <i class="bi bi-lightbulb"></i>
+                <strong>Concept clé :</strong> Jenkins surveille les dépôts Git, déclenche des builds automatiques et exécute des pipelines définies en code (Jenkinsfile).
+            </div>
         </section>
 
+        <!-- SECTION TP : ACCÈS AUX TRAVAUX PRATIQUES -->
         <section class="section-card">
-            <h2><i class="bi bi-download"></i> 2. Méthodes d'Installation</h2>
+            <h2><i class="bi bi-journal-code"></i> Travaux Pratiques Jenkins</h2>
+            <p class="text-secondary">4 TP progressifs pour maîtriser Jenkins, du débutant à l'expert</p>
+            
+            <div class="tp-grid">
+                <!-- TP 1 -->
+                <div class="tp-card">
+                    <i class="bi bi-1-circle-fill tp-icon"></i>
+                    <h3>TP 1 : Installation</h3>
+                    <p>Installer Jenkins sur différentes plateformes et première configuration</p>
+                    <a href="jenkins-tp1.html" class="tp-link">Voir le TP <i class="bi bi-arrow-right"></i></a>
+                </div>
+                
+                <!-- TP 2 -->
+                <div class="tp-card">
+                    <i class="bi bi-2-circle-fill tp-icon"></i>
+                    <h3>TP 2 : Jobs et Builds</h3>
+                    <p>Créer des jobs, paramétrer des builds et analyser les résultats</p>
+                    <a href="jenkins-tp2.html" class="tp-link">voir le TP <i class="bi bi-arrow-right"></i></a>
+                </div>
+                
+                <!-- TP 3 -->
+                <div class="tp-card">
+                    <i class="bi bi-3-circle-fill tp-icon"></i>
+                    <h3>TP 3 : Pipelines</h3>
+                    <p>Créer des pipelines as code avec Jenkinsfile (Déclaratif et Scripté)</p>
+                    <a href="jenkins-tp3.html" class="tp-link">Voir le TP <i class="bi bi-arrow-right"></i></a>
+                </div>
+                
+                <!-- TP 4 -->
+                <div class="tp-card">
+                    <i class="bi bi-4-circle-fill tp-icon"></i>
+                    <h3>TP 4 : Intégration Continue</h3>
+                    <p>Connecter Jenkins à GitHub et automatiser le déploiement</p>
+                    <a href="jenkins-tp4.html" class="tp-link">Voir le TP <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="info-box mt-4">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <strong>Progression recommandée :</strong> Suivez les TP dans l'ordre pour une compréhension progressive.
+            </div>
+        </section>
 
-            <div class="mb-5">
-                <span class="os-badge bg-ubuntu"><i class="bi bi-ubuntu"></i> Ubuntu (Linux)</span>
-                <p class="small text-secondary">Utilisation du gestionnaire de paquets APT.</p>
-                <pre><code># 1. Installer Java (Pré-requis)
-sudo apt update && sudo apt install openjdk-17-jre -y
+        <!-- SECTION 2 : INSTALLATION DÉTAILLÉE -->
+        <section class="section-card">
+            <h2><i class="bi bi-download"></i> 2. Installation détaillée de Jenkins</h2>
+            <p class="text-secondary">Instructions complètes pour chaque système d'exploitation.</p>
 
-# 2. Ajouter la clé et le dépôt
-curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins.keyring.gpg > /dev/null
-echo deb [signed-by=/usr/share/keyrings/jenkins.keyring.gpg] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
-
-# 3. Installer Jenkins
-sudo apt update && sudo apt install jenkins -y</code></pre>
+            <!-- PRÉREQUIS COMMUN : JAVA -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-cup-hot-fill"></i> Prérequis : Java</div>
+                <p>Jenkins nécessite Java 11, 17 ou 21 pour fonctionner.</p>
+                
+                <h6 class="mt-3">Ubuntu / Debian</h6>
+                <pre><code>sudo apt update
+sudo apt install openjdk-17-jre-headless -y
+java -version</code></pre>
+                
+                <h6 class="mt-3">Windows</h6>
+                <pre><code># Télécharger Java depuis https://adoptium.net/
+# Installer et configurer JAVA_HOME dans les variables d'environnement</code></pre>
+                
+                <h6 class="mt-3">macOS</h6>
+                <pre><code>brew install openjdk@17
+sudo ln -sfn /usr/local/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk</code></pre>
             </div>
 
-            <div class="mb-5">
-                <span class="os-badge bg-windows"><i class="bi bi-microsoft"></i> Windows</span>
-                <p class="small text-secondary">Installation via l'installeur Windows (.msi).</p>
-                <ol class="small">
-                    <li>Télécharger l'installeur sur <a href="https://www.jenkins.io/download/" target="_blank" class="text-info">jenkins.io</a>.</li>
-                    <li>Installer **Java 11 ou 17** au préalable.</li>
-                    <li>Exécuter le fichier MSI et configurer le service pour qu'il s'exécute avec un compte utilisateur spécifique ou le compte système.</li>
-                    <li>Le service sera disponible sur <code class="mono">localhost:8080</code>.</li>
-                </ol>
+            <!-- UBUNTU / LINUX -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-ubuntu"></i> Ubuntu / Debian (APT)</div>
+                
+                <h6 class="mt-3">Étape 1 : Ajout de la clé et du dépôt Jenkins</h6>
+                <pre><code>curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null</code></pre>
+                
+                <h6 class="mt-3">Étape 2 : Installation</h6>
+                <pre><code>sudo apt update
+sudo apt install jenkins -y</code></pre>
+                
+                <h6 class="mt-3">Étape 3 : Démarrage du service</h6>
+                <pre><code>sudo systemctl enable jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins</code></pre>
+                
+                <div class="success-box mt-3">
+                    <i class="bi bi-check-circle-fill"></i> 
+                    <strong>Accès :</strong> <code class="mono">http://localhost:8080</code>
+                </div>
             </div>
 
-            <div class="mb-5">
-                <span class="os-badge bg-apple"><i class="bi bi-apple"></i> macOS (Apple)</span>
-                <p class="small text-secondary">Utilisation du gestionnaire Homebrew.</p>
-                <pre><code># Installer via Homebrew
+            <!-- WINDOWS -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-microsoft"></i> Windows (Installeur MSI)</div>
+                
+                <h6 class="mt-3">Étape 1 : Téléchargement</h6>
+                <pre><code># Aller sur https://www.jenkins.io/download/
+# Télécharger la version LTS pour Windows (jenkins.msi)</code></pre>
+                
+                <h6 class="mt-3">Étape 2 : Installation</h6>
+                <ul>
+                    <li>Exécuter l'installeur en tant qu'administrateur</li>
+                    <li>Choisir le dossier d'installation (par défaut: C:\Program Files\Jenkins)</li>
+                    <li>Spécifier le port (par défaut: 8080)</li>
+                    <li>Choisir le compte de service (recommandé: Run service as LocalSystem)</li>
+                    <li>Vérifier que Java est bien détecté</li>
+                </ul>
+                
+                <h6 class="mt-3">Étape 3 : Vérification</h6>
+                <pre><code># Le service Jenkins démarre automatiquement
+# Ouvrir un navigateur sur http://localhost:8080</code></pre>
+                
+                <div class="warning-box mt-3">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Note :</strong> Si le service ne démarre pas, vérifier dans "Services Windows" que Jenkins est bien lancé.
+                </div>
+            </div>
+
+            <!-- macOS -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-apple"></i> macOS (Homebrew)</div>
+                
+                <h6 class="mt-3">Installation</h6>
+                <pre><code># Installer Jenkins LTS
 brew install jenkins-lts
 
-# Lancer le service
-brew services start jenkins-lts</code></pre>
+# Démarrer le service
+brew services start jenkins-lts
+
+# Arrêter le service
+brew services stop jenkins-lts
+
+# Redémarrer
+brew services restart jenkins-lts</code></pre>
+                
+                <h6 class="mt-3">Installation de la version stable (non-LTS)</h6>
+                <pre><code>brew install jenkins
+brew services start jenkins</code></pre>
+                
+                <div class="success-box mt-3">
+                    <i class="bi bi-check-circle-fill"></i> 
+                    <strong>Accès :</strong> <code class="mono">http://localhost:8080</code>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <span class="os-badge bg-docker"><i class="bi bi-box-seam"></i> Docker (Universel)</span>
+            <!-- DOCKER -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-box-seam"></i> Docker (Universel)</div>
                 <p class="small text-secondary">La méthode la plus rapide pour tester sur n'importe quel OS.</p>
-                <pre><code>docker run -d -p 8080:8080 -p 50000:50000 --name jenkins-lab jenkins/jenkins:lts</code></pre>
+                
+                <h6 class="mt-3">Lancer Jenkins avec Docker</h6>
+                <pre><code># Télécharger et exécuter Jenkins
+docker run -d \
+  -p 8080:8080 \
+  -p 50000:50000 \
+  -v jenkins_home:/var/jenkins_home \
+  --name jenkins-lab \
+  jenkins/jenkins:lts
+
+# Voir les logs (pour récupérer le mot de passe initial)
+docker logs jenkins-lab</code></pre>
+                
+                <h6 class="mt-3">Avec Docker Compose</h6>
+                <p>Créer un fichier <code class="mono">docker-compose.yml</code> :</p>
+                <pre><code>version: '3.8'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins-lab
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+
+volumes:
+  jenkins_home:</code></pre>
+                
+                <pre><code>docker compose up -d</code></pre>
+                
+                <div class="info-box mt-3">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Avantage Docker :</strong> Installation propre, facile à supprimer et à reconstruire.
+                </div>
             </div>
         </section>
 
-        <section class="section-card border-start border-4 border-warning">
+        <!-- SECTION 3 : PREMIÈRE CONFIGURATION -->
+        <section class="section-card">
             <h2><i class="bi bi-shield-lock"></i> 3. Première Configuration</h2>
-            <p>Peu importe l'OS, la première étape est de déverrouiller Jenkins :</p>
-            <ul>
-                <li><strong>Localisation du mot de passe (Linux) :</strong> <br><code class="mono">/var/lib/jenkins/secrets/initialAdminPassword</code></li>
-                <li><strong>Accès Interface :</strong> Ouvrir un navigateur sur <code class="mono">http://localhost:8080</code>.</li>
-                <li><strong>Plugins :</strong> Choisir "Install suggested plugins" pour obtenir les outils Git et Pipeline.</li>
-            </ul>
+            
+            <div class="step-box">
+                <h5>Étape 1 : Déverrouiller Jenkins</h5>
+                <p>Peu importe l'OS, la première étape est de récupérer le mot de passe initial :</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Ubuntu / Linux</h6>
+                        <pre><code>sudo cat /var/lib/jenkins/secrets/initialAdminPassword</code></pre>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Windows</h6>
+                        <pre><code>type C:\ProgramData\Jenkins\.jenkins\secrets\initialAdminPassword</code></pre>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <h6>macOS (Homebrew)</h6>
+                        <pre><code>cat ~/.jenkins/secrets/initialAdminPassword</code></pre>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Docker</h6>
+                        <pre><code>docker exec jenkins-lab cat /var/jenkins_home/secrets/initialAdminPassword</code></pre>
+                    </div>
+                </div>
+                
+                <h6 class="mt-3">Accès interface :</h6>
+                <p>Ouvrir un navigateur sur <code class="mono">http://localhost:8080</code> et coller le mot de passe.</p>
+            </div>
+            
+            <div class="step-box">
+                <h5>Étape 2 : Installation des plugins</h5>
+                <ul>
+                    <li><strong>"Install suggested plugins"</strong> : Installation des plugins recommandés (Git, Pipeline, etc.)</li>
+                    <li><strong>"Select plugins to install"</strong> : Choix personnalisé des plugins</li>
+                </ul>
+                <p class="small text-secondary">L'installation peut prendre quelques minutes.</p>
+            </div>
+            
+            <div class="step-box">
+                <h5>Étape 3 : Création du premier utilisateur</h5>
+                <p>Créer un compte administrateur pour sécuriser l'accès :</p>
+                <ul>
+                    <li>Nom d'utilisateur</li>
+                    <li>Mot de passe</li>
+                    <li>Nom complet</li>
+                    <li>Adresse email</li>
+                </ul>
+            </div>
+            
+            <div class="step-box">
+                <h5>Étape 4 : Configuration de l'URL</h5>
+                <p>Définir l'URL racine de Jenkins (par défaut : <code class="mono">http://localhost:8080</code>).</p>
+            </div>
+            
+            <div class="success-box mt-3">
+                <i class="bi bi-check-circle-fill"></i>
+                <strong>Jenkins est prêt !</strong> Vous pouvez maintenant créer votre premier job.
+            </div>
         </section>
 
+        <!-- SECTION 4 : VÉRIFICATION POST-INSTALLATION -->
+        <section class="section-card">
+            <h2><i class="bi bi-check2-all"></i> 4. Vérification de l'installation</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Commandes de vérification (Linux/macOS)</h5>
+                    <pre><code># Statut du service
+sudo systemctl status jenkins
+
+# Logs Jenkins
+sudo journalctl -u jenkins -f
+
+# Ports ouverts
+ss -tlnp | grep 8080</code></pre>
+                </div>
+                <div class="col-md-6">
+                    <h5>Commandes de vérification (Windows)</h5>
+                    <pre><code># Dans PowerShell (Admin)
+Get-Service jenkins
+
+# Voir les logs
+Get-EventLog -LogName Application -Source "Jenkins" -Newest 10</code></pre>
+                </div>
+            </div>
+            
+            <div class="info-box mt-3">
+                <i class="bi bi-info-circle"></i>
+                <strong>Vérification ultime :</strong> Ouvrir <code class="mono">http://localhost:8080</code> dans un navigateur.
+            </div>
+        </section>
+
+        <!-- SECTION 5 : COMMANDES UTILES -->
+        <section class="section-card">
+            <h2><i class="bi bi-terminal"></i> 5. Commandes Jenkins essentielles</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Gestion du service (Linux)</h5>
+                    <pre><code>sudo systemctl start jenkins
+sudo systemctl stop jenkins
+sudo systemctl restart jenkins
+sudo systemctl status jenkins
+sudo systemctl enable jenkins</code></pre>
+                </div>
+                <div class="col-md-6">
+                    <h5>Gestion du service (macOS)</h5>
+                    <pre><code>brew services start jenkins-lts
+brew services stop jenkins-lts
+brew services restart jenkins-lts
+brew services list</code></pre>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h5>Logs (Linux)</h5>
+                    <pre><code>sudo journalctl -u jenkins -f
+sudo tail -f /var/log/jenkins/jenkins.log</code></pre>
+                </div>
+                <div class="col-md-6">
+                    <h5>Logs (Docker)</h5>
+                    <pre><code>docker logs -f jenkins-lab
+docker exec -it jenkins-lab bash</code></pre>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h5>Répertoire d'installation</h5>
+                    <pre><code># Linux
+/var/lib/jenkins/
+
+# Windows
+C:\ProgramData\Jenkins\.jenkins\
+
+# macOS
+~/.jenkins/</code></pre>
+                </div>
+                <div class="col-md-6">
+                    <h5>Fichiers importants</h5>
+                    <pre><code># Configuration
+/var/lib/jenkins/config.xml
+
+# Jobs
+/var/lib/jenkins/jobs/
+
+# Plugins
+/var/lib/jenkins/plugins/</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6 : DÉPANNAGE -->
+        <section class="section-card">
+            <h2><i class="bi bi-bug"></i> 6. Dépannage courant</h2>
+            
+            <div class="warning-box">
+                <h5>Erreur : Jenkins ne démarre pas</h5>
+                <pre><code># Vérifier que Java est installé
+java -version
+
+# Vérifier les logs
+sudo journalctl -u jenkins -e
+
+# Vérifier les permissions
+sudo chown -R jenkins:jenkins /var/lib/jenkins</code></pre>
+            </div>
+            
+            <div class="warning-box">
+                <h5>Erreur : Port 8080 déjà utilisé</h5>
+                <pre><code># Trouver le processus
+sudo lsof -i :8080
+
+# Changer le port dans Jenkins
+sudo nano /etc/default/jenkins
+# Modifier HTTP_PORT=8081
+sudo systemctl restart jenkins</code></pre>
+            </div>
+            
+            <div class="warning-box">
+                <h5>Erreur : Permission denied</h5>
+                <pre><code># Sur Linux
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
+
+# Vérifier les permissions du répertoire
+sudo chown -R jenkins:jenkins /var/lib/jenkins</code></pre>
+            </div>
+            
+            <div class="warning-box">
+                <h5>Erreur : Mot de passe initial non trouvé</h5>
+                <pre><code># Re-générer le mot de passe
+sudo java -jar /usr/share/jenkins/jenkins.war --httpPort=8081
+# ou via Docker
+docker exec jenkins-lab cat /var/jenkins_home/secrets/initialAdminPassword</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 7 : RESSOURCES -->
+        <section class="section-card">
+            <h2><i class="bi bi-link"></i> 7. Ressources officielles</h2>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="https://www.jenkins.io/doc/" target="_blank" class="text-decoration-none text-white">
+                        <div class="bg-dark p-3 rounded text-center">
+                            <i class="bi bi-file-text fs-2"></i>
+                            <h5>Documentation officielle</h5>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="https://plugins.jenkins.io/" target="_blank" class="text-decoration-none text-white">
+                        <div class="bg-dark p-3 rounded text-center">
+                            <i class="bi bi-puzzle fs-2"></i>
+                            <h5>Plugins Jenkins</h5>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="https://github.com/jenkinsci" target="_blank" class="text-decoration-none text-white">
+                        <div class="bg-dark p-3 rounded text-center">
+                            <i class="bi bi-github fs-2"></i>
+                            <h5>GitHub Jenkins</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8 : CONCLUSION -->
+        <section class="section-card">
+            <h2><i class="bi bi-trophy"></i> 8. Conclusion</h2>
+            <p>Félicitations ! Vous avez maintenant une compréhension complète de Jenkins :</p>
+            
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-1-circle fs-1 text-danger"></i>
+                    <h6>Installation</h6>
+                    <p class="small">Sur toutes les plateformes</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-2-circle fs-1 text-danger"></i>
+                    <h6>Configuration</h6>
+                    <p class="small">Plugins et utilisateurs</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-3-circle fs-1 text-danger"></i>
+                    <h6>Jobs et Builds</h6>
+                    <p class="small">Premiers pipelines</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-4-circle fs-1 text-danger"></i>
+                    <h6>Intégration Continue</h6>
+                    <p class="small">CI/CD avec GitHub</p>
+                </div>
+            </div>
+            
+            <div class="success-box mt-4">
+                <i class="bi bi-check-circle-fill"></i> 
+                <strong>Prochaine étape :</strong> Choisissez un TP ci-dessus pour commencer à pratiquer  avec moi !
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Documentation réalisée par <strong>Gana Faye</strong> - Master 1 SI - Dakar 2026</p>
+            <p class="mt-2">
+                <i class="bi bi-github"></i> <a href="#" class="text-white-50 text-decoration-none">GitHub</a> | 
+                <i class="bi bi-linkedin"></i> <a href="#" class="text-white-50 text-decoration-none">LinkedIn</a>
+            </p>
+        </footer>
     </main>
 
-    <footer class="text-center py-4 opacity-50 border-top border-secondary">
-        <p>Gana Faye - Master 1 SI - Dakar 2026</p>
-    </footer>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

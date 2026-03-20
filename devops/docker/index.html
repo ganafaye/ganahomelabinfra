@@ -6,18 +6,207 @@
     <title>DevOps - Docker Multi-Plateforme | Gana Faye</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
     <style>
-        :root { --docker-blue: #2496ed; --dark-bg: #0f172a; --card-bg: #1e293b; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: #f8fafc; }
-        .hero-docker { padding: 50px 0; background: linear-gradient(135deg, #2496ed 0%, #1d273b 100%); border-bottom: 3px solid #fff; }
-        .section-card { background: var(--card-bg); border: 1px solid #334155; border-radius: 12px; padding: 25px; margin-bottom: 25px; }
-        .mono { font-family: 'Fira Code', monospace; color: #7dd3fc; background: #000; padding: 2px 6px; border-radius: 4px; }
-        pre { background: #000; padding: 15px; border-radius: 8px; border: 1px solid #2496ed; color: #fff; overflow-x: auto; }
-        .os-badge { font-size: 0.85rem; padding: 5px 12px; border-radius: 20px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
-        .bg-ubuntu { background: #E95420; color: white; }
-        .bg-windows { background: #00a4ef; color: white; }
-        .bg-apple { background: #555555; color: white; }
+        :root { 
+            --docker-blue: #2496ed; 
+            --dark-bg: #0f172a; 
+            --card-bg: #1e293b; 
+            --border: #334155;
+            --text-muted: #94a3b8;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--dark-bg); 
+            color: #f8fafc; 
+            line-height: 1.7;
+        }
+        
+        .hero-docker { 
+            padding: 60px 0; 
+            background: linear-gradient(135deg, #2496ed 0%, #1d273b 100%); 
+            border-bottom: 4px solid #fff; 
+            margin-bottom: 40px;
+        }
+        
+        .section-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border); 
+            border-radius: 15px; 
+            padding: 30px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .mono { 
+            font-family: 'Fira Code', monospace; 
+            color: #7dd3fc; 
+            background: #000; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+        }
+        
+        pre { 
+            background: #000; 
+            padding: 20px; 
+            border-radius: 10px; 
+            border: 1px solid var(--docker-blue); 
+            color: #fff; 
+            overflow-x: auto; 
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin: 20px 0;
+        }
+        
+        .os-badge { 
+            font-size: 0.9rem; 
+            padding: 8px 15px; 
+            border-radius: 30px; 
+            font-weight: 600; 
+            margin-bottom: 15px; 
+            display: inline-block; 
+        }
+        
+        .bg-ubuntu { 
+            background: #E95420; 
+            color: white; 
+        }
+        
+        .bg-windows { 
+            background: #00a4ef; 
+            color: white; 
+        }
+        
+        .bg-apple { 
+            background: #555555; 
+            color: white; 
+        }
+        
+        .bg-docker {
+            background: var(--docker-blue);
+            color: white;
+        }
+        
+        .step-box {
+            background: rgba(0,0,0,0.2);
+            border-left: 4px solid var(--docker-blue);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .step-title {
+            color: var(--docker-blue);
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #fbbf24;
+        }
+        
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #6ee7b7;
+        }
+        
+        .info-box {
+            background: rgba(36, 150, 237, 0.1);
+            border: 1px solid var(--docker-blue);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .badge-tp {
+            background: var(--docker-blue);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        .tp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .tp-card {
+            background: #0b1a2a;
+            border: 1px solid var(--docker-blue);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+        
+        .tp-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(36,150,237,0.3);
+        }
+        
+        .tp-icon {
+            font-size: 3rem;
+            color: var(--docker-blue);
+            margin-bottom: 15px;
+        }
+        
+        .tp-card h3 {
+            color: var(--docker-blue);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .tp-card p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        
+        .tp-link {
+            display: inline-block;
+            background: var(--docker-blue);
+            color: white;
+            text-decoration: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .tp-link:hover {
+            background: #1b7bb4;
+            color: white;
+        }
+        
+        .code-comment {
+            color: #6b7280;
+            font-style: italic;
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding: 30px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+        }
     </style>
 </head>
 <body>
@@ -26,125 +215,456 @@
         <div class="container">
             <h1 class="display-4 fw-bold"><i class="bi bi-box-seam"></i> Docker & Conteneurisation</h1>
             <p class="lead">Standardisation des environnements de développement et de production.</p>
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <span class="badge bg-ubuntu">Ubuntu</span>
+                <span class="badge bg-windows">Windows</span>
+                <span class="badge bg-apple">macOS</span>
+                <span class="badge bg-docker">Docker Desktop</span>
+            </div>
         </div>
     </header>
 
     <main class="container py-4">
         
+        <!-- SECTION 1 : QU'EST-CE QUE DOCKER -->
         <section class="section-card">
             <h2><i class="bi bi-info-circle"></i> 1. Qu'est-ce que Docker ?</h2>
-            <p>Docker est une plateforme permettant de lancer des applications dans des environnements isolés appelés <strong>conteneurs</strong>. Contrairement aux machines virtuelles, les conteneurs partagent le noyau du système hôte, ce qui les rend extrêmement légers et rapides.</p>
+            <p>Docker est une plateforme de conteneurisation qui permet d'empaqueter des applications et leurs dépendances dans des conteneurs légers et portables. Contrairement aux machines virtuelles, les conteneurs partagent le noyau du système hôte, ce qui les rend extrêmement rapides et économes en ressources.</p>
             
+            <div class="row mt-4">
+                <div class="col-md-4 text-center">
+                    <i class="bi bi-rocket-takeoff fs-1 text-info"></i>
+                    <h5>Léger</h5>
+                    <p class="small text-secondary">Démarrage en quelques secondes</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="bi bi-arrow-repeat fs-1 text-info"></i>
+                    <h5>Portable</h5>
+                    <p class="small text-secondary">Fonctionne partout de la même façon</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="bi bi-shield-check fs-1 text-info"></i>
+                    <h5>Isolé</h5>
+                    <p class="small text-secondary">Chaque conteneur est indépendant</p>
+                </div>
+            </div>
         </section>
 
+        <!-- SECTION TP : ACCÈS AUX TRAVAUX PRATIQUES -->
         <section class="section-card">
-            <h2><i class="bi bi-download"></i> 2. Méthodes d'Installation</h2>
-
-            <div class="mb-5">
-                <span class="os-badge bg-ubuntu"><i class="bi bi-ubuntu"></i> Ubuntu (Docker Engine)</span>
-                <p class="small text-secondary">Idéal pour les serveurs et les instances AWS EC2.</p>
-                <pre><code># Mise à jour des dépôts
-sudo apt update
-sudo apt install ca-certificates curl gnupg -y
-
-# Ajout de la clé officielle Docker
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-
-# Installation du moteur
-sudo apt update
-sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin -y</code></pre>
+            <h2><i class="bi bi-journal-code"></i> Découvrez mes Travaux Pratiques Docker</h2>
+            <p class="text-secondary">4 TP progressifs pour maîtriser Docker, du débutant à l'expert</p>
+            
+            <div class="tp-grid">
+                <!-- TP 1 -->
+                <div class="tp-card">
+                    <i class="bi bi-1-circle-fill tp-icon"></i>
+                    <h3>TP 1 : Premiers pas</h3>
+                    <p>Découvrir les commandes de base : run, ps, stop, rm, logs, exec</p>
+                    <a href="docker-tp1.html" class="tp-link">Voir le TP <i class="bi bi-arrow-right"></i></a>
+                </div>
+                
+                <!-- TP 2 -->
+                <div class="tp-card">
+                    <i class="bi bi-2-circle-fill tp-icon"></i>
+                    <h3>TP 2 : Images Docker</h3>
+                    <p>Créer et gérer des images personnalisées avec Dockerfile</p>
+                    <a href="docker-tp2.html" class="tp-link">Voir le TP <i class="bi bi-arrow-right"></i></a>
+                </div>
+                
+                <!-- TP 3 -->
+                <div class="tp-card">
+                    <i class="bi bi-3-circle-fill tp-icon"></i>
+                    <h3>TP 3 : Docker Compose</h3>
+                    <p>Orchestrer des applications multi-conteneurs</p>
+                    <a href="docker-tp3.html" class="tp-link">Voir le TP <i class="bi bi-arrow-right"></i></a>
+                </div>
+                
+                <!-- TP 4 -->
+                <div class="tp-card">
+                    <i class="bi bi-4-circle-fill tp-icon"></i>
+                    <h3>TP 4 : Projet Odoo</h3>
+                    <p>Déploiement complet d'Odoo avec PostgreSQL</p>
+                    <a href="docker-tp4.html" class="tp-link">Voir le TP <i class="bi bi-arrow-right"></i></a>
+                </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="p-3 border border-secondary rounded">
-                        <span class="os-badge bg-windows"><i class="bi bi-microsoft"></i> Windows Desktop</span>
-                        <p class="small">Installation via l'exécutable **Docker Desktop**. Nécessite l'activation de **WSL 2** ou Hyper-V.</p>
-                        <a href="https://www.docker.com/products/docker-desktop/" target="_blank" class="btn btn-sm btn-outline-info">Télécharger l'installeur</a>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="p-3 border border-secondary rounded">
-                        <span class="os-badge bg-apple"><i class="bi bi-apple"></i> macOS Desktop</span>
-                        <p class="small">Disponible pour puces Intel et **Apple Silicon (M1/M2/M3)** via Docker Desktop.</p>
-                        <pre><code># Installation via Homebrew
-brew install --cask docker</code></pre>
-                    </div>
-                </div>
+            
+            <div class="info-box mt-4">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <strong>Progression recommandée :</strong> Suivez les TP dans l'ordre pour une compréhension progressive.
             </div>
         </section>
 
-        <section class="section-card border-start border-4 border-info">
-            <h2><i class="bi bi-check2-all"></i> 3. Vérification de l'Installation</h2>
-            <p>Une fois installé, vérifiez que le daemon Docker répond correctement :</p>
-            <pre><code># Vérifier la version
+        <!-- SECTION 2 : INSTALLATION DÉTAILLÉE -->
+        <section class="section-card">
+            <h2><i class="bi bi-download"></i> 2. Installation détaillée de Docker</h2>
+            <p class="text-secondary">Instructions complètes pour chaque système d'exploitation.</p>
+
+            <!-- UBUNTU / LINUX -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-ubuntu"></i> Ubuntu / Debian (Docker Engine)</div>
+                
+                <h6 class="mt-3">Étape 1 : Nettoyage des anciennes versions</h6>
+                <pre><code>sudo apt remove docker docker-engine docker.io containerd runc</code></pre>
+                
+                <h6 class="mt-3">Étape 2 : Mise à jour des dépôts</h6>
+                <pre><code>sudo apt update
+sudo apt install ca-certificates curl gnupg lsb-release -y</code></pre>
+                
+                <h6 class="mt-3">Étape 3 : Ajout de la clé GPG officielle Docker</h6>
+                <pre><code>sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg</code></pre>
+                
+                <h6 class="mt-3">Étape 4 : Ajout du dépôt Docker</h6>
+                <pre><code>echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null</code></pre>
+                
+                <h6 class="mt-3">Étape 5 : Installation de Docker Engine</h6>
+                <pre><code>sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y</code></pre>
+                
+                <h6 class="mt-3">Étape 6 : Démarrage et activation</h6>
+                <pre><code>sudo systemctl enable docker
+sudo systemctl start docker
+sudo systemctl status docker</code></pre>
+                
+                <h6 class="mt-3">Étape 7 : Configuration des permissions (optionnel mais recommandé)</h6>
+                <pre><code>sudo usermod -aG docker $USER
+# Déconnexion/reconnexion nécessaire après cette commande</code></pre>
+                
+                <div class="success-box mt-3">
+                    <i class="bi bi-check-circle-fill"></i> 
+                    <strong>Vérification :</strong> <code class="mono">docker --version && docker run hello-world</code>
+                </div>
+            </div>
+
+            <!-- WINDOWS -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-microsoft"></i> Windows (Docker Desktop)</div>
+                
+                <h6 class="mt-3">Prérequis :</h6>
+                <ul>
+                    <li>Windows 10/11 64-bit (Pro, Enterprise ou Education)</li>
+                    <li>Activation de la virtualisation dans le BIOS</li>
+                    <li>WSL 2 (Windows Subsystem for Linux) recommandé</li>
+                </ul>
+                
+                <h6 class="mt-3">Étape 1 : Activer WSL 2 (recommandé)</h6>
+                <pre><code># Dans PowerShell (Administrateur)
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+# Redémarrer ensuite</code></pre>
+                
+                <h6 class="mt-3">Étape 2 : Télécharger et installer Docker Desktop</h6>
+                <pre><code># Télécharger depuis le site officiel
+https://www.docker.com/products/docker-desktop/
+
+# Exécuter l'installateur et suivre les instructions
+# Cocher "Use WSL 2 instead of Hyper-V" pendant l'installation</code></pre>
+                
+                <h6 class="mt-3">Étape 3 : Configuration post-installation</h6>
+                <pre><code># Ouvrir Docker Desktop (l'icône apparaît dans la barre des tâches)
+# Aller dans Settings → Resources → WSL Integration
+# Activer l'intégration avec vos distributions WSL</code></pre>
+                
+                <div class="success-box mt-3">
+                    <i class="bi bi-check-circle-fill"></i> 
+                    <strong>Vérification :</strong> Ouvrir PowerShell ou CMD et taper <code class="mono">docker --version</code>
+                </div>
+            </div>
+
+            <!-- macOS -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-apple"></i> macOS (Docker Desktop)</div>
+                
+                <h6 class="mt-3">Prérequis :</h6>
+                <ul>
+                    <li>macOS version 11 (Big Sur) ou ultérieure</li>
+                    <li>Compatible Intel et Apple Silicon (M1/M2/M3)</li>
+                </ul>
+                
+                <h6 class="mt-3">Méthode 1 : Installation manuelle</h6>
+                <pre><code># Télécharger Docker Desktop depuis
+https://www.docker.com/products/docker-desktop/
+
+# Ouvrir le fichier .dmg téléchargé
+# Glisser Docker vers le dossier Applications
+# Lancer Docker depuis Applications</code></pre>
+                
+                <h6 class="mt-3">Méthode 2 : Installation via Homebrew</h6>
+                <pre><code># Installer Homebrew si ce n'est pas déjà fait
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Installer Docker Desktop
+brew install --cask docker</code></pre>
+                
+                <h6 class="mt-3">Étape 3 : Premier lancement</h6>
+                <pre><code># Ouvrir Docker depuis Applications
+# Accepter les conditions d'utilisation
+# L'icône de baleine apparaît dans la barre de menus</code></pre>
+                
+                <div class="success-box mt-3">
+                    <i class="bi bi-check-circle-fill"></i> 
+                    <strong>Vérification :</strong> Ouvrir Terminal et taper <code class="mono">docker --version</code>
+                </div>
+            </div>
+
+            <!-- RHEL / CentOS / Fedora -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-linux"></i> RHEL / CentOS / Fedora</div>
+                
+                <pre><code># Installation sur RHEL/CentOS
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+sudo systemctl enable docker
+sudo systemctl start docker
+
+# Installation sur Fedora
+sudo dnf -y install dnf-plugins-core
+sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+sudo dnf install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+sudo systemctl enable docker
+sudo systemctl start docker</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 3 : VÉRIFICATION POST-INSTALLATION -->
+        <section class="section-card">
+            <h2><i class="bi bi-check2-all"></i> 3. Vérification de l'installation</h2>
+            
+            <div class="step-box">
+                <h5>Commandes de vérification</h5>
+                <pre><code># Version de Docker
 docker --version
 
-# Lancer le conteneur de test universel
-sudo docker run hello-world</code></pre>
-            <p class="small text-secondary mt-2">
-                <i class="bi bi-exclamation-triangle"></i> Sur Linux, n'oubliez pas d'ajouter votre utilisateur au groupe docker pour éviter d'utiliser <span class="mono">sudo</span> : <br>
-                <code class="mono">sudo usermod -aG docker $USER</code>
-            </p>
+# Version de Docker Compose
+docker compose version
+
+# Informations système
+docker info
+
+# Test avec le conteneur hello-world
+docker run hello-world
+
+# Vérification des conteneurs en cours
+docker ps
+
+# Vérification des images téléchargées
+docker images</code></pre>
+                
+                <div class="info-box">
+                    <i class="bi bi-info-circle"></i> 
+                    <strong>Résultat attendu :</strong> Le conteneur hello-world doit afficher un message de bienvenue.
+                </div>
+            </div>
         </section>
-        <div class="mb-5">
-    <span class="os-badge bg-primary text-white"><i class="bi bi-window"></i> Docker Desktop (Windows & Mac)</span>
-    <p class="mt-2">Docker Desktop est une application conviviale qui inclut <strong>Docker Engine</strong>, <strong>Docker CLI</strong>, <strong>Docker Compose</strong> et même un cluster <strong>Kubernetes</strong> local.</p>
-    
-    <div class="row g-3 mt-2">
-        <div class="col-md-6">
-            <div class="p-3 border border-info rounded bg-dark">
-                <h6><i class="bi bi-microsoft"></i> Pour Windows</h6>
-                <ul class="small">
-                    <li>Nécessite <strong>WSL 2</strong> (Windows Subsystem for Linux).</li>
-                    <li>Activer la virtualisation dans le BIOS.</li>
-                    <li>Permet d'utiliser Docker directement dans le terminal PowerShell ou CMD.</li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="p-3 border border-secondary rounded bg-dark">
-                <h6><i class="bi bi-apple"></i> Pour macOS</h6>
-                <ul class="small">
-                    <li>Compatible avec puces <strong>Intel</strong> et <strong>Apple Silicon (M1, M2, M3)</strong>.</li>
-                    <li>Utilise une machine virtuelle Linux légère et transparente.</li>
-                    <li>Installation simple via fichier <span class="mono">.dmg</span> ou Brew.</li>
-                </ul>
-            </div>
-        </div>
-    </div>
 
-    <div class="mt-4 p-3 bg-opacity-10 bg-info border border-info rounded">
-        <h6><i class="bi bi-gear-fill"></i> Pourquoi utiliser Docker Desktop ?</h6>
-        <div class="row text-center mt-3">
-            <div class="col-4">
-                <i class="bi bi-gui-index fs-3"></i>
-                <p class="small">Interface Graphique (Dashboard)</p>
-            </div>
-            <div class="col-4">
-                <i class="bi bi-shield-check fs-3"></i>
-                <p class="small">Scan de vulnérabilités</p>
-            </div>
-            <div class="col-4">
-                <i class="bi bi-infinity fs-3"></i>
-                <p class="small">Kubernetes en 1 clic</p>
-            </div>
-        </div>
-    </div>
-</div>
+        <!-- SECTION 4 : COMMANDES UTILES -->
+        <section class="section-card">
+            <h2><i class="bi bi-terminal"></i> 4. Commandes Docker essentielles</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Gestion des conteneurs</h5>
+                    <pre><code># Lister les conteneurs
+docker ps          # En cours
+docker ps -a       # Tous
 
-<div class="mb-5">
-    <span class="os-badge bg-ubuntu"><i class="bi bi-ubuntu"></i> Docker Engine (Linux Natif)</span>
-    <p class="small text-secondary">Contrairement à Desktop, il s'exécute directement sur le noyau Linux sans couche de virtualisation supplémentaire.</p>
-    <pre><code class="mono"># Commande rapide pour Ubuntu
-curl -fsSL https://get.docker
+# Démarrer/arrêter
+docker start nom_conteneur
+docker stop nom_conteneur
+docker restart nom_conteneur
 
+# Supprimer
+docker rm nom_conteneur
+docker container prune  # Tous arrêtés
+
+# Exécuter une commande
+docker exec -it nom_conteneur bash
+
+# Logs
+docker logs -f nom_conteneur</code></pre>
+                </div>
+                <div class="col-md-6">
+                    <h5>Gestion des images</h5>
+                    <pre><code># Lister les images
+docker images
+
+# Télécharger une image
+docker pull ubuntu:22.04
+
+# Supprimer une image
+docker rmi image_id
+
+# Construire une image
+docker build -t nom:tag .
+
+# Taguer une image
+docker tag image_id user/nom:tag
+
+# Pousser vers Docker Hub
+docker push user/nom:tag</code></pre>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h5>Docker Compose</h5>
+                    <pre><code># Démarrer les services
+docker compose up -d
+
+# Arrêter les services
+docker compose down
+
+# Voir les logs
+docker compose logs -f
+
+# Reconstruire
+docker compose build
+
+# Lister les services
+docker compose ps</code></pre>
+                </div>
+                <div class="col-md-6">
+                    <h5>Nettoyage</h5>
+                    <pre><code># Supprimer conteneurs arrêtés
+docker container prune
+
+# Supprimer images non utilisées
+docker image prune
+
+# Supprimer volumes non utilisés
+docker volume prune
+
+# Supprimer tout (⚠️ attention)
+docker system prune -a --volumes</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5 : DÉPANNAGE -->
+        <section class="section-card">
+            <h2><i class="bi bi-bug"></i> 5. Dépannage courant</h2>
+            
+            <div class="warning-box">
+                <h5>Erreur : permission denied</h5>
+                <p>Sur Linux, si vous devez utiliser <code class="mono">sudo</code> à chaque fois :</p>
+                <pre><code>sudo usermod -aG docker $USER
+# Déconnectez-vous et reconnectez-vous</code></pre>
+            </div>
+            
+            <div class="warning-box">
+                <h5>Erreur : port déjà utilisé</h5>
+                <pre><code># Trouver le processus utilisant le port
+sudo lsof -i :8069
+# ou
+netstat -tulpn | grep 8069
+
+# Changer le port dans docker-compose.yml
+ports:
+  - "8070:8069"  # Utilise le port 8070 à la place</code></pre>
+            </div>
+            
+            <div class="warning-box">
+                <h5>Erreur : plus d'espace disque</h5>
+                <pre><code># Voir l'espace utilisé par Docker
+docker system df
+
+# Nettoyer
+docker system prune -a --volumes</code></pre>
+            </div>
+            
+            <div class="warning-box">
+                <h5>Erreur : WSL 2 sous Windows</h5>
+                <pre><code># Vérifier la version de WSL
+wsl --list --verbose
+
+# Mettre WSL 2 par défaut
+wsl --set-default-version 2
+
+# Installer une distribution Linux
+wsl --install -d Ubuntu</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 6 : RESSOURCES -->
+        <section class="section-card">
+            <h2><i class="bi bi-link"></i> 6. Ressources officielles</h2>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="https://docs.docker.com/" target="_blank" class="text-decoration-none text-white">
+                        <div class="bg-dark p-3 rounded text-center">
+                            <i class="bi bi-file-text fs-2"></i>
+                            <h5>Documentation officielle</h5>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="https://hub.docker.com/" target="_blank" class="text-decoration-none text-white">
+                        <div class="bg-dark p-3 rounded text-center">
+                            <i class="bi bi-cloud fs-2"></i>
+                            <h5>Docker Hub</h5>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="https://github.com/docker" target="_blank" class="text-decoration-none text-white">
+                        <div class="bg-dark p-3 rounded text-center">
+                            <i class="bi bi-github fs-2"></i>
+                            <h5>GitHub Docker</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7 : CONCLUSION -->
+        <section class="section-card">
+            <h2><i class="bi bi-trophy"></i> 7. Conclusion</h2>
+            <p>Félicitations ! Vous avez maintenant une compréhension complète de Docker :</p>
+            
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-1-circle fs-1 text-info"></i>
+                    <h6>Installation</h6>
+                    <p class="small">Sur toutes les plateformes</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-2-circle fs-1 text-info"></i>
+                    <h6>Commandes de base</h6>
+                    <p class="small">run, ps, stop, rm</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-3-circle fs-1 text-info"></i>
+                    <h6>Docker Compose</h6>
+                    <p class="small">Applications multi-conteneurs</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-4-circle fs-1 text-info"></i>
+                    <h6>Projet Odoo</h6>
+                    <p class="small">Déploiement complet</p>
+                </div>
+            </div>
+            
+            <div class="success-box mt-4">
+                <i class="bi bi-check-circle-fill"></i> 
+                <strong>Prochaine étape :</strong> Choisissez un TP ci-dessus pour commencer à pratiquer !
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Documentation réalisée par <strong>Gana Faye</strong> - Master 1 SI - Spécialisation DevOps 2026</p>
+            <p class="mt-2">
+                <i class="bi bi-github"></i> <a href="#" class="text-white-50 text-decoration-none">GitHub</a> | 
+                <i class="bi bi-linkedin"></i> <a href="#" class="text-white-50 text-decoration-none">LinkedIn</a> | 
+                <i class="bi bi-docker"></i> <a href="#" class="text-white-50 text-decoration-none">Docker Hub</a>
+            </p>
+        </footer>
     </main>
 
-    <footer class="text-center py-4 opacity-50 border-top border-secondary">
-        <p>Gana Faye - Master 1 SI - Spécialisation DevOps 2026</p>
-    </footer>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

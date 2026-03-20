@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Technique Odoo 18 - Homelab Gana Faye</title>
+    
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js pour coloration syntaxique -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #875a7b;
+            --secondary: #38bdf8;
+            --dark: #0f172a;
+            --darker: #020617;
+            --card-bg: #1e293b;
+            --border: #334155;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* Navigation latérale */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 280px;
+            background: var(--darker);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            z-index: 1000;
+            padding: 20px 0;
+        }
+
+        .sidebar-logo {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-logo h3 {
+            color: var(--primary);
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .sidebar-logo p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin: 5px 0 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-item {
+            margin-bottom: 2px;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 10px 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            font-size: 0.95rem;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: rgba(135, 90, 123, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-link i {
+            margin-right: 10px;
+            width: 20px;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-submenu {
+            list-style: none;
+            padding-left: 45px;
+            display: none;
+        }
+
+        .sidebar-item.open .sidebar-submenu {
+            display: block;
+        }
+
+        .sidebar-submenu-link {
+            display: block;
+            padding: 5px 0;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .sidebar-submenu-link:hover {
+            color: var(--secondary);
+        }
+
+        /* Contenu principal */
+        .main-content {
+            margin-left: 280px;
+            padding: 30px 40px;
+            max-width: 1200px;
+        }
+
+        /* En-tête de page */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .badge-version {
+            background: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        /* Sections */
+        .doc-section {
+            margin-bottom: 50px;
+            scroll-margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+            color: var(--primary);
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+
+        .subsection-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 30px 0 20px;
+            color: var(--secondary);
+        }
+
+        /* Cartes */
+        .card-method {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: transform 0.3s;
+        }
+
+        .card-method:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .method-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .method-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(135, 90, 123, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .method-icon i {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .method-title {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .method-badge {
+            background: var(--primary);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+        }
+
+        /* Blocs de code */
+        pre {
+            background: var(--darker) !important;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px !important;
+            margin: 20px 0 !important;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        code:not([class*="language-"]) {
+            background: rgba(0,0,0,0.3);
+            color: #d4a5c9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Boîtes d'information */
+        .info-box {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--secondary);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #fbbf24;
+        }
+
+        .danger-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #f87171;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #6ee7b7;
+        }
+
+        .info-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        /* Steps */
+        .step-container {
+            margin: 20px 0;
+        }
+
+        .step-item {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--secondary);
+        }
+
+        /* Tableaux */
+        .doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .doc-table th {
+            background: var(--primary);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .doc-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .doc-table tr:hover {
+            background: rgba(255,255,255,0.02);
+        }
+
+        /* Tags */
+        .tech-tag {
+            display: inline-block;
+            background: rgba(135, 90, 123, 0.2);
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+
+        /* Bouton retour haut */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 999;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+        }
+
+        .back-to-top:hover {
+            background: #9b6b8c;
+            color: white;
+        }
+
+        /* Footer */
+        .doc-footer {
+            margin-top: 50px;
+            padding: 30px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: var(--primary);
+                border: none;
+                color: white;
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Bouton menu mobile -->
+    <button class="menu-toggle d-md-none" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <h3>Odoo 18</h3>
+            <p>Documentation technique</p>
+            <div class="d-flex gap-2 mt-2">
+                <span class="tech-tag">Native</span>
+                <span class="tech-tag">Docker</span>
+                <span class="tech-tag">PostgreSQL</span>
+            </div>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <a href="#introduction" class="sidebar-link" onclick="setActive(this)">
+                    <i class="bi bi-house-door"></i> Introduction
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="#prerequis" class="sidebar-link" onclick="setActive(this)">
+                    <i class="bi bi-check-circle"></i> Prérequis
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="#methode1" class="sidebar-link" onclick="setActive(this)">
+                    <i class="bi bi-cpu"></i> Méthode 1 : Native
+                </a>
+                <ul class="sidebar-submenu">
+                    <li><a href="#native-dep" class="sidebar-submenu-link">Dépendances</a></li>
+                    <li><a href="#native-postgres" class="sidebar-submenu-link">PostgreSQL</a></li>
+                    <li><a href="#native-odoo" class="sidebar-submenu-link">Installation Odoo</a></li>
+                    <li><a href="#native-service" class="sidebar-submenu-link">Service Systemd</a></li>
+                </ul>
+            </li>
+            <li class="sidebar-item">
+                <a href="#methode2" class="sidebar-link" onclick="setActive(this)">
+                    <i class="bi bi-box-seam"></i> Méthode 2 : Docker
+                </a>
+                <ul class="sidebar-submenu">
+                    <li><a href="#docker-install" class="sidebar-submenu-link">Installation Docker</a></li>
+                    <li><a href="#docker-compose" class="sidebar-submenu-link">Docker Compose</a></li>
+                    <li><a href="#docker-gestion" class="sidebar-submenu-link">Gestion des conteneurs</a></li>
+                    <li><a href="#docker-script" class="sidebar-submenu-link">Script d'automatisation</a></li>
+                </ul>
+            </li>
+            <li class="sidebar-item">
+                <a href="#post-install" class="sidebar-link" onclick="setActive(this)">
+                    <i class="bi bi-gear"></i> Post-installation
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="#securite" class="sidebar-link" onclick="setActive(this)">
+                    <i class="bi bi-shield-check"></i> Sécurisation
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="#maintenance" class="sidebar-link" onclick="setActive(this)">
+                    <i class="bi bi-arrow-repeat"></i> Maintenance
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="#depannage" class="sidebar-link" onclick="setActive(this)">
+                    <i class="bi bi-bug"></i> Dépannage
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="#annexes" class="sidebar-link" onclick="setActive(this)">
+                    <i class="bi bi-paperclip"></i> Annexes
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="#comparaison" class="sidebar-link" onclick="setActive(this)">
+                    <i class="bi bi-table"></i> Comparaison
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Documentation Technique Odoo 18</h1>
+            <p>Guide complet d'installation et configuration sur homelab Ubuntu</p>
+            <span class="badge-version">Version 1.0 - Mars 2026</span>
+        </div>
+
+        <!-- INTRODUCTION -->
+        <section id="introduction" class="doc-section">
+            <h2 class="section-title"><i class="bi bi-house-door"></i> Introduction</h2>
+            
+            <div class="card-method">
+                <h3 class="subsection-title">Architecture d'Odoo 18</h3>
+                <pre><code class="language-bash">┌─────────────────────────────────────────────────────────────┐
+│                    ARCHITECTURE ODOO 18                     │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌──────────────────┐                                       │
+│  │   Client Web     │  Navigateur (HTTP/HTTPS)              │
+│  │   (Browser)      │  Ports : 8069 (dev), 80/443 (prod)    │
+│  └────────┬─────────┘                                       │
+│           │                                                 │
+│           ▼                                                 │
+│  ┌──────────────────┐                                       │
+│  │  Serveur Odoo    │  Python/WSGI                          │
+│  │   (Gunicorn)     │  Gère la logique métier               │
+│  └────────┬─────────┘                                       │
+│           │                                                 │
+│           ▼                                                 │
+│  ┌──────────────────┐                                       │
+│  │    PostgreSQL    │  Base de données                      │
+│  │     (Port 5432)  │  Stockage des données                 │
+│  └──────────────────┘                                       │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+
+                <h4 class="mt-4">Spécifications techniques</h4>
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th>Composant</th>
+                            <th>Technologie</th>
+                            <th>Version</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Odoo</td>
+                            <td>Python/JavaScript</td>
+                            <td>18.0</td>
+                        </tr>
+                        <tr>
+                            <td>Base de données</td>
+                            <td>PostgreSQL</td>
+                            <td>15.x</td>
+                        </tr>
+                        <tr>
+                            <td>Moteur PDF</td>
+                            <td>wkhtmltopdf</td>
+                            <td>0.12.6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- PRÉREQUIS -->
+        <section id="prerequis" class="doc-section">
+            <h2 class="section-title"><i class="bi bi-check-circle"></i> Prérequis communs</h2>
+            
+            <div class="card-method">
+                <h4>Configuration matérielle minimale</h4>
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th>Usage</th>
+                            <th>RAM</th>
+                            <th>CPU</th>
+                            <th>Disque</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Développement</td>
+                            <td>4 Go</td>
+                            <td>2 cœurs</td>
+                            <td>20 Go</td>
+                        </tr>
+                        <tr>
+                            <td>Production (petite)</td>
+                            <td>8 Go</td>
+                            <td>4 cœurs</td>
+                            <td>50 Go</td>
+                        </tr>
+                        <tr>
+                            <td>Production (moyenne)</td>
+                            <td>16 Go</td>
+                            <td>8 cœurs</td>
+                            <td>100 Go</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box mt-4">
+                    <i class="bi bi-info-circle-fill info-icon"></i>
+                    <strong>Mise à jour du système :</strong>
+                </div>
+
+                <pre><code class="language-bash"># Connexion au serveur
+ssh utilisateur@votre-homelab-ip
+
+# Mise à jour des dépôts et paquets
+sudo apt update && sudo apt upgrade -y
+
+# Installation des outils de base
+sudo apt install -y curl wget git htop net-tools vim
+
+# Vérification de l'OS
+lsb_release -a</code></pre>
+            </div>
+        </section>
+
+        <!-- MÉTHODE 1 : NATIVE -->
+        <section id="methode1" class="doc-section">
+            <h2 class="section-title"><i class="bi bi-cpu"></i> Méthode 1 : Installation Native (Bare Metal)</h2>
+            
+            <div class="card-method" id="native-dep">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="bi bi-gear"></i>
+                    </div>
+                    <h3 class="method-title">1. Installation des dépendances système</h3>
+                </div>
+
+                <pre><code class="language-bash"># Paquets de compilation
+sudo apt install -y build-essential
+
+# Bibliothèques de développement
+sudo apt install -y \
+    libxml2-dev \
+    libxslt1-dev \
+    libldap2-dev \
+    libsasl2-dev \
+    libssl-dev \
+    libjpeg-dev \
+    libpq-dev \
+    libffi-dev \
+    zlib1g-dev
+
+# Outils supplémentaires
+sudo apt install -y \
+    git \
+    python3-pip \
+    python3-dev \
+    python3-venv \
+    nodejs \
+    npm \
+    xfonts-75dpi \
+    xfonts-base</code></pre>
+            </div>
+
+            <div class="card-method" id="native-postgres">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="bi bi-database"></i>
+                    </div>
+                    <h3 class="method-title">2. Installation et configuration de PostgreSQL</h3>
+                </div>
+
+                <pre><code class="language-bash"># Installation
+sudo apt install -y postgresql postgresql-contrib
+
+# Démarrage du service
+sudo systemctl enable postgresql
+sudo systemctl start postgresql
+
+# Création de l'utilisateur Odoo
+sudo su - postgres -c "createuser -s odoo18"
+
+# Définition du mot de passe
+sudo su - postgres -c "psql -c \"ALTER USER odoo18 WITH PASSWORD 'MotDePasseSecurise';\""
+
+# Vérification
+sudo systemctl status postgresql</code></pre>
+            </div>
+
+            <div class="card-method">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="bi bi-file-pdf"></i>
+                    </div>
+                    <h3 class="method-title">3. Installation de wkhtmltopdf</h3>
+                </div>
+
+                <div class="warning-box">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Important :</strong> Utiliser la version 0.12.6 spécifiquement pour éviter les erreurs de rendu PDF.
+                </div>
+
+                <pre><code class="language-bash"># Téléchargement de la version compatible
+cd /tmp
+wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.jammy_amd64.deb
+
+# Installation
+sudo dpkg -i wkhtmltox_0.12.6.1-3.jammy_amd64.deb
+
+# Correction des dépendances si nécessaire
+sudo apt --fix-broken install -y
+
+# Vérification
+wkhtmltopdf --version</code></pre>
+            </div>
+
+            <div class="card-method" id="native-odoo">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="bi bi-box"></i>
+                    </div>
+                    <h3 class="method-title">4. Installation d'Odoo</h3>
+                </div>
+
+                <pre><code class="language-bash"># Création de l'utilisateur système Odoo
+sudo useradd -m -d /opt/odoo18 -U -G sudo -s /bin/bash odoo
+
+# Clonage du dépôt Odoo
+sudo git clone https://www.github.com/odoo/odoo --depth 1 --branch 18.0 /opt/odoo18/odoo
+
+# Attribution des permissions
+sudo chown -R odoo:odoo /opt/odoo18
+
+# Création du répertoire pour les modules personnalisés
+sudo mkdir -p /opt/odoo18/custom-addons
+sudo chown -R odoo:odoo /opt/odoo18/custom-addons</code></pre>
+            </div>
+
+            <div class="card-method">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="bi bi-pip"></i>
+                    </div>
+                    <h3 class="method-title">5. Configuration de l'environnement virtuel Python</h3>
+                </div>
+
+                <pre><code class="language-bash"># Passage à l'utilisateur odoo
+sudo su - odoo
+
+# Création de l'environnement virtuel
+cd /opt/odoo18
+python3 -m venv venv
+
+# Activation de l'environnement
+source venv/bin/activate
+
+# Mise à jour de pip
+pip install --upgrade pip
+
+# Installation des dépendances Python
+pip install wheel
+pip install -r odoo/requirements.txt
+
+# Désactivation de l'environnement
+deactivate
+exit</code></pre>
+            </div>
+
+            <div class="card-method">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <h3 class="method-title">6. Fichier de configuration Odoo</h3>
+                </div>
+
+                <pre><code class="language-bash"># Création du répertoire de configuration
+sudo mkdir -p /etc/odoo
+sudo chown -R odoo:odoo /etc/odoo
+
+# Création du fichier de configuration
+sudo nano /etc/odoo/odoo.conf</code></pre>
+
+                <pre><code class="language-ini">[options]
+; Mot de passe administrateur (à changer !)
+admin_passwd = AdminOdoo2026!
+
+; Base de données
+db_host = localhost
+db_port = 5432
+db_user = odoo18
+db_password = MotDePasseSecurise
+db_name = False
+
+; Chemins
+addons_path = /opt/odoo18/odoo/addons,/opt/odoo18/custom-addons
+data_dir = /opt/odoo18/data
+
+; Logs
+logfile = /var/log/odoo/odoo-server.log
+log_level = info
+logrotate = True
+
+; Paramètres réseau
+xmlrpc_port = 8069
+longpolling_port = 8072
+workers = 2
+max_cron_threads = 1
+
+; Paramètres de session
+session_store = file</code></pre>
+
+                <pre><code class="language-bash"># Création des répertoires de logs et données
+sudo mkdir -p /var/log/odoo
+sudo chown -R odoo:odoo /var/log/odoo
+sudo mkdir -p /opt/odoo18/data
+sudo chown -R odoo:odoo /opt/odoo18/data</code></pre>
+            </div>
+
+            <div class="card-method" id="native-service">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="bi bi-hdd-stack"></i>
+                    </div>
+                    <h3 class="method-title">7. Création du service systemd</h3>
+                </div>
+
+                <pre><code class="language-bash">sudo nano /etc/systemd/system/odoo.service</code></pre>
+
+                <pre><code class="language-ini">[Unit]
+Description=Odoo 18 ERP
+Documentation=https://www.odoo.com/documentation/18.0/
+Requires=postgresql.service
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+SyslogIdentifier=odoo
+PermissionsStartOnly=true
+User=odoo
+Group=odoo
+ExecStart=/opt/odoo18/venv/bin/python3 /opt/odoo18/odoo/odoo-bin -c /etc/odoo/odoo.conf
+WorkingDirectory=/opt/odoo18/odoo
+StandardOutput=journal+console
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+
+                <pre><code class="language-bash"># Activation et démarrage
+sudo systemctl daemon-reload
+sudo systemctl enable odoo.service
+sudo systemctl start odoo.service
+
+# Vérification
+sudo systemctl status odoo.service
+sudo journalctl -u odoo.service -f</code></pre>
+            </div>
+        </section>
+
+        <!-- MÉTHODE 2 : DOCKER -->
+        <section id="methode2" class="doc-section">
+            <h2 class="section-title"><i class="bi bi-box-seam"></i> Méthode 2 : Installation par Conteneurs (Docker)</h2>
+
+            <div class="info-box">
+                <i class="bi bi-info-circle-fill info-icon"></i>
+                <strong>Approche moderne :</strong> L'approche par conteneurs isole totalement l'application de l'infrastructure physique, facilitant les migrations et les sauvegardes.
+            </div>
+
+            <div class="card-method" id="docker-install">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="bi bi-download"></i>
+                    </div>
+                    <h3 class="method-title">1. Installation de Docker</h3>
+                </div>
+
+                <pre><code class="language-bash"># Installation des prérequis
+sudo apt update
+sudo apt install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+
+# Ajout de la clé GPG Docker
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# Ajout du dépôt Docker
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Installation de Docker
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+# Ajout de l'utilisateur au groupe docker
+sudo usermod -aG docker $USER
+
+# Activation et démarrage
+sudo systemctl enable docker
+sudo systemctl start docker
+
+# Vérification
+docker --version
+docker compose version
+
+# IMPORTANT : Se déconnecter et reconnecter
+exit
+# Se reconnecter ensuite</code></pre>
+            </div>
+
+            <div class="card-method">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="bi bi-folder"></i>
+                    </div>
+                    <h3 class="method-title">2. Création de la structure de projet</h3>
+                </div>
+
+                <pre><code class="language-bash"># Création du répertoire de travail
+mkdir -p ~/odoo-docker/{addons,config,logs,backups}
+cd ~/odoo-docker
+
+# Création du fichier de configuration Odoo
+nano config/odoo.conf</code></pre>
+
+                <pre><code class="language-ini">[options]
+admin_passwd = AdminOdoo2026!
+db_host = db
+db_port = 5432
+db_user = odoo
+db_password = odoo2025!
+addons_path = /mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons
+data_dir = /var/lib/odoo
+logfile = /var/log/odoo/odoo-server.log
+log_level = info</code></pre>
+            </div>
+
+            <div class="card-method" id="docker-compose">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="bi bi-file-code"></i>
+                    </div>
+                    <h3 class="method-title">3. Fichier Docker Compose</h3>
+                </div>
+
+                <pre><code class="language-bash">nano docker-compose.yml</code></pre>
+
+                <pre><code class="language-yaml">version: '3.8'
+
+services:
+  # Service PostgreSQL
+  db:
+    image: postgres:15
+    container_name: odoo-db
+    restart: always
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo2025!
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./backups:/backups
+    networks:
+      - odoo-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Service Redis (optionnel - pour cache/sessions)
+  redis:
+    image: redis:7-alpine
+    container_name: odoo-redis
+    restart: always
+    volumes:
+      - redis-data:/data
+    networks:
+      - odoo-net
+    command: redis-server --appendonly yes
+
+  # Service Odoo
+  odoo:
+    image: odoo:18.0
+    container_name: odoo-app
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8069:8069"
+      - "8072:8072"  # Longpolling
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo2025!
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - ./addons:/mnt/extra-addons:rw
+      - ./config:/etc/odoo:ro
+      - ./logs:/var/log/odoo
+    networks:
+      - odoo-net
+    command: odoo
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8069"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Service pgAdmin (optionnel - interface d'admin PostgreSQL)
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: odoo-pgadmin
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "5050:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@odoo.local
+      - PGADMIN_DEFAULT_PASSWORD=Admin2026!
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - odoo-net
+
+networks:
+  odoo-net:
+    driver: bridge
+
+volumes:
+  db-data:
+  odoo-data:
+  redis-data:
+  pgadmin-data:</code></pre>
+            </div>
+
+            <div class="card-method" id="docker-gestion">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="bi bi-play-circle"></i>
+                    </div>
+                    <h3 class="method-title">4. Lancement et gestion des conteneurs</h3>
+                </div>
+
+                <pre><code class="language-bash"># Se placer dans le répertoire du projet
+cd ~/odoo-docker
+
+# Lancement des services
+docker compose up -d
+
+# Vérification du statut
+docker compose ps
+
+# Visualisation des logs
+docker compose logs -f
+
+# Arrêt des services
+docker compose down
+
+# Arrêt avec suppression des volumes (⚠️ supprime les données)
+docker compose down -v
+
+# Redémarrage d'un service spécifique
+docker compose restart odoo
+
+# Mise à jour des images
+docker compose pull
+
+# Rebuild des images
+docker compose build --no-cache
+
+# Exécution de commandes dans le conteneur
+docker exec -it odoo-app /bin/bash
+docker exec -it odoo-db psql -U odoo -d postgres</code></pre>
+            </div>
+
+            <div class="card-method" id="docker-script">
+                <div class="method-header">
+                    <div class="method-icon">
+                        <i class="bi bi-terminal"></i>
+                    </div>
+                    <h3 class="method-title">5. Script d'automatisation</h3>
+                </div>
+
+                <pre><code class="language-bash"># Création d'un script de gestion
+nano ~/odoo-docker/odoo-manager.sh</code></pre>
+
+                <pre><code class="language-bash">#!/bin/bash
+# Script de gestion d'Odoo Docker
+
+cd ~/odoo-docker
+
+case "$1" in
+    start)
+        docker compose up -d
+        echo "✅ Odoo démarré sur http://localhost:8069"
+        ;;
+    stop)
+        docker compose down
+        echo "✅ Odoo arrêté"
+        ;;
+    restart)
+        docker compose restart
+        echo "✅ Odoo redémarré"
+        ;;
+    logs)
+        docker compose logs -f
+        ;;
+    backup)
+        BACKUP_FILE="backup_$(date +%Y%m%d_%H%M%S).sql"
+        docker exec -t odoo-db pg_dump -U odoo postgres > backups/$BACKUP_FILE
+        echo "✅ Backup créé: backups/$BACKUP_FILE"
+        ;;
+    restore)
+        if [ -z "$2" ]; then
+            echo "Usage: $0 restore <backup_file>"
+            exit 1
+        fi
+        cat backups/$2 | docker exec -i odoo-db psql -U odoo -d postgres
+        echo "✅ Restauration effectuée"
+        ;;
+    shell)
+        docker exec -it odoo-app /bin/bash
+        ;;
+    psql)
+        docker exec -it odoo-db psql -U odoo -d postgres
+        ;;
+    clean)
+        docker system prune -f
+        echo "✅ Nettoyage effectué"
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|logs|backup|restore|shell|psql|clean}"
+        exit 1
+esac</code></pre>
+
+                <pre><code class="language-bash"># Rendre le script exécutable
+chmod +x ~/odoo-docker/odoo-manager.sh
+
+# Utilisation
+./odoo-manager.sh start
+./odoo-manager.sh logs
+./odoo-manager.sh backup</code></pre>
+            </div>
+        </section>
+
+        <!-- POST-INSTALLATION -->
+        <section id="post-install" class="doc-section">
+            <h2 class="section-title"><i class="bi bi-gear"></i> Configuration post-installation</h2>
+
+            <div class="card-method">
+                <h4 class="subsection-title">Première connexion</h4>
+                
+                <div class="step-container">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Accès à l'interface</div>
+                            <p>Ouvrir le navigateur à l'adresse : <code>http://votre-ip:8069</code></p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Création de la base de données</div>
+                            <pre><code class="language-text">Master Password : AdminOdoo2026!
+Database Name   : homelab_odoo
+Email          : votre@email.com
+Password       : (mot de passe admin)
+Language       : Français
+Country        : France/Sénégal
+Demo data      : Cocher (pour tester)</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SÉCURISATION -->
+        <section id="securite" class="doc-section">
+            <h2 class="section-title"><i class="bi bi-shield-check"></i> Sécurisation du serveur</h2>
+
+            <div class="card-method">
+                <h4 class="subsection-title">1. Configuration du pare-feu (UFW)</h4>
+                <pre><code class="language-bash"># Installation si nécessaire
+sudo apt install -y ufw
+
+# Configuration de base
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# Ouverture des ports
+sudo ufw allow 22/tcp comment 'SSH'
+sudo ufw allow 80/tcp comment 'HTTP'
+sudo ufw allow 443/tcp comment 'HTTPS'
+sudo ufw allow 8069/tcp comment 'Odoo dev'
+
+# Activation
+sudo ufw --force enable
+
+# Vérification
+sudo ufw status verbose</code></pre>
+            </div>
+
+            <div class="card-method">
+                <h4 class="subsection-title">2. Configuration de fail2ban</h4>
+                <pre><code class="language-bash"># Installation
+sudo apt install -y fail2ban
+
+# Configuration
+sudo nano /etc/fail2ban/jail.local</code></pre>
+
+                <pre><code class="language-ini">[sshd]
+enabled = true
+port = ssh
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 3
+bantime = 3600
+
+[odoo]
+enabled = true
+port = 8069
+filter = odoo
+logpath = /var/log/odoo/odoo-server.log
+maxretry = 5
+bantime = 1800</code></pre>
+
+                <pre><code class="language-bash"># Création du filtre Odoo
+sudo nano /etc/fail2ban/filter.d/odoo.conf</code></pre>
+
+                <pre><code class="language-ini">[Definition]
+failregex = ^.*openerp.*Login failed for login:.*$
+ignoreregex =</code></pre>
+
+                <pre><code class="language-bash"># Redémarrage
+sudo systemctl restart fail2ban
+sudo systemctl status fail2ban</code></pre>
+            </div>
+        </section>
+
+        <!-- MAINTENANCE -->
+        <section id="maintenance" class="doc-section">
+            <h2 class="section-title"><i class="bi bi-arrow-repeat"></i> Maintenance et sauvegardes</h2>
+
+            <div class="card-method">
+                <h4 class="subsection-title">Script de sauvegarde automatique</h4>
+                
+                <pre><code class="language-bash"># Création du script
+sudo nano /usr/local/bin/backup-odoo.sh</code></pre>
+
+                <pre><code class="language-bash">#!/bin/bash
+# Script de sauvegarde automatique Odoo
+
+# Variables
+BACKUP_DIR="/opt/backups/odoo"
+DATE=$(date +%Y%m%d_%H%M%S)
+DB_NAME="homelab_odoo"
+DB_USER="odoo18"
+ODOO_DATA="/opt/odoo18/data"
+RETENTION_DAYS=30
+
+# Création du répertoire de backup
+mkdir -p $BACKUP_DIR/{database,filestore}
+
+# Sauvegarde de la base de données
+echo "Sauvegarde de la base de données..."
+pg_dump -U $DB_USER $DB_NAME | gzip > $BACKUP_DIR/database/odoo_db_$DATE.sql.gz
+
+# Sauvegarde du filestore
+echo "Sauvegarde des fichiers..."
+tar -czf $BACKUP_DIR/filestore/odoo_filestore_$DATE.tar.gz -C $ODOO_DATA .
+
+# Nettoyage des anciennes sauvegardes
+echo "Nettoyage des sauvegardes de plus de $RETENTION_DAYS jours..."
+find $BACKUP_DIR/database -type f -name "*.sql.gz" -mtime +$RETENTION_DAYS -delete
+find $BACKUP_DIR/filestore -type f -name "*.tar.gz" -mtime +$RETENTION_DAYS -delete
+
+echo "Sauvegarde terminée : $DATE"</code></pre>
+
+                <pre><code class="language-bash"># Rendre exécutable
+sudo chmod +x /usr/local/bin/backup-odoo.sh
+
+# Planification avec cron
+sudo crontab -e</code></pre>
+
+                <pre><code class="language-cron"># Sauvegarde quotidienne à 2h du matin
+0 2 * * * /usr/local/bin/backup-odoo.sh >> /var/log/odoo-backup.log 2>&1
+
+# Nettoyage hebdomadaire des logs
+0 3 * * 0 find /var/log/odoo -name "*.log" -mtime +30 -delete</code></pre>
+            </div>
+        </section>
+
+        <!-- DÉPANNAGE -->
+        <section id="depannage" class="doc-section">
+            <h2 class="section-title"><i class="bi bi-bug"></i> Dépannage</h2>
+
+            <div class="card-method">
+                <h4 class="subsection-title">Problèmes courants et solutions</h4>
+                
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th>Problème</th>
+                            <th>Cause possible</th>
+                            <th>Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Port 8069 déjà utilisé</td>
+                            <td>Un autre service utilise le port</td>
+                            <td><code>sudo lsof -i :8069</code> puis tuer le processus</td>
+                        </tr>
+                        <tr>
+                            <td>Erreur de connexion DB</td>
+                            <td>PostgreSQL ne tourne pas</td>
+                            <td><code>sudo systemctl status postgresql</code></td>
+                        </tr>
+                        <tr>
+                            <td>Module invisible</td>
+                            <td>Fichier de sécurité manquant</td>
+                            <td>Vérifier <code>ir.model.access.csv</code></td>
+                        </tr>
+                        <tr>
+                            <td>PDF ne se génère pas</td>
+                            <td>wkhtmltopdf mal installé</td>
+                            <td><code>wkhtmltopdf --version</code></td>
+                        </tr>
+                        <tr>
+                            <td>Erreur 500</td>
+                            <td>Logs à vérifier</td>
+                            <td><code>tail -f /var/log/odoo/odoo-server.log</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 class="subsection-title mt-4">Commandes de diagnostic</h4>
+                <pre><code class="language-bash"># Vérification de la connectivité réseau
+telnet localhost 8069
+telnet localhost 5432
+
+# Vérification des processus
+ps aux | grep odoo
+ps aux | grep postgres
+
+# Vérification des ports ouverts
+ss -tlnp</code></pre>
+            </div>
+        </section>
+
+        <!-- ANNEXES -->
+        <section id="annexes" class="doc-section">
+            <h2 class="section-title"><i class="bi bi-paperclip"></i> Annexes</h2>
+
+            <div class="card-method">
+                <h4 class="subsection-title">Structure des fichiers</h4>
+                
+                <h5>Installation Native</h5>
+                <pre><code>/
+├── etc/
+│   └── odoo/
+│       └── odoo.conf
+├── opt/
+│   └── odoo18/
+│       ├── odoo/           # Code source
+│       ├── custom-addons/   # Modules personnalisés
+│       ├── data/            # Données statiques
+│       └── venv/            # Environnement Python
+├── var/
+│   ├── log/
+│   │   └── odoo/
+│   │       └── odoo-server.log
+│   └── lib/
+│       └── postgresql/      # Données PostgreSQL</code></pre>
+
+                <h5 class="mt-4">Installation Docker</h5>
+                <pre><code>/home/utilisateur/odoo-docker/
+├── docker-compose.yml
+├── addons/               # Modules personnalisés
+├── config/
+│   └── odoo.conf
+├── logs/                  # Logs persistants
+├── backups/               # Sauvegardes
+└── odoo-manager.sh        # Script de gestion</code></pre>
+
+                <h4 class="subsection-title mt-4">Commandes utiles</h4>
+                <pre><code class="language-bash"># Redémarrer Odoo (Native)
+sudo systemctl restart odoo
+
+# Redémarrer Odoo (Docker)
+cd ~/odoo-docker && docker compose restart odoo
+
+# Mettre à jour un module (Native)
+sudo su - odoo -c "source /opt/odoo18/venv/bin/activate && /opt/odoo18/odoo/odoo-bin -c /etc/odoo/odoo.conf -u mon_module -d ma_base --stop-after-init"
+
+# Mettre à jour un module (Docker)
+cd ~/odoo-docker && docker compose exec odoo odoo -u mon_module -d ma_base --stop-after-init
+
+# Sauvegarde manuelle (Native)
+sudo -u postgres pg_dump homelab_odoo > /tmp/backup_$(date +%Y%m%d).sql
+
+# Sauvegarde manuelle (Docker)
+docker exec -t odoo-db pg_dump -U odoo postgres > ~/backup.sql</code></pre>
+
+                <h4 class="subsection-title mt-4">Checklist de vérification post-installation</h4>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Service Odoo actif (<code>systemctl status odoo</code>)</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Port 8069 ouvert (<code>ss -tlnp | grep 8069</code>)</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> PostgreSQL accessible (<code>psql -U odoo18 -d homelab_odoo -c "\l"</code>)</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Interface web accessible (<code>curl http://localhost:8069</code>)</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Création de base possible</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Installation de modules fonctionnelle</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Génération de PDF fonctionnelle</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Sauvegarde automatique configurée</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Pare-feu configuré</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> fail2ban actif</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- COMPARAISON -->
+        <section id="comparaison" class="doc-section">
+            <h2 class="section-title"><i class="bi bi-table"></i> Comparaison des méthodes</h2>
+
+            <div class="card-method">
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th>Critère</th>
+                            <th>Installation Native</th>
+                            <th>Installation Docker</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Complexité</td>
+                            <td><span class="badge bg-warning">Élevée</span></td>
+                            <td><span class="badge bg-success">Faible</span></td>
+                        </tr>
+                        <tr>
+                            <td>Isolation</td>
+                            <td><span class="badge bg-warning">Partielle</span></td>
+                            <td><span class="badge bg-success">Totale</span></td>
+                        </tr>
+                        <tr>
+                            <td>Performance</td>
+                            <td><span class="badge bg-success">Excellente</span></td>
+                            <td><span class="badge bg-primary">Très bonne</span></td>
+                        </tr>
+                        <tr>
+                            <td>Portabilité</td>
+                            <td><span class="badge bg-danger">Faible</span></td>
+                            <td><span class="badge bg-success">Excellente</span></td>
+                        </tr>
+                        <tr>
+                            <td>Maintenance</td>
+                            <td><span class="badge bg-warning">Manuelle</span></td>
+                            <td><span class="badge bg-success">Simplifiée</span></td>
+                        </tr>
+                        <tr>
+                            <td>Sauvegarde</td>
+                            <td>Scripts personnalisés</td>
+                            <td>Volumes Docker</td>
+                        </tr>
+                        <tr>
+                            <td>Scalabilité</td>
+                            <td><span class="badge bg-warning">Limitée</span></td>
+                            <td><span class="badge bg-success">Horizontale</span></td>
+                        </tr>
+                        <tr>
+                            <td>Debug</td>
+                            <td><span class="badge bg-success">Direct</span></td>
+                            <td><span class="badge bg-primary">Via exec</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="doc-footer">
+            <p>Documentation rédigée par <strong>Gana Faye</strong> - Master SI - Mars 2026</p>
+            <p class="mt-2">
+                <a href="#" class="text-white-50 text-decoration-none me-3"><i class="bi bi-github"></i></a>
+                <a href="#" class="text-white-50 text-decoration-none me-3"><i class="bi bi-linkedin"></i></a>
+                <a href="#" class="text-white-50 text-decoration-none"><i class="bi bi-envelope"></i></a>
+            </p>
+        </footer>
+    </main>
+
+    <!-- Back to top button -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="bi bi-arrow-up"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ini.min.js"></script>
+    
+    <script>
+        // Gestion de la sidebar active
+        function setActive(element) {
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            // Fermer la sidebar sur mobile
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('show');
+            }
+        }
+
+        // Toggle sidebar sur mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+        }
+
+        // Back to top button
+        window.onscroll = function() {
+            const backToTop = document.getElementById('backToTop');
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        };
+
+        // Smooth scroll pour les ancres
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Highlight current section in sidebar
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.doc-section');
+            const scrollPosition = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionBottom = sectionTop + section.offsetHeight;
+                const id = section.getAttribute('id');
+
+                if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps - Kubernetes | Gana Faye</title>
+    
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --k8s-blue: #326ce5; 
+            --k8s-dark: #1a2c4e;
+            --dark-bg: #0f172a; 
+            --card-bg: #1e293b; 
+            --border: #334155;
+            --text-muted: #94a3b8;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--dark-bg); 
+            color: #f8fafc; 
+            line-height: 1.7;
+        }
+        
+        .hero-k8s { 
+            padding: 60px 0; 
+            background: linear-gradient(135deg, #326ce5 0%, #1e293b 100%); 
+            border-bottom: 4px solid #fff; 
+            margin-bottom: 40px;
+        }
+        
+        .section-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border); 
+            border-radius: 15px; 
+            padding: 30px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .mono { 
+            font-family: 'Fira Code', monospace; 
+            color: #7dd3fc; 
+            background: #000; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+        }
+        
+        pre { 
+            background: #000; 
+            padding: 20px; 
+            border-radius: 10px; 
+            border: 1px solid var(--k8s-blue); 
+            color: #fff; 
+            overflow-x: auto; 
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin: 20px 0;
+        }
+        
+        .os-badge { 
+            font-size: 0.9rem; 
+            padding: 8px 15px; 
+            border-radius: 30px; 
+            font-weight: 600; 
+            margin-bottom: 15px; 
+            display: inline-block; 
+        }
+        
+        .bg-ubuntu { 
+            background: #E95420; 
+            color: white; 
+        }
+        
+        .bg-windows { 
+            background: #00a4ef; 
+            color: white; 
+        }
+        
+        .bg-apple { 
+            background: #555555; 
+            color: white; 
+        }
+        
+        .bg-docker {
+            background: #2496ed;
+            color: white;
+        }
+        
+        .bg-k8s {
+            background: var(--k8s-blue);
+            color: white;
+        }
+        
+        .step-box {
+            background: rgba(0,0,0,0.2);
+            border-left: 4px solid var(--k8s-blue);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .step-title {
+            color: var(--k8s-blue);
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #fbbf24;
+        }
+        
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #6ee7b7;
+        }
+        
+        .info-box {
+            background: rgba(50, 108, 229, 0.1);
+            border: 1px solid var(--k8s-blue);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .badge-tp {
+            background: var(--k8s-blue);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        .tp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .tp-card {
+            background: #0b1a2a;
+            border: 1px solid var(--k8s-blue);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+        
+        .tp-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(50, 108, 229, 0.3);
+        }
+        
+        .tp-icon {
+            font-size: 3rem;
+            color: var(--k8s-blue);
+            margin-bottom: 15px;
+        }
+        
+        .tp-card h3 {
+            color: var(--k8s-blue);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .tp-card p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        
+        .tp-link {
+            display: inline-block;
+            background: var(--k8s-blue);
+            color: white;
+            text-decoration: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .tp-link:hover {
+            background: #1e4bb3;
+            color: white;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding: 30px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero-k8s text-center mb-5">
+        <div class="container">
+            <h1 class="display-4 fw-bold"><i class="bi bi-diagram-3"></i> Kubernetes (K8s)</h1>
+            <p class="lead">Orchestration de conteneurs à grande échelle.</p>
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <span class="badge bg-ubuntu">Ubuntu</span>
+                <span class="badge bg-windows">Windows</span>
+                <span class="badge bg-apple">macOS</span>
+                <span class="badge bg-docker">Docker Desktop</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container py-4">
+        
+        <!-- SECTION 1 : QU'EST-CE QUE KUBERNETES -->
+        <section class="section-card">
+            <h2><i class="bi bi-info-circle"></i> 1. Qu'est-ce que Kubernetes ?</h2>
+            <p>Kubernetes (K8s) est une plateforme open-source d'orchestration de conteneurs. Elle automatise le déploiement, la mise à l'échelle et la gestion des applications conteneurisées. Originellement développé par Google, c'est aujourd'hui le standard de facto pour l'orchestration de conteneurs.</p>
+            
+            <div class="row mt-4">
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-diagram-3 fs-1 text-primary"></i>
+                    <h5>Orchestration</h5>
+                    <p class="small text-secondary">Gestion automatisée des conteneurs</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-arrow-repeat fs-1 text-primary"></i>
+                    <h5>Auto-réparation</h5>
+                    <p class="small text-secondary">Redémarrage automatique des conteneurs défaillants</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-graph-up-arrow fs-1 text-primary"></i>
+                    <h5>Mise à l'échelle</h5>
+                    <p class="small text-secondary">Scale horizontal automatique</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-cloud-check fs-1 text-primary"></i>
+                    <h5>Multi-cloud</h5>
+                    <p class="small text-secondary">Fonctionne partout (on-prem, cloud, hybride)</p>
+                </div>
+            </div>
+            
+            <div class="info-box mt-4">
+                <i class="bi bi-lightbulb"></i>
+                <strong>Concept clé :</strong> Kubernetes gère des clusters de machines pour exécuter des applications conteneurisées avec haute disponibilité.
+            </div>
+        </section>
+
+        <!-- SECTION TP : ACCÈS AUX TRAVAUX PRATIQUES -->
+        <section class="section-card">
+            <h2><i class="bi bi-journal-code"></i> Travaux Pratiques Kubernetes</h2>
+            <p class="text-secondary">4 TP progressifs pour maîtriser Kubernetes, du débutant à l'expert</p>
+            
+            <div class="tp-grid">
+                <!-- TP 1 -->
+                <div class="tp-card">
+                    <i class="bi bi-1-circle-fill tp-icon"></i>
+                    <h3>TP 1 : Installation</h3>
+                    <p>Installer Kubernetes (Minikube, Kind, K3s) et découvrir kubectl</p>
+                    <a href="k8s-tp1.html" class="tp-link">Commencer le TP <i class="bi bi-arrow-right"></i></a>
+                </div>
+                
+                <!-- TP 2 -->
+                <div class="tp-card">
+                    <i class="bi bi-2-circle-fill tp-icon"></i>
+                    <h3>TP 2 : Pods et Deployments</h3>
+                    <p>Créer et gérer des pods, deployments, replicasets</p>
+                    <a href="k8s-tp2.html" class="tp-link">Commencer le TP <i class="bi bi-arrow-right"></i></a>
+                </div>
+                
+                <!-- TP 3 -->
+                <div class="tp-card">
+                    <i class="bi bi-3-circle-fill tp-icon"></i>
+                    <h3>TP 3 : Services et Networking</h3>
+                    <p>Exposer des applications avec ClusterIP, NodePort, LoadBalancer</p>
+                    <a href="k8s-tp3.html" class="tp-link">Commencer le TP <i class="bi bi-arrow-right"></i></a>
+                </div>
+                
+                <!-- TP 4 -->
+                <div class="tp-card">
+                    <i class="bi bi-4-circle-fill tp-icon"></i>
+                    <h3>TP 4 : Stockage et Config</h3>
+                    <p>Volumes, ConfigMaps, Secrets et Ingress</p>
+                    <a href="k8s-tp4.html" class="tp-link">Commencer le TP <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="info-box mt-4">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <strong>Progression recommandée :</strong> Suivez les TP dans l'ordre pour une compréhension progressive.
+            </div>
+        </section>
+
+        <!-- SECTION 2 : ARCHITECTURE KUBERNETES -->
+        <section class="section-card">
+            <h2><i class="bi bi-diagram-3"></i> 2. Architecture de Kubernetes</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Composants du Control Plane (Master)</h5>
+                    <ul>
+                        <li><strong>kube-apiserver</strong> - API REST frontale</li>
+                        <li><strong>etcd</strong> - Stockage clé-valeur distribué</li>
+                        <li><strong>kube-scheduler</strong> - Planification des pods</li>
+                        <li><strong>kube-controller-manager</strong> - Contrôleurs</li>
+                        <li><strong>cloud-controller-manager</strong> - Intégration cloud</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Composants des Workers (Nœuds)</h5>
+                    <ul>
+                        <li><strong>kubelet</strong> - Agent principal sur chaque nœud</li>
+                        <li><strong>kube-proxy</strong> - Gestion du réseau</li>
+                        <li><strong>Container Runtime</strong> - Docker, containerd, CRI-O</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="step-box mt-3">
+                <div class="step-title">Schéma d'architecture</div>
+                <pre><code>┌─────────────────────────────────────────────────────────────┐
+│                    CONTROL PLANE (MASTER)                   │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐     │
+│  │API Server│  │  etcd    │  │Scheduler │  │Controller│     |
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘     │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      WORKER NODE 1                          │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐                   │
+│  │ kubelet  │  │kube-proxy│  │  Pods    │                   │
+│  └──────────┘  └──────────┘  └──────────┘                   │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 3 : INSTALLATION DÉTAILLÉE -->
+        <section class="section-card">
+            <h2><i class="bi bi-download"></i> 3. Installation de Kubernetes</h2>
+            <p class="text-secondary">Plusieurs options pour installer Kubernetes selon vos besoins.</p>
+
+            <!-- OPTION 1 : MINIKUBE (Local) -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-laptop"></i> Minikube (Cluster local mono-nœud)</div>
+                <p>Idéal pour l'apprentissage et le développement local.</p>
+                
+                <h6 class="mt-3">Installation sur Linux</h6>
+                <pre><code># Télécharger Minikube
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+# Démarrer Minikube
+minikube start --driver=docker
+
+# Vérifier le statut
+minikube status</code></pre>
+                
+                <h6 class="mt-3">Installation sur macOS</h6>
+                <pre><code># Via Homebrew
+brew install minikube
+
+# Démarrer
+minikube start
+
+# Via binaire
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64
+sudo install minikube-darwin-amd64 /usr/local/bin/minikube</code></pre>
+                
+                <h6 class="mt-3">Installation sur Windows</h6>
+                <pre><code># Télécharger l'exécutable
+# https://storage.googleapis.com/minikube/releases/latest/minikube-installer.exe
+
+# Ou via Chocolatey
+choco install minikube
+
+# Démarrer
+minikube start</code></pre>
+            </div>
+
+            <!-- OPTION 2 : KIND (Kubernetes in Docker) -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-box-seam"></i> Kind (Kubernetes in Docker)</div>
+                <p>Cluster Kubernetes multi-nœuds dans des conteneurs Docker.</p>
+                
+                <pre><code># Installer Kind
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
+
+# macOS
+brew install kind
+
+# Windows
+choco install kind</code></pre>
+                
+                <pre><code># Créer un fichier de configuration
+cat &lt;&lt;EOF | kind create cluster --config=-
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+- role: worker
+EOF</code></pre>
+            </div>
+
+            <!-- OPTION 3 : K3s (Léger) -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-feather"></i> K3s (Kubernetes léger de Rancher)</div>
+                <p>Distribution certifiée, idéale pour l'IoT et les environnements contraints.</p>
+                
+                <pre><code># Installation serveur
+curl -sfL https://get.k3s.io | sh -
+
+# Récupérer la config
+sudo cat /etc/rancher/k3s/k3s.yaml > ~/.kube/config
+
+# Vérifier
+k3s kubectl get nodes</code></pre>
+            </div>
+
+            <!-- OPTION 4 : kubeadm (Cluster multi-nœuds) -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-diagram-3"></i> kubeadm (Cluster multi-nœuds)</div>
+                <p>Pour déployer un cluster de production.</p>
+                
+                <h6 class="mt-3">Prérequis :</h6>
+                <ul>
+                    <li>2+ machines Ubuntu (1 master, N workers)</li>
+                    <li>2 Go RAM minimum par machine</li>
+                    <li>Réseau entre les machines</li>
+                </ul>
+                
+                <h6 class="mt-3">Installation sur toutes les machines</h6>
+                <pre><code># Installer containerd
+sudo apt update
+sudo apt install -y containerd
+
+# Configurer containerd
+sudo mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+
+# Installer kubeadm, kubelet, kubectl
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl</code></pre>
+                
+                <h6 class="mt-3">Initialiser le master</h6>
+                <pre><code>sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+# Configurer kubectl
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# Installer un réseau (Flannel)
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml</code></pre>
+                
+                <h6 class="mt-3">Rejoindre les workers</h6>
+                <pre><code># Sur chaque worker, exécuter la commande donnée par kubeadm init
+kubeadm join 192.168.1.100:6443 --token xxx --discovery-token-ca-cert-hash sha256:xxx</code></pre>
+            </div>
+
+            <!-- OPTION 5 : Docker Desktop (Windows/Mac) -->
+            <div class="step-box">
+                <div class="step-title"><i class="bi bi-box-seam"></i> Docker Desktop (Windows/macOS)</div>
+                <p>Le moyen le plus simple d'avoir Kubernetes sur poste de travail.</p>
+                
+                <h6 class="mt-3">Windows / macOS</h6>
+                <ol>
+                    <li>Installer Docker Desktop</li>
+                    <li>Aller dans Settings → Kubernetes</li>
+                    <li>Cocher "Enable Kubernetes"</li>
+                    <li>Cliquer sur "Apply & Restart"</li>
+                </ol>
+                <pre><code># Vérifier
+kubectl get nodes</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 4 : INSTALLATION DE KUBECTL -->
+        <section class="section-card">
+            <h2><i class="bi bi-terminal"></i> 4. Installation de kubectl (CLI)</h2>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <h6>Linux</h6>
+                    <pre><code>curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/</code></pre>
+                </div>
+                <div class="col-md-4">
+                    <h6>macOS</h6>
+                    <pre><code># Via Homebrew
+brew install kubectl
+
+# Ou via binaire
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/</code></pre>
+                </div>
+                <div class="col-md-4">
+                    <h6>Windows</h6>
+                    <pre><code># Via Chocolatey
+choco install kubernetes-cli
+
+# Ou via téléchargement
+curl.exe -LO "https://dl.k8s.io/release/v1.28.0/bin/windows/amd64/kubectl.exe"</code></pre>
+                </div>
+            </div>
+            
+            <div class="success-box mt-3">
+                <i class="bi bi-check-circle-fill"></i>
+                <strong>Vérification :</strong> <code class="mono">kubectl version --client</code>
+            </div>
+        </section>
+
+        <!-- SECTION 5 : PREMIÈRE VÉRIFICATION -->
+        <section class="section-card">
+            <h2><i class="bi bi-check2-all"></i> 5. Vérification du cluster</h2>
+            
+            <pre><code># Voir les nœuds du cluster
+kubectl get nodes
+
+# Voir tous les pods dans tous les namespaces
+kubectl get pods --all-namespaces
+
+# Voir les services
+kubectl get services
+
+# Informations détaillées du cluster
+kubectl cluster-info
+
+# Voir la configuration
+kubectl config view</code></pre>
+            
+            <div class="step-box">
+                <h5>Premier déploiement test</h5>
+                <pre><code># Déployer Nginx
+kubectl create deployment nginx-test --image=nginx
+
+# Exposer le déploiement
+kubectl expose deployment nginx-test --port=80 --type=NodePort
+
+# Voir le service
+kubectl get svc
+
+# Supprimer
+kubectl delete deployment nginx-test
+kubectl delete svc nginx-test</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 6 : COMMANDES ESSENTIELLES -->
+        <section class="section-card">
+            <h2><i class="bi bi-terminal"></i> 6. Commandes kubectl essentielles</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Gestion des pods</h5>
+                    <pre><code># Lister les pods
+kubectl get pods
+kubectl get pods -w  # Watch mode
+
+# Détails d'un pod
+kubectl describe pod nom-pod
+
+# Logs
+kubectl logs nom-pod
+kubectl logs -f nom-pod  # Follow
+
+# Exécuter une commande dans un pod
+kubectl exec -it nom-pod -- bash
+
+# Supprimer un pod
+kubectl delete pod nom-pod</code></pre>
+                </div>
+                <div class="col-md-6">
+                    <h5>Gestion des déploiements</h5>
+                    <pre><code># Créer un déploiement
+kubectl create deployment nom --image=image
+
+# Lister
+kubectl get deployments
+
+# Mettre à jour l'image
+kubectl set image deployment/nom container=image:v2
+
+# Scale
+kubectl scale deployment/nom --replicas=5
+
+# Rollback
+kubectl rollout undo deployment/nom</code></pre>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h5>Services et networking</h5>
+                    <pre><code># Exposer un déploiement
+kubectl expose deployment nom --port=80 --type=LoadBalancer
+
+# Lister les services
+kubectl get svc
+
+# Port-forward
+kubectl port-forward pod/nom 8080:80</code></pre>
+                </div>
+                <div class="col-md-6">
+                    <h5>ConfigMaps et Secrets</h5>
+                    <pre><code># Créer un ConfigMap
+kubectl create configmap app-config --from-literal=key=value
+
+# Créer un Secret
+kubectl create secret generic app-secret --from-literal=password=secret</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7 : DÉPANNAGE -->
+        <section class="section-card">
+            <h2><i class="bi bi-bug"></i> 7. Dépannage courant</h2>
+            
+            <div class="warning-box">
+                <h5>Erreur : Unable to connect to the server</h5>
+                <pre><code># Vérifier que le cluster est en marche
+minikube status
+# ou
+docker ps | grep kind
+
+# Reconfigurer kubectl
+kubectl cluster-info
+
+# Pour Minikube
+minikube start</code></pre>
+            </div>
+            
+            <div class="warning-box">
+                <h5>Erreur : CrashLoopBackOff</h5>
+                <pre><code># Voir les logs du pod
+kubectl logs nom-pod --previous
+
+# Décrire le pod
+kubectl describe pod nom-pod
+
+# Vérifier l'image et les ressources</code></pre>
+            </div>
+            
+            <div class="warning-box">
+                <h5>Erreur : ImagePullBackOff</h5>
+                <pre><code># Vérifier le nom de l'image
+# Vérifier la connexion Internet
+# Sur Minikube, configurer le proxy Docker
+eval $(minikube docker-env)</code></pre>
+            </div>
+            
+            <div class="warning-box">
+                <h5>Erreur : Permission denied</h5>
+                <pre><code># Vérifier le contexte
+kubectl config current-context
+
+# Lister les contextes
+kubectl config get-contexts
+
+# Changer de contexte
+kubectl config use-context nom-contexte</code></pre>
+            </div>
+        </section>
+
+        <!-- SECTION 8 : RESSOURCES UTILES -->
+        <section class="section-card">
+            <h2><i class="bi bi-link"></i> 8. Ressources et outils</h2>
+            
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="bg-dark p-3 rounded text-center">
+                        <i class="bi bi-file-text fs-2 text-primary"></i>
+                        <h5>Documentation</h5>
+                        <a href="https://kubernetes.io/docs/" target="_blank" class="text-info">kubernetes.io</a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="bg-dark p-3 rounded text-center">
+                        <i class="bi bi-github fs-2 text-primary"></i>
+                        <h5>GitHub</h5>
+                        <a href="https://github.com/kubernetes/kubernetes" target="_blank" class="text-info">kubernetes/kubernetes</a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="bg-dark p-3 rounded text-center">
+                        <i class="bi bi-box-seam fs-2 text-primary"></i>
+                        <h5>Minikube</h5>
+                        <a href="https://minikube.sigs.k8s.io/docs/" target="_blank" class="text-info">minikube.sigs.k8s.io</a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="bg-dark p-3 rounded text-center">
+                        <i class="bi bi-diagram-3 fs-2 text-primary"></i>
+                        <h5>K3s</h5>
+                        <a href="https://k3s.io/" target="_blank" class="text-info">k3s.io</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <div class="bg-dark p-3 rounded text-center">
+                        <i class="bi bi-tools fs-2 text-primary"></i>
+                        <h5>Lens</h5>
+                        <a href="https://k8slens.dev/" target="_blank" class="text-info">k8slens.dev</a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="bg-dark p-3 rounded text-center">
+                        <i class="bi bi-hammer fs-2 text-primary"></i>
+                        <h5>Helm</h5>
+                        <a href="https://helm.sh/" target="_blank" class="text-info">helm.sh</a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="bg-dark p-3 rounded text-center">
+                        <i class="bi bi-shield-check fs-2 text-primary"></i>
+                        <h5>K9s</h5>
+                        <a href="https://k9scli.io/" target="_blank" class="text-info">k9scli.io</a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="bg-dark p-3 rounded text-center">
+                        <i class="bi bi-speedometer2 fs-2 text-primary"></i>
+                        <h5>Octant</h5>
+                        <a href="https://octant.dev/" target="_blank" class="text-info">octant.dev</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 9 : CONCLUSION -->
+        <section class="section-card">
+            <h2><i class="bi bi-trophy"></i> 9. Conclusion</h2>
+            <p>Félicitations ! Vous avez maintenant une compréhension complète de Kubernetes :</p>
+            
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-1-circle fs-1 text-primary"></i>
+                    <h6>Architecture</h6>
+                    <p class="small">Master, workers, composants</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-2-circle fs-1 text-primary"></i>
+                    <h6>Installation</h6>
+                    <p class="small">Minikube, Kind, K3s, kubeadm</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-3-circle fs-1 text-primary"></i>
+                    <h6>Commandes kubectl</h6>
+                    <p class="small">Pods, deployments, services</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <i class="bi bi-4-circle fs-1 text-primary"></i>
+                    <h6>Déploiements</h6>
+                    <p class="small">Applications conteneurisées</p>
+                </div>
+            </div>
+            
+            <div class="success-box mt-4">
+                <i class="bi bi-check-circle-fill"></i> 
+                <strong>Prochaine étape :</strong> Choisissez un TP ci-dessus pour commencer à pratiquer !
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Documentation réalisée par <strong>Gana Faye</strong> - Master 1 SI - Dakar 2026</p>
+            <p class="mt-2">
+                <i class="bi bi-github"></i> <a href="#" class="text-white-50 text-decoration-none">GitHub</a> | 
+                <i class="bi bi-linkedin"></i> <a href="#" class="text-white-50 text-decoration-none">LinkedIn</a>
+            </p>
+        </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
