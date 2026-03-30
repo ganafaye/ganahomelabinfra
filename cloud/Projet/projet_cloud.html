@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soutenance - Architecture 3-Tiers sur OpenShift | Gana FAYE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Barre de navigation */
+        .nav-bar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-logo h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .nav-logo span {
+            font-size: 0.7rem;
+            color: #dc2626;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #475569;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .nav-link.active {
+            background: #dc2626;
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        .slide-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 2rem;
+            height: 100%;
+        }
+
+        .slide-full {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .explanation-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 4px 14px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+        }
+
+        /* Cadre pour les captures */
+        .capture-frame {
+            background: #f1f5f9;
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            height: 100%;
+            border: 1px solid #e2e8f0;
+        }
+
+        .browser-bar {
+            background: #e2e8f0;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #cbd5e1;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .red {
+            background: #ff5f56;
+        }
+
+        .amber {
+            background: #ffbd2e;
+        }
+
+        .green {
+            background: #27c93f;
+        }
+
+        .image-container {
+            flex-grow: 1;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            min-height: 300px;
+            cursor: pointer;
+        }
+
+        /* Image placeholder */
+        .img-placeholder {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .img-placeholder i {
+            font-size: 2.5rem;
+            color: #3b82f6;
+        }
+
+        .real-image {
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .real-image:hover {
+            transform: scale(1.02);
+        }
+
+        /* MODAL DE ZOOM - FOND BLANC */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            color: #1e293b;
+            font-size: 2rem;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.05);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #dc2626;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            transition: 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #dc2626;
+            color: white;
+        }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            color: white;
+            z-index: 100;
+        }
+
+        .zone-dmz {
+            border-left: 4px solid #f97316;
+            background: #fff7ed;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .zone-lan {
+            border-left: 4px solid #22c55e;
+            background: #f0fdf4;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .zone-gateway {
+            border-left: 4px solid #3b82f6;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .url-box {
+            background: #f1f5f9;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 0.7rem;
+            word-break: break-all;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1rem;
+        }
+
+        h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Animations pour le slide d'accueil */
+        .cloud {
+            position: absolute;
+            color: rgba(100, 116, 139, 0.15);
+            font-size: 3rem;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .cloud-1 {
+            top: 10%;
+            left: -10%;
+            animation: floatCloud 25s linear infinite;
+        }
+
+        .cloud-2 {
+            top: 60%;
+            right: -15%;
+            animation: floatCloud 35s linear infinite reverse;
+        }
+
+        .cloud-3 {
+            bottom: 15%;
+            left: 5%;
+            animation: floatCloud 20s linear infinite;
+        }
+
+        @keyframes floatCloud {
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+
+            100% {
+                transform: translateX(calc(100vw + 20%)) translateY(-20px);
+            }
+        }
+
+        .particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            animation: floatParticle 15s linear infinite;
+        }
+
+        .particle:nth-child(1) {
+            top: 20%;
+            left: 15%;
+            animation-duration: 12s;
+            animation-delay: 0s;
+        }
+
+        .particle:nth-child(2) {
+            top: 70%;
+            left: 85%;
+            animation-duration: 18s;
+            animation-delay: 2s;
+        }
+
+        .particle:nth-child(3) {
+            top: 40%;
+            left: 45%;
+            animation-duration: 14s;
+            animation-delay: 1s;
+        }
+
+        .particle:nth-child(4) {
+            top: 80%;
+            left: 25%;
+            animation-duration: 20s;
+            animation-delay: 3s;
+        }
+
+        .particle:nth-child(5) {
+            top: 15%;
+            left: 75%;
+            animation-duration: 16s;
+            animation-delay: 0.5s;
+        }
+
+        .particle:nth-child(6) {
+            top: 55%;
+            left: 60%;
+            animation-duration: 22s;
+            animation-delay: 4s;
+        }
+
+        .particle:nth-child(7) {
+            top: 85%;
+            left: 55%;
+            animation-duration: 13s;
+            animation-delay: 1.5s;
+        }
+
+        .particle:nth-child(8) {
+            top: 25%;
+            left: 35%;
+            animation-duration: 19s;
+            animation-delay: 2.5s;
+        }
+
+        .particle:nth-child(9) {
+            top: 65%;
+            left: 5%;
+            animation-duration: 17s;
+            animation-delay: 3.5s;
+        }
+
+        .particle:nth-child(10) {
+            top: 10%;
+            left: 95%;
+            animation-duration: 24s;
+            animation-delay: 1s;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+
+            25% {
+                opacity: 0.5;
+            }
+
+            75% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        .vm-orbits {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .orbit {
+            position: absolute;
+            border: 1px dashed rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+        }
+
+        .orbit-1 {
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            left: 50%;
+            margin-top: -150px;
+            margin-left: -150px;
+            animation-duration: 25s;
+        }
+
+        .orbit-2 {
+            width: 450px;
+            height: 450px;
+            top: 50%;
+            left: 50%;
+            margin-top: -225px;
+            margin-left: -225px;
+            animation-duration: 35s;
+            animation-direction: reverse;
+        }
+
+        .orbit-3 {
+            width: 600px;
+            height: 600px;
+            top: 50%;
+            left: 50%;
+            margin-top: -300px;
+            margin-left: -300px;
+            animation-duration: 45s;
+        }
+
+        .vm-icon {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes growLine {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 0px rgba(220, 38, 38, 0);
+            }
+
+            50% {
+                text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+            }
+
+            100% {
+                text-shadow: 0 0 0px rgba(220, 38, 38, 0);
+            }
+        }
+
+        @keyframes pulse-slow {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.02);
+                opacity: 0.9;
+            }
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .animate-slideInLeft {
+            animation: slideInLeft 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .animate-growLine {
+            animation: growLine 0.8s ease forwards;
+        }
+
+        .animate-glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .animate-pulse-slow {
+            animation: pulse-slow 2s ease-in-out infinite;
+        }
+
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-300 {
+            animation-delay: 0.3s;
+        }
+
+        .delay-400 {
+            animation-delay: 0.4s;
+        }
+
+        .tech-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: white;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .tech-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: #dc2626;
+        }
+
+        .tech-badge:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .tech-badge:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .tech-badge:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .tech-badge:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .tech-badge:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .tech-badge:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="presentation-container">
+        <!-- BARRE DE NAVIGATION -->
+        <div class="nav-bar">
+            <div class="nav-logo">
+                <h1>Gana FAYE</h1>
+                <span>Master SI | Cloud Computing | Virtualisation </span>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <div class="nav-link active" data-slide="0">🏠 Accueil</div>
+                <div class="nav-link" data-slide="1">📖 Introduction</div>
+                <div class="nav-link" data-slide="2">🔄 GitOps</div>
+                <div class="nav-link" data-slide="3">🌐 Architecture Réseau</div>
+                <div class="nav-link" data-slide="4">🖥️ KubeVirt</div>
+                <div class="nav-link" data-slide="5">⚙️ CI/CD</div>
+                <div class="nav-link" data-slide="55">✅ Workflow</div>
+                <div class="nav-link" data-slide="6">🏆 Résultats</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- SLIDE 0: ACCUEIL AVEC ANIMATIONS -->
+            <div class="slide active" id="slide0">
+                <div class="slide-full">
+                    <div class="flex flex-col justify-center items-center text-center h-full relative overflow-hidden">
+
+                        <!-- Animation : Nuages flottants (Cloud Computing) -->
+                        <div class="absolute inset-0 pointer-events-none overflow-hidden">
+                            <div class="cloud cloud-1">
+                                <i class="fas fa-cloud"></i>
+                                <i class="fas fa-cloud"></i>
+                                <i class="fas fa-cloud"></i>
+                            </div>
+                            <div class="cloud cloud-2">
+                                <i class="fas fa-cloud"></i>
+                                <i class="fas fa-cloud"></i>
+                            </div>
+                            <div class="cloud cloud-3">
+                                <i class="fas fa-cloud"></i>
+                            </div>
+                        </div>
+
+                        <!-- Animation : Particules (Virtualisation) -->
+                        <div class="particles">
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                        </div>
+
+                        <!-- Animation : Machines virtuelles en orbite -->
+                        <div class="vm-orbits">
+                            <div class="orbit orbit-1">
+                                <div class="vm-icon">🖥️</div>
+                            </div>
+                            <div class="orbit orbit-2">
+                                <div class="vm-icon">💻</div>
+                            </div>
+                            <div class="orbit orbit-3">
+                                <div class="vm-icon">🖥️</div>
+                            </div>
+                        </div>
+
+                        <!-- Contenu principal avec animations -->
+                        <div class="relative z-10 animate-fadeInUp">
+                            <div
+                                class="bg-red-50 text-red-600 px-5 py-1.5 rounded-full text-sm font-semibold mb-6 inline-block animate-pulse-slow">
+                                <i class="fas fa-graduation-cap mr-2"></i> PROJET DE MASTER 1
+                            </div>
+
+                            <h1 class="text-5xl md:text-6xl font-extrabold text-slate-900 mb-4 leading-tight animate-slideInLeft">
+                                Architecture <span class="text-red-600 relative inline-block">
+                                    3-Tiers
+                                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-red-600 rounded-full animate-growLine"></span>
+                                </span><br>
+                                <span class="text-red-600 animate-glow">Virtualisée sur OpenShift</span>
+                            </h1>
+
+                            <p class="text-lg text-slate-500 max-w-2xl mx-auto mb-12 leading-relaxed animate-fadeInUp delay-200">
+                                <i class="fas fa-cloud-upload-alt text-blue-500 mr-1"></i> Déploiement automatisé d'une infrastructure sécurisée<br>
+                                avec segmentation <span class="font-bold text-orange-500">DMZ/LAN</span> et approche <span class="font-bold text-purple-500">GitOps</span>.
+                            </p>
+
+                            <!-- Badges technologiques animés -->
+                            <div class="flex flex-wrap justify-center gap-3 mb-12 animate-fadeInUp delay-300">
+                                <span class="tech-badge"><i class="fab fa-openshift"></i> OpenShift</span>
+                                <span class="tech-badge"><i class="fas fa-cube"></i> KubeVirt</span>
+                                <span class="tech-badge"><i class="fab fa-github-alt"></i> GitOps</span>
+                                <span class="tech-badge"><i class="fas fa-shield-alt"></i> iptables</span>
+                                <span class="tech-badge"><i class="fab fa-node-js"></i> Node.js</span>
+                                <span class="tech-badge"><i class="fas fa-database"></i> MySQL</span>
+                            </div>
+
+                            <div class="flex gap-12 border-t pt-6 border-slate-200 justify-center animate-fadeInUp delay-400">
+                                <div class="text-center hover:scale-110 transition-transform duration-300">
+                                    <p class="text-xs text-slate-400 uppercase font-semibold flex items-center justify-center gap-1"><i class="fas fa-user-graduate"></i> Étudiant</p>
+                                    <p class="font-bold text-slate-800 text-lg">Gana FAYE</p>
+                                </div>
+                                <div class="text-center hover:scale-110 transition-transform duration-300">
+                                    <p class="text-xs text-slate-400 uppercase font-semibold flex items-center justify-center gap-1"><i class="fas fa-chalkboard-user"></i> Professeur</p>
+                                    <p class="font-bold text-slate-800 text-lg">Dr. BABOU</p>
+                                </div>
+                                <div class="text-center hover:scale-110 transition-transform duration-300">
+                                    <p class="text-xs text-slate-400 uppercase font-semibold flex items-center justify-center gap-1"><i class="fas fa-calendar-alt"></i> Date</p>
+                                    <p class="font-bold text-slate-800 text-lg">Mars 2026</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 1: INTRODUCTION + GITOPS -->
+            <div class="slide" id="slide1">
+                <div class="slide-content">
+                    <div class="explanation-card">
+                        <span class="tech-tag"><i class="fas fa-info-circle mr-1"></i> Contexte & Objectifs</span>
+                        <h3>Architecture 3-Tiers sur OpenShift</h3>
+                        <div class="text-slate-600 text-sm space-y-4">
+                            <p>Le module <strong>Cloud Computing et Virtualisation</strong> vise à former aux concepts fondamentaux du cloud, à la virtualisation des ressources et à l'automatisation des déploiements.</p>
+
+                            <!-- Architecture 3-Tiers -->
+                            <div class="bg-slate-50 p-4 rounded-xl">
+                                <p class="font-bold text-slate-800">🏗️ Qu'est-ce qu'une architecture 3-Tiers ?</p>
+                                <div class="grid grid-cols-3 gap-2 mt-3 text-center">
+                                    <div class="bg-white p-2 rounded-lg shadow-sm border-l-4 border-blue-500">
+                                        <i class="fas fa-globe text-blue-500 text-xl"></i>
+                                        <p class="font-bold text-xs mt-1">Présentation</p>
+                                        <p class="text-[10px] text-slate-500">Interface utilisateur<br>VM-WEB (Node.js)</p>
+                                    </div>
+                                    <div class="bg-white p-2 rounded-lg shadow-sm border-l-4 border-orange-500">
+                                        <i class="fas fa-cogs text-orange-500 text-xl"></i>
+                                        <p class="font-bold text-xs mt-1">Application</p>
+                                        <p class="text-[10px] text-slate-500">Logique métier<br>Node.js</p>
+                                    </div>
+                                    <div class="bg-white p-2 rounded-lg shadow-sm border-l-4 border-green-500">
+                                        <i class="fas fa-database text-green-500 text-xl"></i>
+                                        <p class="font-bold text-xs mt-1">Données</p>
+                                        <p class="text-[10px] text-slate-500">Stockage<br>MySQL</p>
+                                    </div>
+                                </div>
+                                <div class="mt-3 grid grid-cols-3 gap-2 text-[10px] text-center">
+                                    <div><span class="text-blue-600 font-bold">VM-WEB</span><br><span class="text-slate-400">192.168.100.10</span></div>
+                                    <div><span class="text-orange-600 font-bold">Application</span><br><span class="text-slate-400">Node.js</span></div>
+                                    <div><span class="text-green-600 font-bold">MySQL Pod</span><br><span class="text-slate-400">mysql-service:3306</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Avantages de l'architecture 3-Tiers -->
+                            <div class="bg-blue-50 p-3 rounded-xl">
+                                <p class="font-bold text-slate-800 text-sm">✨ Avantages de l'architecture 3-Tiers</p>
+                                <div class="grid grid-cols-3 gap-2 mt-2 text-[10px]">
+                                    <div class="text-center"><i class="fas fa-shield-alt text-blue-500"></i><br>Sécurité<br><span class="text-slate-400">Isolation DMZ/LAN</span></div>
+                                    <div class="text-center"><i class="fas fa-tools text-blue-500"></i><br>Maintenabilité<br><span class="text-slate-400">Couches indépendantes</span></div>
+                                    <div class="text-center"><i class="fas fa-chart-line text-blue-500"></i><br>Scalabilité<br><span class="text-slate-400">Dimensionnement séparé</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Objectifs -->
+                            <div class="bg-red-50 p-4 rounded-xl border-l-4 border-red-500">
+                                <p class="font-bold text-slate-800">🎯 Objectifs du projet</p>
+                                <ul class="mt-2 space-y-1.5 text-sm">
+                                    <li><i class="fas fa-check text-red-500 mr-2"></i><strong>Déployer</strong> une architecture 3-Tiers complète (Passerelle + Web + Base de données)</li>
+                                    <li><i class="fas fa-check text-red-500 mr-2"></i><strong>Segmenter</strong> le réseau en zones DMZ (<code>192.168.100.0/24</code>) et LAN (<code>192.168.10.0/24</code>)</li>
+                                    <li><i class="fas fa-check text-red-500 mr-2"></i><strong>Configurer</strong> un firewall iptables sur la passerelle (VM-GW)</li>
+                                    <li><i class="fas fa-check text-red-500 mr-2"></i><strong>Automatiser</strong> l'ensemble du déploiement avec GitHub Actions (approche GitOps)</li>
+                                </ul>
+                            </div>
+
+                            <!-- Pourquoi GitOps ? -->
+                            <div class="bg-blue-50 p-4 rounded-xl border-l-4 border-blue-500">
+                                <p class="font-bold text-slate-800">🎯 Pourquoi avoir choisi GitOps ?</p>
+                                <ul class="mt-2 space-y-1.5 text-xs">
+                                    <li><i class="fas fa-check-circle text-blue-500 mr-2"></i><strong>Automatisation totale</strong> : Un simple <code>git push</code> déclenche tout le déploiement</li>
+                                    <li><i class="fas fa-check-circle text-blue-500 mr-2"></i><strong>Traçabilité</strong> : Chaque modification est versionnée et auditable</li>
+                                    <li><i class="fas fa-check-circle text-blue-500 mr-2"></i><strong>Reproductibilité</strong> : L'infrastructure peut être recréée à l'identique en quelques minutes</li>
+                                    <li><i class="fas fa-check-circle text-blue-500 mr-2"></i><strong>Rollback facile</strong> : Revenir à une version antérieure via <code>git revert</code></li>
+                                    <li><i class="fas fa-check-circle text-blue-500 mr-2"></i><strong>Collaboration</strong> : Plusieurs personnes peuvent travailler sur l'infrastructure via des branches Git</li>
+                                </ul>
+                            </div>
+
+                            <!-- Avantages en termes de rapidité -->
+                            <div class="bg-green-50 p-4 rounded-xl border-l-4 border-green-500">
+                                <p class="font-bold text-slate-800">⚡ Gain de temps et rapidité de déploiement</p>
+                                <div class="grid grid-cols-2 gap-3 mt-2">
+                                    <div class="bg-white p-2 rounded-lg text-center">
+                                        <p class="text-xl font-bold text-green-600">~2-3 min</p>
+                                        <p class="text-[10px] text-slate-500">Déploiement complet de l'infrastructure</p>
+                                    </div>
+                                    <div class="bg-white p-2 rounded-lg text-center">
+                                        <p class="text-xl font-bold text-green-600">1 commande</p>
+                                        <p class="text-[10px] text-slate-500"><code>git push</code> suffit</p>
+                                    </div>
+                                    <div class="bg-white p-2 rounded-lg text-center">
+                                        <p class="text-xl font-bold text-green-600">100%</p>
+                                        <p class="text-[10px] text-slate-500">Automatisation des tests et déploiement</p>
+                                    </div>
+                                    <div class="bg-white p-2 rounded-lg text-center">
+                                        <p class="text-xl font-bold text-green-600">0 erreur</p>
+                                        <p class="text-[10px] text-slate-500">Humaine (processus répétable)</p>
+                                    </div>
+                                </div>
+                                <div class="mt-2 text-center text-[10px] text-slate-600">
+                                    <i class="fas fa-chart-line text-green-500"></i> Gain de temps estimé : <strong>90%</strong> par rapport à un déploiement manuel
+                                </div>
+                            </div>
+
+                            <!-- Technologies utilisées -->
+                            <div class="bg-slate-100 p-3 rounded-xl">
+                                <p class="font-bold text-slate-800 text-sm">🛠️ Technologies utilisées</p>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    <span class="bg-white px-2 py-1 rounded-full text-[10px] shadow-sm">OpenShift</span>
+                                    <span class="bg-white px-2 py-1 rounded-full text-[10px] shadow-sm">KubeVirt</span>
+                                    <span class="bg-white px-2 py-1 rounded-full text-[10px] shadow-sm">Ubuntu 22.04</span>
+                                    <span class="bg-white px-2 py-1 rounded-full text-[10px] shadow-sm">iptables</span>
+                                    <span class="bg-white px-2 py-1 rounded-full text-[10px] shadow-sm">Node.js</span>
+                                    <span class="bg-white px-2 py-1 rounded-full text-[10px] shadow-sm">MySQL</span>
+                                    <span class="bg-white px-2 py-1 rounded-full text-[10px] shadow-sm">GitHub Actions</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="capture-frame">
+                        <div class="browser-bar">
+                            <div class="dot red"></div>
+                            <div class="dot amber"></div>
+                            <div class="dot green"></div>
+                            <span class="ml-4">🔍 Cliquez sur l'image pour zoomer - Schéma de l'architecture</span>
+                        </div>
+                        <div class="image-container" id="capture-archi-container">
+                            <div class="img-placeholder">
+                                <i class="fas fa-image"></i>
+                                <p><strong>📸 Capture : Schéma de l'architecture 3-Tiers</strong></p>
+                                <div class="mt-3 text-center text-xs bg-slate-100 p-3 rounded-lg w-full">
+                                    <div class="border-2 border-dashed border-orange-300 p-2 rounded-lg mb-2">
+                                        🌐 <strong>ZONE DMZ (192.168.100.0/24)</strong><br>
+                                        <span class="text-orange-600">VM-WEB : 192.168.100.10</span>
+                                    </div>
+                                    <div class="text-blue-500 my-1">⬇️ Routage & Firewall (iptables) ⬇️</div>
+                                    <div class="border-2 border-dashed border-blue-300 p-2 rounded-lg mb-2">
+                                        🛡️ <strong>PASSERELLE (VM-GW)</strong><br>
+                                        <span class="text-blue-600">DMZ: 192.168.100.1 | LAN: 192.168.10.1</span>
+                                    </div>
+                                    <div class="text-green-500 my-1">⬇️ TCP 3306 (MySQL) ⬇️</div>
+                                    <div class="border-2 border-dashed border-green-300 p-2 rounded-lg">
+                                        🔒 <strong>ZONE LAN (192.168.10.0/24)</strong><br>
+                                        <span class="text-green-600">MySQL Pod : mysql-service:3306</span>
+                                    </div>
+                                </div>
+                                <p class="caption mt-2 text-slate-400">Insérez ici votre diagramme d'architecture complet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 2: GITOPS -->
+            <div class="slide" id="slide2">
+                <div class="slide-content">
+                    <div class="explanation-card">
+                        <span class="tech-tag"><i class="fas fa-sync-alt mr-1"></i> Infrastructure as Code</span>
+                        <h3>Approche GitOps</h3>
+                        <div class="text-slate-600 text-sm space-y-4">
+                            <p>Git comme unique source de vérité. Aucune action manuelle sur OpenShift.</p>
+
+                            <div class="bg-red-50 p-4 rounded-xl border-l-4 border-red-500">
+                                <p class="font-bold text-slate-800">📁 Organisation du dépôt GitHub</p>
+                                <div class="mt-2 space-y-2 text-xs">
+                                    <div><span class="font-bold text-red-600">.github/workflows/</span> - <span class="text-slate-600">Moteur CI/CD</span><br>
+                                        <span class="text-slate-500 ml-4">deploy.yaml et test.yaml : Automatisation des tests et du déploiement</span></div>
+                                    <div><span class="font-bold text-red-600">app/</span> - <span class="text-slate-600">Couche Applicative</span><br>
+                                        <span class="text-slate-500 ml-4">server.js, package.json : Application Node.js</span></div>
+                                    <div><span class="font-bold text-red-600">database/</span> - <span class="text-slate-600">Couche Persistance</span><br>
+                                        <span class="text-slate-500 ml-4">schema.sql : Structure MySQL</span></div>
+                                    <div><span class="font-bold text-red-600">networks/</span> - <span class="text-slate-600">Couche Réseau</span><br>
+                                        <span class="text-slate-500 ml-4">nad-dmz.yaml, nad-lan.yaml : Network Attachment Definitions (Multus)</span></div>
+                                    <div><span class="font-bold text-red-600">scripts/</span> - <span class="text-slate-600">Automatisation du provisionnement</span><br>
+                                        <span class="text-slate-500 ml-4">cloudinit-gw.yml, cloudinit-web.yml, cloudinit-db.yml : Configuration Cloud-Init</span></div>
+                                    <div><span class="font-bold text-red-600">vms/</span> - <span class="text-slate-600">Définition des Machines Virtuelles</span><br>
+                                        <span class="text-slate-500 ml-4">vm-gw.yaml, vm-web.yaml : Templates KubeVirt</span></div>
+                                    <div><span class="font-bold text-red-600">Fichiers racine</span> - <span class="text-slate-600">Déploiement Kubernetes/OpenShift</span><br>
+                                        <span class="text-slate-500 ml-4">mysql-deployment.yaml, nodejs-app-mysql.yaml</span></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-green-50 p-3 rounded-xl">
+                                <p class="font-bold text-slate-800 text-sm">📊 Synthèse de l'arborescence</p>
+                                <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
+                                    <div class="bg-white p-2 rounded-lg text-center"><span class="font-bold text-blue-600">📦 Code</span><br>app/</div>
+                                    <div class="bg-white p-2 rounded-lg text-center"><span class="font-bold text-purple-600">🏗️ Infrastructure</span><br>vms/ | networks/</div>
+                                    <div class="bg-white p-2 rounded-lg text-center"><span class="font-bold text-orange-600">⚙️ Configuration</span><br>scripts/</div>
+                                    <div class="bg-white p-2 rounded-lg text-center"><span class="font-bold text-red-600">🔄 Automatisation</span><br>.github/workflows/</div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-50 p-3 rounded-xl text-center">
+                                <p class="font-mono text-xs"><span class="text-green-600">git push</span> → GitHub Actions → OpenShift → Infrastructure déployée</p>
+                                <p class="text-[10px] text-slate-500 mt-2">✔️ Traçabilité | ✔️ Reproductibilité | ✔️ Infrastructure as Code</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="capture-frame">
+                        <div class="browser-bar">
+                            <div class="dot red"></div>
+                            <div class="dot amber"></div>
+                            <div class="dot green"></div>
+                            <span class="ml-4">🔍 Cliquez sur l'image pour zoomer - Structure du dépôt GitHub</span>
+                        </div>
+                        <div class="image-container" id="capture-github-container">
+                            <div class="img-placeholder">
+                                <i class="fab fa-github"></i>
+                                <p><strong>📸 Capture : Organisation du dépôt GitHub</strong></p>
+                                <div class="text-left text-xs bg-slate-100 p-3 rounded-lg mt-2 w-full">
+                                    <span class="text-blue-600 font-bold">projet-cloud-Computing-Virtual/</span><br>
+                                    ├── <span class="text-yellow-600">.github/workflows/</span><br>
+                                    │   ├── deploy.yaml<br>
+                                    │   └── test.yaml<br>
+                                    ├── <span class="text-green-600">app/</span><br>
+                                    │   ├── server.js<br>
+                                    │   └── package.json<br>
+                                    ├── <span class="text-green-600">database/</span><br>
+                                    │   └── schema.sql<br>
+                                    ├── <span class="text-orange-600">networks/</span><br>
+                                    │   ├── nad-dmz.yaml<br>
+                                    │   └── nad-lan.yaml<br>
+                                    ├── <span class="text-purple-600">scripts/</span><br>
+                                    │   ├── cloudinit-gw.yml<br>
+                                    │   ├── cloudinit-web.yml<br>
+                                    │   └── cloudinit-db.yml<br>
+                                    ├── <span class="text-red-600">vms/</span><br>
+                                    │   ├── vm-gw.yaml<br>
+                                    │   └── vm-web.yaml<br>
+                                    ├── mysql-deployment.yaml<br>
+                                    └── nodejs-app-mysql.yaml
+                                </div>
+                                <p class="caption mt-2 text-slate-400">Capture d'écran de la structure du dépôt</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 3: ARCHITECTURE RÉSEAU -->
+            <div class="slide" id="slide3">
+                <div class="slide-content">
+                    <div class="explanation-card">
+                        <span class="tech-tag"><i class="fas fa-network-wired mr-1"></i> Réseau</span>
+                        <h3>Architecture DMZ / LAN</h3>
+                        <div class="text-slate-600 text-sm space-y-4">
+                            <div class="zone-dmz">
+                                <p class="font-bold text-orange-700">🌐 ZONE DMZ (192.168.100.0/24)</p>
+                                <p class="text-xs">Passerelle: 192.168.100.1 | VM-WEB: 192.168.100.10</p>
+                            </div>
+                            <div class="zone-gateway">
+                                <p class="font-bold text-blue-700">🛡️ Passerelle (VM-GW)</p>
+                                <p class="text-xs">DMZ: 192.168.100.1 | LAN: 192.168.10.1 | iptables actif</p>
+                            </div>
+                            <div class="zone-lan">
+                                <p class="font-bold text-green-700">🔒 ZONE LAN (192.168.10.0/24)</p>
+                                <p class="text-xs">MySQL: mysql-service:3306</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="capture-frame">
+                        <div class="browser-bar">
+                            <div class="dot red"></div>
+                            <div class="dot amber"></div>
+                            <div class="dot green"></div>
+                            <span class="ml-4">🔍 Cliquez sur l'image pour zoomer</span>
+                        </div>
+                        <div class="image-container" id="capture-multus-container">
+                            <div class="img-placeholder">
+                                <i class="fas fa-network-wired"></i>
+                                <p><strong>📸 Capture : Configuration des réseaux DMZ/LAN</strong></p>
+                                <p class="caption">Insérez ici la capture des fichiers nad-dmz.yaml et nad-lan.yaml</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 4: KUBEVIRT -->
+            <div class="slide" id="slide4">
+                <div class="slide-content">
+                    <div class="explanation-card">
+                        <span class="tech-tag"><i class="fas fa-microchip mr-1"></i> Virtualisation</span>
+                        <h3>KubeVirt & Machines Virtuelles</h3>
+                        <div class="text-slate-600 text-sm space-y-4">
+                            <div class="bg-slate-50 p-3 rounded-xl">
+                                <p class="font-bold">VM-GW (Passerelle)</p>
+                                <p class="text-xs">Ubuntu 22.04 | 1 vCPU | 2 GiB RAM | iptables<br>IPs: 192.168.100.1 / 192.168.10.1</p>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl">
+                                <p class="font-bold">VM-WEB (Serveur)</p>
+                                <p class="text-xs">Ubuntu 22.04 | 1 vCPU | 2 GiB RAM | Nginx + Node.js<br>IP: 192.168.100.10</p>
+                            </div>
+                            <div class="bg-red-50 p-3 rounded-xl">
+                                <p class="font-bold text-xs">Contrainte : Quota 2 VMs → MySQL en Pod</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="capture-frame">
+                        <div class="browser-bar">
+                            <div class="dot red"></div>
+                            <div class="dot amber"></div>
+                            <div class="dot green"></div>
+                            <span class="ml-4">🔍 Cliquez sur l'image pour zoomer</span>
+                        </div>
+                        <div class="image-container" id="capture-vms-container">
+                            <div class="img-placeholder">
+                                <i class="fas fa-server"></i>
+                                <p><strong>📸 Capture : VMs en cours d'exécution</strong></p>
+                                <p class="caption">Insérez ici la capture de <code>oc get vmi -n ganafaye-dev</code></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 5: CI/CD -->
+            <div class="slide" id="slide5">
+                <div class="slide-content">
+                    <div class="explanation-card">
+                        <span class="tech-tag"><i class="fas fa-rocket mr-1"></i> Automatisation</span>
+                        <h3>CI/CD Pipeline</h3>
+                        <div class="text-slate-600 text-sm space-y-4">
+                            <p>Le workflow GitHub Actions se déclenche automatiquement à chaque <code class="bg-slate-100 px-1">git push</code> sur la branche <strong>main</strong>.</p>
+
+                            <div class="bg-slate-50 p-4 rounded-xl">
+                                <p class="font-bold text-slate-800 text-sm mb-2">📋 Étapes du workflow :</p>
+                                <div class="space-y-2">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
+                                        <div><span class="font-medium">Checkout</span><br><span class="text-xs text-slate-500">Récupération du code source depuis GitHub</span></div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
+                                        <div><span class="font-medium">Installation des outils</span><br><span class="text-xs text-slate-500">Installation de <code>oc</code> (OpenShift CLI) et <code>virtctl</code> (KubeVirt)</span></div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
+                                        <div><span class="font-medium">Authentification OpenShift</span><br><span class="text-xs text-slate-500">Connexion au cluster via les secrets GitHub <code>OPENSHIFT_SERVER</code> et <code>OPENSHIFT_TOKEN</code></span></div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</div>
+                                        <div><span class="font-medium">Déploiement des VMs</span><br><span class="text-xs text-slate-500"><code>oc apply -f vms/vm-gw.yaml</code> et <code>oc apply -f vms/vm-web.yaml</code></span></div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">5</div>
+                                        <div><span class="font-medium">Déploiement MySQL</span><br><span class="text-xs text-slate-500"><code>oc apply -f mysql-deployment.yaml</code> (Pod base de données)</span></div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">6</div>
+                                        <div><span class="font-medium">Démarrage des VMs</span><br><span class="text-xs text-slate-500"><code>virtctl start vm-gw -n ganafaye-dev</code> et <code>virtctl start vm-web -n ganafaye-dev</code></span></div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-6 h-6 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">✓</div>
+                                        <div><span class="font-medium">Vérification finale</span><br><span class="text-xs text-slate-500">Contrôle de l'état des VMs (<code>oc get vmi</code>) et des pods (<code>oc get pods</code>)</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-blue-50 p-3 rounded-xl">
+                                <p class="font-bold text-slate-800 text-xs">🔐 Secrets GitHub configurés</p>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    <span class="bg-slate-800 text-white px-2 py-1 rounded text-xs font-mono">OPENSHIFT_SERVER</span>
+                                    <span class="bg-slate-800 text-white px-2 py-1 rounded text-xs font-mono">OPENSHIFT_TOKEN</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 mt-2">Ces secrets permettent l'authentification sécurisée avec le cluster OpenShift sans exposer de données sensibles.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="capture-frame">
+                        <div class="browser-bar">
+                            <div class="dot red"></div>
+                            <div class="dot amber"></div>
+                            <div class="dot green"></div>
+                            <span class="ml-4">🔍 Cliquez sur l'image pour zoomer - Workflow GitHub Actions</span>
+                        </div>
+                        <div class="image-container" id="capture-workflow-container">
+                            <div class="img-placeholder">
+                                <i class="fab fa-github-alt"></i>
+                                <p><strong>📸 Capture : Workflow GitHub Actions</strong></p>
+                                <div class="mt-2 text-left text-xs bg-slate-100 p-3 rounded-lg w-full">
+                                    <div class="text-green-600">✅ Deploy Infrastructure</div>
+                                    <div class="text-slate-600 ml-4">├── ✅ Checkout repository</div>
+                                    <div class="text-slate-600 ml-4">├── ✅ Install oc</div>
+                                    <div class="text-slate-600 ml-4">├── ✅ Install virtctl</div>
+                                    <div class="text-slate-600 ml-4">├── ✅ Login to OpenShift</div>
+                                    <div class="text-slate-600 ml-4">├── ✅ Deploy VMs</div>
+                                    <div class="text-slate-600 ml-4">├── ✅ Deploy MySQL</div>
+                                    <div class="text-slate-600 ml-4">├── ✅ Start VMs</div>
+                                    <div class="text-slate-600 ml-4">└── ✅ Check Status</div>
+                                </div>
+                                <p class="caption mt-2">Insérez ici votre capture d'écran du workflow réussi (vert ✅)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 5.5: WORKFLOW GITHUB ACTIONS - RÉSULTAT -->
+            <div class="slide" id="slide55">
+                <div class="slide-content">
+                    <div class="explanation-card">
+                        <span class="tech-tag"><i class="fas fa-check-circle mr-1"></i> Validation CI/CD</span>
+                        <h3>Résultat du Workflow GitHub Actions</h3>
+                        <div class="text-slate-600 text-sm space-y-4">
+                            <p>Le workflow CI/CD s'exécute automatiquement à chaque <code class="bg-slate-100 px-1">git push</code> sur la branche <strong>main</strong>.</p>
+
+                            <div class="bg-green-50 p-4 rounded-xl border-l-4 border-green-500">
+                                <p class="font-bold text-green-700"><i class="fas fa-check-circle mr-1"></i> Statut : SUCCÈS</p>
+                                <ul class="mt-2 space-y-1 text-xs">
+                                    <li>✅ Checkout du code réussi</li>
+                                    <li>✅ Installation des outils (oc, virtctl)</li>
+                                    <li>✅ Connexion à OpenShift</li>
+                                    <li>✅ Déploiement des VMs (vm-gw, vm-web)</li>
+                                    <li>✅ Déploiement du pod MySQL</li>
+                                    <li>✅ Démarrage des machines virtuelles</li>
+                                    <li>✅ Vérification finale - Toutes les ressources sont opérationnelles</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-50 p-3 rounded-xl">
+                                <p class="font-bold text-slate-800 text-sm">📊 Étapes du workflow validées</p>
+                                <div class="mt-2 space-y-1 text-xs">
+                                    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500 w-4"></i> <span>Checkout repository</span></div>
+                                    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500 w-4"></i> <span>Install OpenShift CLI (oc)</span></div>
+                                    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500 w-4"></i> <span>Install virtctl (KubeVirt)</span></div>
+                                    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500 w-4"></i> <span>Login to OpenShift</span></div>
+                                    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500 w-4"></i> <span>Deploy VMs (vm-gw.yaml, vm-web.yaml)</span></div>
+                                    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500 w-4"></i> <span>Deploy MySQL (mysql-deployment.yaml)</span></div>
+                                    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500 w-4"></i> <span>Start Virtual Machines (virtctl start)</span></div>
+                                    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500 w-4"></i> <span>Check Status (oc get vmi, oc get pods)</span></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-blue-50 p-3 rounded-xl">
+                                <p class="font-bold text-slate-800 text-xs">🔐 Secrets GitHub utilisés</p>
+                                <div class="flex gap-4 mt-2 text-xs font-mono">
+                                    <span class="bg-slate-800 text-white px-2 py-1 rounded">OPENSHIFT_SERVER</span>
+                                    <span class="bg-slate-800 text-white px-2 py-1 rounded">OPENSHIFT_TOKEN</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 mt-2">Ces secrets permettent l'authentification sécurisée avec le cluster OpenShift.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="capture-frame">
+                        <div class="browser-bar">
+                            <div class="dot red"></div>
+                            <div class="dot amber"></div>
+                            <div class="dot green"></div>
+                            <span class="ml-4">🔍 Cliquez sur l'image pour zoomer - Workflow GitHub Actions réussi</span>
+                        </div>
+                        <div class="image-container" id="capture-workflow-result-container">
+                            <div class="img-placeholder">
+                                <i class="fab fa-github-alt"></i>
+                                <p><strong>📸 Capture : Workflow GitHub Actions - Succès ✅</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 6: RÉSULTATS -->
+            <div class="slide" id="slide6">
+                <div class="slide-full">
+                    <div class="explanation-card" style="height: auto;">
+                        <div class="text-center mb-6">
+                            <div class="w-20 h-20 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                                <i class="fas fa-check-double"></i>
+                            </div>
+                            <h2 class="text-3xl font-extrabold text-slate-900">Résultats & Conclusion</h2>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="bg-green-50 p-5 rounded-2xl">
+                                <h4><i class="fas fa-check-circle text-green-600 mr-2"></i> Infrastructure déployée</h4>
+                                <ul class="text-sm mt-2">
+                                    <li>✅ VM-GW : 192.168.100.1 / 192.168.10.1</li>
+                                    <li>✅ VM-WEB : 192.168.100.10</li>
+                                    <li>✅ MySQL Pod : mysql-service:3306</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 p-5 rounded-2xl">
+                                <h4><i class="fas fa-globe text-blue-600 mr-2"></i> Application</h4>
+                                <div class="url-box text-xs bg-white mt-2">
+                                    <a href="https://app-projet-cloud-virtual-gana-ganafaye-dev.apps.rm2.thpm.p1.openshiftapps.com" target="_blank" class="text-blue-600 break-all">
+                                        https://app-projet-cloud-virtual-gana-ganafaye-dev.apps.rm2.thpm.p1.openshiftapps.com
+                                    </a>
+                                </div>
+                                <p class="text-xs text-green-600 mt-2">✅ Disponible 24h/24</p>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <div class="capture-frame" style="border-radius: 16px;">
+                                <div class="browser-bar">
+                                    <div class="dot red"></div>
+                                    <div class="dot amber"></div>
+                                    <div class="dot green"></div>
+                                    <span class="ml-4">🔍 Cliquez sur l'image pour zoomer</span>
+                                </div>
+                                <div class="image-container" id="capture-app-container">
+                                    <div class="img-placeholder">
+                                        <i class="fas fa-globe"></i>
+                                        <p><strong>📸 Capture : Application Node.js</strong></p>
+                                        <p class="caption">Insérez ici la capture de l'application web</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 text-center">
+                            <p class="text-2xl font-bold text-slate-800 italic">Merci de votre écoute !</p>
+                            <p class="text-sm text-slate-500 mt-2">Questions ?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE ZOOM - FOND BLANC -->
+        <div id="imageModal" class="modal" onclick="closeModal()">
+            <div class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></div>
+            <img id="modalImage" class="modal-content" src="" alt="Image agrandie">
+        </div>
+
+        <div class="nav-controls">
+            <div class="nav-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></div>
+            <div class="nav-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="slide-counter" id="slideCounter">Slide 1 / 8</div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const slideCounter = document.getElementById('slideCounter');
+        const totalSlides = slides.length;
+
+        function goToSlide(index) {
+            if (index < 0 || index >= totalSlides) return;
+            slides.forEach(s => s.classList.remove('active'));
+            navLinks.forEach(l => l.classList.remove('active'));
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            if (navLinks[currentSlide]) navLinks[currentSlide].classList.add('active');
+            slideCounter.innerHTML = `Slide ${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function nextSlide() { if (currentSlide < totalSlides - 1) goToSlide(currentSlide + 1); }
+        function prevSlide() { if (currentSlide > 0) goToSlide(currentSlide - 1); }
+
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+        navLinks.forEach((link, idx) => link.addEventListener('click', () => goToSlide(idx)));
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowRight") nextSlide();
+            if (e.key === "ArrowLeft") prevSlide();
+            if (e.key === "Escape") closeModal();
+        });
+
+        // Fonction de zoom avec fond blanc
+        function openModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modalImg.src = imageSrc;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+
+        // Fonction pour insérer une image avec zoom
+        function setImage(containerId, imageUrl, altText) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = `<img src="${imageUrl}" alt="${altText}" class="real-image" style="max-height: 100%; width: auto; max-width: 100%; border-radius: 12px; cursor: pointer;" onclick="openModal('${imageUrl}')">`;
+            }
+        }
+
+        // ========== DÉCOMMENTEZ ET REMPLACEZ PAR VOS CHEMINS D'IMAGES ==========
+         setImage('capture-archi-container', 'images/architecture.png', 'Schéma architecture');
+         setImage('capture-github-container', 'images/github-structure.png', 'Structure dépôt GitHub');
+         setImage('capture-multus-container', 'images/multus-config.jpg', 'Configuration Multus');
+         setImage('capture-vms-container', 'images/vms-running.png', 'VMs en cours d\'exécution');
+         setImage('capture-workflow-container', 'images/diagramme_cloud_projet.svg', 'Workflow réussi');
+         setImage('capture-workflow-result-container', 'images/workflow_validate.png', 'Workflow GitHub Actions - Succès');
+         setImage('capture-app-container', 'images/app-screenshot.png', 'Application web');
+    </script>
+</body>
+
+</html>
