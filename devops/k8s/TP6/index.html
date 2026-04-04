@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet 6 : Architecture Fullstack 3-Tier | Gana Faye</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <style>
+        :root { --k8s-violet: #8b5cf6; --dark-bg: #0f172a; --card-bg: #1e293b; --border: #334155; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: #f8fafc; line-height: 1.6; }
+        .hero-project { background: linear-gradient(135deg, #1e293b 0%, var(--k8s-violet) 100%); padding: 40px 0; border-bottom: 1px solid var(--border); }
+        .section-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 25px; }
+        .img-placeholder { width: 100%; border-radius: 8px; border: 1px solid var(--k8s-violet); background: #000; margin-top: 15px; }
+        pre { background: #000; padding: 15px; border-radius: 8px; color: #fff; font-size: 0.8rem; border-left: 4px solid var(--k8s-violet); max-height: 400px; overflow-y: auto; }
+        .nav-tabs .nav-link { color: #94a3b8; border: none; }
+        .nav-tabs .nav-link.active { background-color: var(--k8s-violet); color: white; border-radius: 8px 8px 0 0; }
+        .code-header { background: #334155; padding: 10px 15px; border-radius: 8px 8px 0 0; font-family: 'Fira Code', monospace; font-size: 0.9rem; color: #ddd; }
+    </style>
+</head>
+<body>
+
+    <header class="hero-project">
+        <div class="container">
+            <nav class="mb-3"><a href="index.html" class="text-white-50 text-decoration-none small"><i class="bi bi-chevron-left"></i> Retour Dashboard</a></nav>
+            <h1 class="fw-bold mb-0">Projet 6 : Système d'Information UADB (3-Tier)</h1>
+            <p class="text-white-50">Intégration complète : Frontend, Backend, Database & Ingress</p>
+        </div>
+    </header>
+
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-lg-5">
+                <section class="section-card">
+                    <h3><i class="bi bi-camera-fill text-primary"></i> Preuves de Validation</h3>
+                    <div class="mb-4">
+                        <p class="small text-white-50">Interface uadb.local (Faye, Diop, Sane)</p>
+                        <img src="image1.png" class="img-placeholder" alt="Frontend UI">
+                    </div>
+                    <div class="mb-4">
+                        <p class="small text-white-50">Status de l'Ingress Controller</p>
+                        <img src="image2.png" class="img-placeholder" alt="Ingress status">
+                    </div>
+                    <div class="alert bg-primary border-0 text-white small">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <strong>Succès :</strong> Communication fluide entre les 3 couches via le DNS interne.
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-lg-7">
+                <section class="section-card">
+                    <h3><i class="bi bi-file-earmark-code-fill text-primary"></i> Infrastructure as Code</h3>
+                    <p class="small text-secondary">Voici les manifests YAML utilisés pour l'orchestration du cluster :</p>
+                    
+                    <ul class="nav nav-tabs mb-3" id="yamlTabs" role="tablist">
+                        <li class="nav-item"><button class="nav-link active" id="db-tab" data-bs-toggle="tab" data-bs-target="#db">MySQL</button></li>
+                        <li class="nav-item"><button class="nav-link" id="api-tab" data-bs-toggle="tab" data-bs-target="#api">Backend</button></li>
+                        <li class="nav-item"><button class="nav-link" id="web-tab" data-bs-toggle="tab" data-bs-target="#web">Frontend</button></li>
+                        <li class="nav-item"><button class="nav-link" id="ing-tab" data-bs-toggle="tab" data-bs-target="#ing">Ingress</button></li>
+                    </ul>
+
+                    <div class="tab-content" id="yamlContent">
+                        <div class="tab-pane fade show active" id="db">
+                            <div class="code-header">03-mysql-deploy.yaml</div>
+                            <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uadb-mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql-db
+  template:
+    metadata:
+      labels:
+        app: mysql-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "admin"
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-data
+        persistentVolumeClaim:
+          claimName: mysql-pvc-uadb</code></pre>
+                        </div>
+
+                        <div class="tab-pane fade" id="api">
+                            <div class="code-header">02-backend-deploy.yaml</div>
+                            <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uadb-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-api
+  template:
+    metadata:
+      labels:
+        app: backend-api
+    spec:
+      containers:
+      - name: fastapi-app
+        image: gana-backend:v5
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          value: "mysql://root:admin@mysql-service:3306/uadb_db"</code></pre>
+                        </div>
+
+                        <div class="tab-pane fade" id="web">
+                            <div class="code-header">04-frontend-deploy.yaml</div>
+                            <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uadb-frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend-ui
+  template:
+    metadata:
+      labels:
+        app: frontend-ui
+    spec:
+      containers:
+      - name: nginx-web
+        image: gana-frontend:v2
+        ports:
+        - containerPort: 80</code></pre>
+                        </div>
+
+                        <div class="tab-pane fade" id="ing">
+                            <div class="code-header">05-ingress.yaml</div>
+                            <pre><code>apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: uadb-ingress
+spec:
+  rules:
+  - host: uadb.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80</code></pre>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

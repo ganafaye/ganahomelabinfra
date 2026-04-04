@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet 2 : Scaling & Load Balancing | Gana Faye</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <style>
+        :root { --k8s-blue: #326ce5; --dark-bg: #0f172a; --card-bg: #1e293b; --border: #334155; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: #f8fafc; line-height: 1.6; }
+        .hero-project { background: linear-gradient(135deg, #1e293b 0%, #326ce5 100%); padding: 40px 0; border-bottom: 1px solid var(--border); }
+        .section-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 25px; }
+        .img-placeholder { width: 100%; border-radius: 8px; border: 1px solid var(--k8s-blue); background: #000; margin-top: 15px; }
+        .mono { font-family: 'Fira Code', monospace; color: #7dd3fc; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; }
+        pre { background: #000; padding: 15px; border-radius: 8px; color: #fff; font-size: 0.85rem; border-left: 4px solid #10b981; }
+        .network-flow { background: rgba(50, 108, 229, 0.1); border: 1px dashed var(--k8s-blue); padding: 15px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <header class="hero-project">
+        <div class="container">
+            <nav class="mb-3"><a href="index.html" class="text-white-50 text-decoration-none small"><i class="bi bi-chevron-left"></i> Retour Dashboard</a></nav>
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="fw-bold mb-0">Projet 2 : Scaling & Load Balancing</h1>
+                <span class="badge bg-info text-dark shadow-sm">Architecture Scale-Out</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-lg-7">
+                <section class="section-card">
+                    <h3><i class="bi bi-diagram-3-fill text-primary"></i> 1. Architecture Réseau</h3>
+                    <p>Mise en place d'une infrastructure capable de distribuer le trafic sur <strong>3 instances identiques</strong> pour assurer la haute disponibilité.</p>
+                    
+                    <div class="network-flow mt-3 mb-4">
+                        <p class="small fw-bold mb-1"><i class="bi bi-cpu"></i> Flux de données :</p>
+                        <code class="text-white small">Utilisateur (Port 31996) ➔ NodePort (192.168.49.2) ➔ Service LoadBalancer ➔ [Pod 1 | Pod 2 | Pod 3]</code>
+                    </div>
+
+                    <h6>Le Service "web-entrypoint" :</h6>
+                    <pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: web-entrypoint
+spec:
+  type: LoadBalancer
+  selector:
+    app: web-cluster
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 31996</code></pre>
+                </section>
+
+                <section class="section-card">
+                    <h3><i class="bi bi-terminal-fill text-primary"></i> 2. Validation du SI</h3>
+                    <p>Contrairement au <code class="mono">port-forward</code>, cette méthode utilise l'infrastructure native de Minikube, offrant une URL stable :</p>
+                    <div class="p-3 bg-dark rounded border border-secondary text-center">
+                        <a href="http://192.168.49.2:31996" target="_blank" class="text-info fw-bold text-decoration-none">http://192.168.49.2:31996</a>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-lg-5">
+                <section class="section-card h-100">
+                    <h3><i class="bi bi-camera-fill text-primary"></i> 3. Captures de Test</h3>
+                    
+                    <div class="mb-4">
+                        <p class="small text-white-50">Capture A : Cluster de 3 Pods Actifs</p>
+                        <img src="screenshots/tp2_replicas.png" class="img-placeholder" alt="kubectl get pods replicas">
+                    </div>
+
+                    <div class="mb-4">
+                        <p class="small text-white-50">Capture B : Logs du Load Balancer</p>
+                        <img src="screenshots/tp2_lb_logs.png" class="img-placeholder" alt="Distribution des logs">
+                    </div>
+
+                    <div class="alert bg-success border-0 text-white small">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <strong>Succès :</strong> Le système absorbe 3x plus de trafic et offre une redondance critique.
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <footer class="text-center mt-5 text-white-50 small">
+            Projet 2 - Gana Faye - Architecture Redondante K8s
+        </footer>
+    </main>
+
+</body>
+</html>

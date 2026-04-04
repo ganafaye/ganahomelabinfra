@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet 3 : Architecture Multi-tiers | Gana Faye</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --k8s-blue: #326ce5; 
+            --k8s-cyan: #00a4ef;
+            --dark-bg: #0f172a; 
+            --card-bg: #1e293b; 
+            --border: #334155;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--dark-bg); 
+            color: #f8fafc; 
+            line-height: 1.6;
+        }
+
+        .hero-project {
+            background: linear-gradient(135deg, #1e293b 0%, var(--k8s-cyan) 100%);
+            padding: 50px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            padding: 25px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .img-container {
+            background: #000;
+            border: 1px solid var(--k8s-cyan);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            opacity: 0.9;
+        }
+
+        .mono { 
+            font-family: 'Fira Code', monospace; 
+            color: #7dd3fc; 
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px; 
+            border-radius: 4px; 
+        }
+
+        pre { 
+            background: #000; 
+            padding: 15px; 
+            border-radius: 8px; 
+            color: #fff; 
+            font-size: 0.85rem; 
+            border-left: 4px solid var(--k8s-cyan);
+            overflow-x: auto;
+        }
+
+        .logic-flow {
+            border-left: 4px solid var(--k8s-cyan);
+            background: rgba(0, 164, 239, 0.05);
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero-project">
+        <div class="container">
+            <nav class="mb-4">
+                <a href="index.html" class="text-white-50 text-decoration-none small">
+                    <i class="bi bi-chevron-left"></i> Retour au Dashboard
+                </a>
+            </nav>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="fw-bold mb-0">Projet 3 : Architecture Multi-tiers (App + SGBD)</h1>
+                    <p class="text-white-50 mb-0">Isolation réseau et Persistance des données sur Kubernetes</p>
+                </div>
+                <span class="badge bg-info text-dark fw-bold">N-TIERS ARCHITECTURE</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container py-5">
+        <div class="row">
+            
+            <div class="col-lg-7">
+                
+                <section class="section-card">
+                    <h3><i class="bi bi-diagram-3-fill text-info"></i> 1. Présentation du Système</h3>
+                    <p>Séparation de la couche de présentation (Adminer) et de la couche de données (MySQL). L'objectif est de garantir qu'une faille sur le Web n'expose pas directement le serveur de données.</p>
+                    
+                    <div class="logic-flow">
+                        <h6><i class="bi bi-link-45deg"></i> Découverte de Service (DNS)</h6>
+                        <p class="small mb-0">Le Frontend utilise le nom DNS interne <code class="mono">mysql-service</code> pour contacter la base de données. Kubernetes gère la résolution d'IP automatiquement.</p>
+                    </div>
+                </section>
+
+                <section class="section-card">
+                    <h3><i class="bi bi-database-fill-lock text-info"></i> 2. Gestion de la Persistance (PVC)</h3>
+                    <p>Pour éviter la perte de données (inscriptions, inventaires), nous avons implémenté un <strong>PersistentVolumeClaim</strong>.</p>
+                    <pre><code># Extrait du PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi</code></pre>
+                    <p class="small text-white-50 mt-2">Le volume est monté sur <code class="mono">/var/lib/mysql</code> dans le conteneur.</p>
+                </section>
+
+                <section class="section-card">
+                    <h3><i class="bi bi-shield-shaded text-info"></i> 3. Configuration des Services</h3>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover small border-secondary">
+                            <thead>
+                                <tr>
+                                    <th>Composant</th>
+                                    <th>Type</th>
+                                    <th>Port</th>
+                                    <th>Visibilité</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>MySQL</td>
+                                    <td><code class="mono">ClusterIP</code></td>
+                                    <td>3306</td>
+                                    <td>Interne Uniquement</td>
+                                </tr>
+                                <tr>
+                                    <td>Adminer</td>
+                                    <td><code class="mono">NodePort</code></td>
+                                    <td>32001</td>
+                                    <td>Externe (Navigateur)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-lg-5">
+                
+                <section class="section-card">
+                    <h3><i class="bi bi-camera-fill text-info"></i> 4. Preuves de Déploiement</h3>
+                    
+                    <div class="img-container">
+                        <p class="small text-white-50 mb-1">Capture A : Pods Multi-tiers (Running)</p>
+                        <img src="screenshots/tp3_pods_db.png" class="img-placeholder" alt="kubectl get pods status">
+                    </div>
+
+                    <div class="img-container">
+                        <p class="small text-white-50 mb-1">Capture B : État du Volume (Bound)</p>
+                        <img src="screenshots/tp3_pvc_status.png" class="img-placeholder" alt="kubectl get pvc bound">
+                    </div>
+
+                    <div class="img-container">
+                        <p class="small text-white-50 mb-1">Capture C : Interface Adminer Connectée</p>
+                        <img src="screenshots/tp3_adminer_ui.png" class="img-placeholder" alt="Adminer successful connection">
+                    </div>
+
+                    <div class="alert bg-dark border-info text-white mt-4">
+                        <h6 class="text-info"><i class="bi bi-check2-circle"></i> Compétences Validées :</h6>
+                        <ul class="small mb-0 ps-3">
+                            <li>Isolation réseau via ClusterIP.</li>
+                            <li>Découverte de service DNS.</li>
+                            <li>Cycle de vie des données (Stateful).</li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+
+        <footer class="text-center mt-4 text-white-50">
+            <p>Projet 3 - Gana Faye - Architecture SI UADB 2026</p>
+        </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

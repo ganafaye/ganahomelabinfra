@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet 1 : Résilience K8s | Gana Faye</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --k8s-blue: #326ce5; 
+            --dark-bg: #0f172a; 
+            --card-bg: #1e293b; 
+            --border: #334155; 
+            --accent: #7dd3fc;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--dark-bg); 
+            color: #f8fafc; 
+            line-height: 1.6;
+        }
+
+        .hero-project {
+            background: linear-gradient(135deg, var(--k8s-blue) 0%, #1e293b 100%);
+            padding: 40px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            padding: 25px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .img-container {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            border: 1px dashed var(--k8s-blue);
+            opacity: 0.8;
+        }
+
+        .mono { 
+            font-family: 'Fira Code', monospace; 
+            color: var(--accent); 
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px; 
+            border-radius: 4px; 
+        }
+
+        pre { 
+            background: #000; 
+            padding: 15px; 
+            border-radius: 8px; 
+            color: #fff; 
+            font-size: 0.85rem; 
+            border-left: 4px solid var(--k8s-blue);
+            overflow-x: auto;
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero-project">
+        <div class="container">
+            <nav class="mb-4">
+                <a href="index.html" class="text-white-50 text-decoration-none small">
+                    <i class="bi bi-chevron-left"></i> Dashboard Homelab
+                </a>
+            </nav>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="fw-bold mb-0">Projet 1 : Fondamentaux & Résilience</h1>
+                    <p class="text-white-50 mb-0">Orchestration déclarative et Self-Healing avec Nginx</p>
+                </div>
+                <span class="status-badge bg-success">Validé <i class="bi bi-check-circle"></i></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container py-5">
+        <div class="row">
+            
+            <div class="col-lg-7">
+                
+                <section class="section-card">
+                    <h3><i class="bi bi-gear-fill text-primary"></i> 1. Démarche Technique</h3>
+                    <p>Ce projet visait à valider le passage d'une gestion manuelle à une <strong>infrastructure déclarative</strong>. L'état désiré est défini dans des fichiers YAML, et Kubernetes se charge de maintenir cet état.</p>
+                    
+                    <div class="mt-4">
+                        <h6>Le Manifeste de Déploiement :</h6>
+                        <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 3 # Haute disponibilité
+  selector:
+    matchLabels:
+      app: nginx-server
+  template:
+    metadata:
+      labels:
+        app: nginx-server
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.25-alpine</code></pre>
+                    </div>
+                </section>
+
+                <section class="section-card">
+                    <h3><i class="bi bi-terminal-fill text-primary"></i> 2. Validation des Commandes</h3>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover small border-secondary">
+                            <thead>
+                                <tr>
+                                    <th>Objectif</th>
+                                    <th>Commande</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Appliquer le YAML</td>
+                                    <td><code class="mono">kubectl apply -f .</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Scaling horizontal</td>
+                                    <td><code class="mono">kubectl scale --replicas=3</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Vérification accès</td>
+                                    <td><code class="mono">minikube service list</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-lg-5">
+                
+                <section class="section-card">
+                    <h3><i class="bi bi-camera-fill text-primary"></i> 3. Preuves de succès</h3>
+                    
+                    <div class="img-container">
+                        <p class="small text-white-50 mb-1">Capture A : État des 3 Pods en Running</p>
+                        <img src="image.png" class="img-placeholder" alt="Terminal kubectl get pods">
+                    </div>
+
+                    <div class="img-container">
+                        <p class="small text-white-50 mb-1">Capture B : Test d'auto-cicatrisation</p>
+                        <img src="screenshots/tp1_self_healing.png" class="img-placeholder" alt="Pod recovery screenshot">
+                    </div>
+
+                    <div class="img-container">
+                        <p class="small text-white-50 mb-1">Capture C : Rendu final Navigateur</p>
+                        <img src="screenshots/tp1_browser.png" class="img-placeholder" alt="Nginx Welcome Page">
+                    </div>
+                </section>
+
+                <div class="alert bg-dark border-primary text-white">
+                    <h6 class="text-primary"><i class="bi bi-info-circle"></i> Résultat Final :</h6>
+                    <p class="small mb-0">Le cluster maintient automatiquement 3 répliques. Si un Pod est supprimé manuellement sur le ThinkPad, K8s en recrée un nouveau en moins de 2s.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center mt-5 text-white-50">
+            <p>Rapport TP K8s - Gana Faye - UADB 2026</p>
+        </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
